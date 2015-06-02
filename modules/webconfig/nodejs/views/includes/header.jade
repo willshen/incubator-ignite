@@ -30,5 +30,5 @@ header.header(id='header')
                         ul.dropdown-menu
                             li
                                 a(href='/rest/auth/logout') Log Out
-                li(ng-show='!user' class=['nav-login'])
-                        a(ng-click='login()' href='#') Log In
+                li.nav-login(ng-show='!user')
+                    a(ng-click='login()' href='#') Log In
