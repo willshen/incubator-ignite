@@ -39,5 +39,5 @@ block container
                         | sets in real-time, orders of magnitude faster than possible with traditional disk-based or flash technologies.
             div(class=['block-image', 'block-display-image'])
                     img(ng-src='https://www.filepicker.io/api/file/lydEeGB6Rs9hwbpcQxiw' alt='Apache Ignite stack')
-            div.text-center
-                a(class=['btn', 'btn-default'] href='/clusters') Configure Now
+            div.text-center(ng-controller='auth')
+                a(class=['btn', 'btn-default'] ng-click='login()' href='#') Configure Now
