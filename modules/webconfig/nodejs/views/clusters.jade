@@ -30,7 +30,7 @@ block content
             table(st-table='rowCollection' st-safe-src='clusters')
                 tbody
                     tr.col-xs-12(ng-repeat='row in rowCollection')
-                        td.col-xs-12(ng-class="{active: row == selectedCluster}")
+                        td.col-xs-12(ng-class="{active: row == selectedItem}")
                             a(ng-click='selectItem(row)') Name: {{row.name}}, Discovery: {{row.discovery.kind | displayValue:discoveries}}
                             span.pull-right(type='button' ng-click='removeItem(row)')
                                 i(class=['fa', 'fa-remove'])
@@ -70,11 +70,24 @@ block content
                     .settings-row
                         span.col-xs-2 Peer class loading:
                         .col-xs-4
-                            input.form-control(type='text' ng-model='backupItem.p2pPoolSize' placeholder='2')
+                            input.form-control(type='text' ng-model='backupItem.igfsPoolSize' placeholder='2')
+                    .settings-row
+                        span.col-xs-2 Igfs:
+                        .col-xs-4
+                            input.form-control(type='text' ng-model='backupItem.p2pPoolSize' placeholder='availableProcessors')
+                    .settings-row
+                        span.col-xs-2 Utility:
+                        .col-xs-4
+                            input.form-control(type='text' ng-model='backupItem.utilityCachePoolSize' placeholder='max(8, availableProcessors) * 2')
+                    .settings-row
+                        span.col-xs-2 Marshaller:
+                        .col-xs-4
+                            input.form-control(type='text' ng-model='backupItem.marshCachePoolSize' placeholder='max(8, availableProcessors) * 2')
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)
                             a(ng-click='expanded = true' ng-hide='expanded') Show advanced settings...
                             a(ng-click='expanded = false' ng-show='expanded') Hide advanced settings...
-            center
+            .settings-row
+                button.btn.btn-primary(ng-click='selectItem(selectedItem)' ng-disabled='editForm.$invalid') Revert
                 button.btn.btn-primary(ng-click='saveItem(backupItem)' ng-disabled='editForm.$invalid') Apply

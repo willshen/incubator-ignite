@@ -48,7 +48,7 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
             });
 
         $scope.selectItem = function(item) {
-            $scope.selectedCluster = item;
+            $scope.selectedItem = item;
 
             $scope.backupItem = angular.copy(item);
         };
@@ -65,6 +65,8 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                     item._id = _id;
 
                     $scope.clusters.push(item);
+
+                    $scope.selectItem(item);
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);
@@ -76,8 +78,15 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                 .success(function() {
                     var index = $scope.clusters.indexOf(item);
 
-                    if (index !== -1)
+                    if (index !== -1) {
                         $scope.clusters.splice(index, 1);
+
+                        if ($scope.selectedItem == item) {
+                            $scope.selectedItem = undefined;
+
+                            $scope.backupItem = undefined;
+                        }
+                    }
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);
@@ -93,7 +102,7 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                     });
 
                     if (cluster)
-                        angular.extend(cluster, angular.copy(item));
+                        angular.extend(cluster, item);
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);
