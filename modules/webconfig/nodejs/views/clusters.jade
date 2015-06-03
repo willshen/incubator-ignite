@@ -52,10 +52,32 @@ block content
                     button.form-control(style='text-align: left' ng-model='backupItem.discovery.kind' data-template='/select' data-placeholder='Choose discovery' bs-options='item.value as item.label for item in discoveries' bs-select)
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
+                    h3 Atomic data structures
+                    .settings-row
+                        span.col-sm-2 Number of backup nodes:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.atomic.backups' placeholder='0')
+                    .settings-row
+                        span.col-sm-2 Cache mode:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.atomic.cacheMode' placeholder='PARTITIONED')
+                    .settings-row
+                        span.col-sm-2 Sequence reserve size:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.atomic.seqReserveSize' placeholder='1,000')
                     h3 Cache configuration
+                    .settings-row
+                        span.col-sm-2 Caches:
+                        .col-sm-3
+                            button.form-control(style='text-align: left' ng-model='backupItem.caches' data-template='/select' data-multiple='1' data-max-length='3' data-placeholder='Choose caches' bs-options='item.value as item.label for item in caches' bs-select)
                     .settings-row
                         input(type='checkbox' ng-model='backupItem.cacheSanityCheckEnabled')
                         span Enable cache sanity check.
+                    h3 Events
+                    .settings-row
+                        span.col-sm-2 Include type:
+                        .col-sm-3
+                            button.form-control(style='text-align: left' ng-model='backupItem.inclEvtTypes' data-template='/select' data-multiple='1' data-max-length='2' data-placeholder='Choose recorded event types' bs-options='item.value as item.label for item in events' bs-select)
                     h3 Marshaller
                     .settings-row
                         span.col-sm-2 Keep alive time:
@@ -65,6 +87,27 @@ block content
                         span.col-sm-2 Pool size:
                         .col-sm-3
                             input.form-control(type='text' ng-model='backupItem.marshCachePoolSize' placeholder='max(8, availableProcessors) * 2')
+                    h3 Metrics
+                    .settings-row
+                        span.col-sm-2 Elapsed time:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.metricsExpTime' placeholder='0')
+                    .settings-row
+                        span.col-sm-2 History size:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.metricsHistSize' placeholder='10,000')
+                    .settings-row
+                        span.col-sm-2 Log frequency:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.metricsLogFreq' placeholder='60,000')
+                    .settings-row
+                        span.col-sm-2 Log frequency:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.metricsUpdateFreq' placeholder='60,000')
+                    .settings-row
+                        span.col-sm-2 Update frequency:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.metricsLogFreq' placeholder='60,000')
                     h3 Network
                     .settings-row
                         span.col-sm-2 Timeout:
@@ -107,10 +150,23 @@ block content
                         span.col-sm-2 Management:
                         .col-sm-3
                             input.form-control(type='text' ng-model='backupItem.mgmtPoolSize' placeholder='4')
+                    h3 Transactions configuration
+                    // TODO
                     .settings-row
-                        span.col-sm-2 Igfs:
+                        span.col-sm-2 Default transaction timeout:
                         .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.igfsPoolSize' placeholder='availableProcessors')
+                            input.form-control(type='text' ng-model='backupItem.transactions.dfltTxTimeout' placeholder='0')
+                    .settings-row
+                        span.col-sm-2 Pessimistic log cleanup delay:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.transactions.pessimisticTxLogSize' placeholder='10,000')
+                    .settings-row
+                        span.col-sm-2 Pessimistic transactions log size:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.transactions.pessimisticTxLogSize' placeholder='0')
+                    .settings-row
+                        input(type='checkbox' ng-model='backupItem.transactions.txSerEnabled')
+                        span Enable serializable cache transactions.
                     h3 Utility
                     .settings-row
                         span.col-sm-2 Keep alive time:

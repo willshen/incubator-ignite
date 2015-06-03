@@ -32,6 +32,28 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
             {value: 'SharedFs', label: 'Shared Filesystem'}
         ];
 
+        $scope.events = [
+            {value: 'EVTS_CHECKPOINT', label: 'Checkpoint'},
+            {value: 'EVTS_DEPLOYMENT', label: 'Deployment'},
+            {value: 'EVTS_ERROR', label: 'Error'},
+            {value: 'EVTS_DISCOVERY', label: 'Discovery'},
+            {value: 'EVTS_JOB_EXECUTION', label: 'Job execution'},
+            {value: 'EVTS_TASK_EXECUTION', label: 'Task execution'},
+            {value: 'EVTS_CACHE', label: 'Cache'},
+            {value: 'EVTS_CACHE_REBALANCE', label: 'Cache rebalance'},
+            {value: 'EVTS_CACHE_LIFECYCLE', label: 'Cache lifecycle'},
+            {value: 'EVTS_CACHE_QUERY', label: 'Cache query'},
+            {value: 'EVTS_SWAPSPACE', label: 'Swap space'},
+            {value: 'EVTS_IGFS', label: 'Igfs'}
+        ];
+
+        $scope.caches = [
+            {value: '1', label: 'Cache1'},
+            {value: '2', label: 'Cache2'},
+            {value: '3', label: 'Cache3'},
+            {value: '4', label: 'Cache4'}
+        ];
+
         $scope.clusters = [];
 
         // Create popup for discovery advanced settings.
