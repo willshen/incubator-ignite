@@ -18,9 +18,9 @@
 configuratorModule.controller('cachesController', ['$scope', '$http', function($scope, $http) {
         $scope.templates = [
             {value: {}, label: 'None'},
-            {value: {mode: 'PART', atomicy: 'ATOMIC'}, label: 'Partitioned'},
-            {value: {mode: 'REPL', atomicy: 'ATOMIC'}, label: 'Replicated'},
-            {value: {mode: 'LOCAL', atomicy: 'ATOMIC'}, label: 'Local'}
+            {value: {mode: 'PART', atomicity: 'ATOMIC'}, label: 'Partitioned'},
+            {value: {mode: 'REPL', atomicity: 'ATOMIC'}, label: 'Replicated'},
+            {value: {mode: 'LOCAL', atomicity: 'ATOMIC'}, label: 'Local'}
         ];
 
         $scope.atomicities = [
@@ -29,10 +29,39 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
         ];
 
         $scope.modes = [
-            {value: 'PARTITIONED', label: 'Partitioned'},
-            {value: 'REPLICATED', label: 'Replicated'},
+            {value: 'PART', label: 'Partitioned'},
+            {value: 'REPL', label: 'Replicated'},
             {value: 'LOCAL', label: 'Local'}
         ];
+
+        $scope.atomicWriteOrderModes = [
+            {value: 'CLOCK', label: 'Clock'},
+            {value: 'PRIMARY', label: 'Primary'}
+        ];
+
+        $scope.rebalanceModes = [
+            {value: 'SYNC', label: 'Synchronous'},
+            {value: 'ASYNC', label: 'Asynchronous'},
+            {value: 'NONE', label: 'None'}
+        ];
+
+        $scope.memoryModes = [
+            {value: 'ONHT', label: 'Onheap tiered'},
+            {value: 'OFHT', label: 'Offheap tiered'},
+            {value: 'OFHV', label: 'Offheap values'}
+            ];
+
+        //DefaultLockTimeout dfltLockTimeout
+        //invalidate
+        //TransactionManagerLookupClassName tmLookupClsName
+        // swapEnabled
+        // maxConcurrentAsyncOps
+        // writeBehindEnabled
+        // writeBehindFlushSize
+        // writeBehindFlushFreq
+        // writeBehindFlushThreadCnt
+        // writeBehindBatchSize
+        // offHeapMaxMem
 
         $scope.caches = [];
 
@@ -60,8 +89,6 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
             $http.post('/rest/caches/save', item)
                 .success(function(_id) {
                     item._id = _id;
-
-                    console.log(_id)
 
                     $scope.caches.push(item);
 
