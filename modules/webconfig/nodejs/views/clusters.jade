@@ -44,68 +44,82 @@ block content
             h3 General
             .settings-row
                 span.col-sm-2 Name:
-                .col-sm-4
+                .col-sm-3
                     input.form-control(type='text' ng-model='backupItem.name')
             .settings-row
                 span.col-sm-2 Discovery:
-                .col-sm-4
-                    //.input-group
-                    button.form-control(ng-model='backupItem.discovery.kind' data-template='/select' data-placeholder='Choose discovery' bs-options='item.value as item.label for item in discoveries' bs-select)
-                        //span.input-group-btn
-                        //    button(class=['btn', 'btn-default'] ng-click='editDiscovery(cluster)')
-                        //        i(class=['fa', 'fa-bars'])
+                .col-sm-3
+                    button.form-control(style='text-align: left' ng-model='backupItem.discovery.kind' data-template='/select' data-placeholder='Choose discovery' bs-options='item.value as item.label for item in discoveries' bs-select)
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
-                    h3 Thread pool size
+                    h3 Cache configuration
                     .settings-row
-                        span.col-sm-2 Public:
-                        .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.pubPoolSize' placeholder='max(8, availableProcessors) * 2')
+                        input(type='checkbox' ng-model='backupItem.cacheSanityCheckEnabled')
+                        span Enable cache sanity check.
+                    h3 Marshaller
                     .settings-row
-                        span.col-sm-2 System:
-                        .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.sysPoolSize' placeholder='max(8, availableProcessors) * 2')
-                    .settings-row
-                        span.col-sm-2 Management:
-                        .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.mgmtPoolSize' placeholder='4')
-                    .settings-row
-                        span.col-sm-2 Igfs:
-                        .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.igfsPoolSize' placeholder='availableProcessors')
-                    .settings-row
-                        span.col-sm-2 Utility:
-                        .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.utilityCachePoolSize' placeholder='max(8, availableProcessors) * 2')
-                    .settings-row
-                        span.col-sm-2 Marshaller:
-                        .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.marshCachePoolSize' placeholder='max(8, availableProcessors) * 2')
-                    h3 Keep alive time
-                    .settings-row
-                        span.col-sm-2 Utility:
-                        .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.utilityCacheKeepAliveTime' placeholder='10,000')
-                    .settings-row
-                        span.col-sm-2 Marshaller:
-                        .col-sm-4
+                        span.col-sm-2 Keep alive time:
+                        .col-sm-3
                             input.form-control(type='text' ng-model='backupItem.marshCacheKeepAliveTime' placeholder='10,000')
+                    .settings-row
+                        span.col-sm-2 Pool size:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.marshCachePoolSize' placeholder='max(8, availableProcessors) * 2')
+                    h3 Network
+                    .settings-row
+                        span.col-sm-2 Timeout:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.netTimeout' placeholder='5,000')
+                    .settings-row
+                        span.col-sm-2 Send retry delay:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.sndRetryDelay' placeholder='1,000')
+                    .settings-row
+                        span.col-sm-2 Send retry count:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.sndRetryCnt' placeholder='3')
                     h3 Peer Class Loading
                     .settings-row
                         input(type='checkbox' ng-model='backupItem.p2pEnabled')
                         span Enable peer class loading.
                     .settings-row
                         span.col-sm-2 Local class path exclude:
-                        .col-sm-4
+                        .col-sm-3
                             input.form-control(type='text' ng-model='backupItem.p2pLocClsPathExcl' placeholder='[]')
                     .settings-row
                         span.col-sm-2 Missed resources cache size:
-                        .col-sm-4
+                        .col-sm-3
                             input.form-control(type='text' ng-model='backupItem.p2pMissedCacheSize' placeholder='100')
                     .settings-row
-                        span.col-sm-2 Thread pool size:
-                        .col-sm-4
+                        span.col-sm-2 Pool size:
+                        .col-sm-3
                             input.form-control(type='text' ng-model='backupItem.p2pPoolSize' placeholder='availableProcessors')
+                    h3 Thread pools size
+                    .settings-row
+                        span.col-sm-2 Public:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.pubPoolSize' placeholder='max(8, availableProcessors) * 2')
+                    .settings-row
+                        span.col-sm-2 System:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.sysPoolSize' placeholder='max(8, availableProcessors) * 2')
+                    .settings-row
+                        span.col-sm-2 Management:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.mgmtPoolSize' placeholder='4')
+                    .settings-row
+                        span.col-sm-2 Igfs:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.igfsPoolSize' placeholder='availableProcessors')
+                    h3 Utility
+                    .settings-row
+                        span.col-sm-2 Keep alive time:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.utilityCacheKeepAliveTime' placeholder='10,000')
+                    .settings-row
+                        span.col-sm-2 Pool size:
+                        .col-sm-3
+                            input.form-control(type='text' ng-model='backupItem.utilityCachePoolSize' placeholder='max(8, availableProcessors) * 2')
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)
