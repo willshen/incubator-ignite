@@ -19,11 +19,14 @@ var configuratorModule =  angular.module('ignite-web-configurator', ['smart-tabl
 
 // Decode name using map(value, label).
 configuratorModule.filter('displayValue', function () {
-    return function (v, m) {
+    return function (v, m, dflt) {
         for (var i = 0; i < m.length; i++) {
             if (m[i].value == v)
                 return m[i].label;
         }
+
+        if (dflt)
+            return dflt;
 
         return 'Unknown value';
     }

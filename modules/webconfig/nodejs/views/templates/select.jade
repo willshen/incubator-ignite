@@ -16,7 +16,7 @@
 
 ul.select.dropdown-menu(tabindex='-1', ng-show='$isVisible()', role='select')
     li(ng-if='$showAllNoneButtons')
-        .btn-group(style='margin-bottom: 5px; margin-left: 5px')
+        .btn-group(style='margin-left: 5px')
             button.btn.btn-default.btn-xs(type='button', ng-click='$selectAll()') {{$allText}}
             button.btn.btn-default.btn-xs(type='button', ng-click='$selectNone()') {{$noneText}}
     li(role='presentation', ng-repeat='match in $matches', ng-class='{active: $isActive($index)}')

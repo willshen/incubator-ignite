@@ -25,20 +25,21 @@ block content
         p Create and configure Ignite clusters.
         hr
     .docs-body(ng-controller='clustersController')
-        h3 Clusters
+        button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cluster
+        span from template:&nbsp
+        button(class=['btn', 'btn-default'] ng-init="create.template = templates[0].value" ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
+        h3(ng-hide='clusters.length == 0') Clusters
         .links
             table.col-sm-12(st-table='rowCollection' st-safe-src='clusters')
                 tbody
                     tr(ng-repeat='row in rowCollection')
                         td.col-sm-6(ng-class="{active: row == selectedItem}")
-                            a(ng-click='selectItem(row)') Name: {{row.name}}, Discovery: {{row.discovery.kind | displayValue:discoveries}}
-                        td
-                            span(type='button' ng-click='removeItem(row)')
-                                i(class=['fa', 'fa-remove'])
-        .settings-row
-            button(ng-click='createItem()' class=['btn', 'btn-default'] ng-disabled='!create.template') &nbspAdd cluster...
-                span.input-group-btn
-                    button(class=['btn', 'btn-default'] ng-model='create.template' data-placement='bottom-center' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
+                            a(ng-click='selectItem(row)') {{row.name}}, {{row.discovery.kind | displayValue:discoveries:'Discovery not set'}}
+                        //td
+                        //    span(type='button' ng-click='removeItem(row)')
+                        //        i(class=['fa', 'fa-remove'])
+        .row.col-sm-12
+            hr
         form.form-horizontal(name='editForm' ng-if='backupItem')
             h3 General
             .settings-row
@@ -47,12 +48,12 @@ block content
                     input.form-control(type='text' ng-model='backupItem.name')
             .settings-row
                 span.col-sm-2 Discovery:
-                .col-sm-8
-                    .input-group
-                        button.form-control(ng-model='backupItem.discovery.kind' data-placement='bottom-center' data-template='/select' data-placeholder='Choose discovery' bs-options='item.value as item.label for item in discoveries' bs-select)
-                        span.input-group-btn
-                            button(class=['btn', 'btn-default'] ng-click='editDiscovery(cluster)')
-                                i(class=['fa', 'fa-bars'])
+                .col-sm-4
+                    //.input-group
+                    button.form-control(ng-model='backupItem.discovery.kind' data-template='/select' data-placeholder='Choose discovery' bs-options='item.value as item.label for item in discoveries' bs-select)
+                        //span.input-group-btn
+                        //    button(class=['btn', 'btn-default'] ng-click='editDiscovery(cluster)')
+                        //        i(class=['fa', 'fa-bars'])
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
                     h3 Thread pool size
@@ -69,13 +70,9 @@ block content
                         .col-sm-4
                             input.form-control(type='text' ng-model='backupItem.mgmtPoolSize' placeholder='4')
                     .settings-row
-                        span.col-sm-2 Peer class loading:
-                        .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.igfsPoolSize' placeholder='2')
-                    .settings-row
                         span.col-sm-2 Igfs:
                         .col-sm-4
-                            input.form-control(type='text' ng-model='backupItem.p2pPoolSize' placeholder='availableProcessors')
+                            input.form-control(type='text' ng-model='backupItem.igfsPoolSize' placeholder='availableProcessors')
                     .settings-row
                         span.col-sm-2 Utility:
                         .col-sm-4
@@ -97,11 +94,22 @@ block content
                     .settings-row
                         input(type='checkbox' ng-model='backupItem.p2pEnabled')
                         span Enable peer class loading.
+                    .settings-row
+                        span.col-sm-2 Local class path exclude:
+                        .col-sm-4
+                            input.form-control(type='text' ng-model='backupItem.p2pLocClsPathExcl' placeholder='[]')
+                    .settings-row
+                        span.col-sm-2 Missed resources cache size:
+                        .col-sm-4
+                            input.form-control(type='text' ng-model='backupItem.p2pMissedCacheSize' placeholder='100')
+                    .settings-row
+                        span.col-sm-2 Thread pool size:
+                        .col-sm-4
+                            input.form-control(type='text' ng-model='backupItem.p2pPoolSize' placeholder='availableProcessors')
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)
                             a(ng-click='expanded = true' ng-hide='expanded') Show advanced settings...
                             a(ng-click='expanded = false' ng-show='expanded') Hide advanced settings...
-            .settings-row
-                button.btn.btn-primary(ng-click='selectItem(selectedItem)' ng-disabled='editForm.$invalid') Revert
-                button.btn.btn-primary(ng-click='saveItem(backupItem)' ng-disabled='editForm.$invalid') Apply
+            button.btn.btn-primary(ng-click='saveItem(backupItem)' ng-disabled='editForm.$invalid') Save
+            button.btn.btn-primary(ng-click='removeItem(selectedItem)' ng-disabled='editForm.$invalid') Remove

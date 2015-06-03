@@ -17,6 +17,7 @@
 
 configuratorModule.controller('clustersController', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
         $scope.templates = [
+            {value: {}, label: 'None'},
             {value: {discovery: {kind: 'Vm', addresses: ['127.0.0.1:47500..47510']}}, label: 'Local'},
             {value: {discovery: {kind: 'Multicast'}}, label: 'Basic'}
         ];
