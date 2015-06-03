@@ -15,116 +15,93 @@
  * limitations under the License.
  */
 
-configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', '$filter', 'ngTableParams',
-    function($scope, $modal, $http, $filter, ngTableParams) {
-        $scope.editColumn = {};
-
-        $scope.editCache = {};
-
-        $scope.modes = [
-            {value: 'PARTITIONED', label: 'PARTITIONED'},
-            {value: 'REPLICATED', label: 'REPLICATED'},
-            {value: 'LOCAL', label: 'LOCAL'}
+configuratorModule.controller('cachesController', ['$scope', '$http', function($scope, $http) {
+        $scope.templates = [
+            {value: {}, label: 'None'},
+            {value: {mode: 'PART', atomicy: 'ATOMIC'}, label: 'Partitioned'},
+            {value: {mode: 'REPL', atomicy: 'ATOMIC'}, label: 'Replicated'},
+            {value: {mode: 'LOCAL', atomicy: 'ATOMIC'}, label: 'Local'}
         ];
 
         $scope.atomicities = [
-            {value: 'ATOMIC', label: 'ATOMIC'},
-            {value: 'TRANSACTIONAL', label: 'TRANSACTIONAL'}
+            {value: 'ATOMIC', label: 'Atomic'},
+            {value: 'TRANSACTIONAL', label: 'Transactional'}
         ];
+
+        $scope.modes = [
+            {value: 'PARTITIONED', label: 'Partitioned'},
+            {value: 'REPLICATED', label: 'Replicated'},
+            {value: 'LOCAL', label: 'Local'}
+        ];
+
+        $scope.caches = [];
 
         // When landing on the page, get caches and show them.
         $http.get('/rest/caches')
             .success(function(data) {
                 $scope.spaces = data.spaces;
                 $scope.caches = data.caches;
-
-                $scope.cachesTable = new ngTableParams({
-                    page: 1,                    // Show first page.
-                    count: Number.MAX_VALUE,    // Count per page.
-                    sorting: {name: 'asc'}      // Initial sorting.
-                }, {
-                    total: $scope.caches.length, // Length of data.
-                    counts: [],
-                    getData: function($defer, params) {
-                        // Use build-in angular filter.
-                        var orderedData = params.sorting() ?
-                            $filter('orderBy')($scope.caches, params.orderBy()) :
-                            $scope.caches;
-
-                        var page = params.page();
-                        var cnt = params.count();
-
-                        $defer.resolve(orderedData.slice(page - 1 * cnt, page * cnt));
-                    }
-                });
             });
 
+        $scope.selectItem = function(item) {
+            $scope.selectedItem = item;
+
+            $scope.backupItem = angular.copy(item);
+        };
+
         // Add new cache.
-        $scope.addCache = function() {
-            $scope.caches.push({space: $scope.spaces[0]._id, mode: 'PARTITIONED', backups: 1, atomicity: 'ATOMIC'});
+        $scope.createItem = function() {
+            var item = angular.copy($scope.create.template);
 
-            $scope.cachesTable.reload();
+            item.name = 'Cache ' + ($scope.caches.length + 1);
+            item.space = $scope.spaces[0]._id;
+
+
+            $http.post('/rest/caches/save', item)
+                .success(function(_id) {
+                    item._id = _id;
+
+                    console.log(_id)
+
+                    $scope.caches.push(item);
+
+                    $scope.selectItem(item);
+                })
+                .error(function(errorMessage) {
+                    console.log('Error: ' + errorMessage);
+                });
         };
 
-        $scope.beginEditCache = function(column, cache) {
-            $scope.revertCache();
+        $scope.removeItem = function(item) {
+            $http.post('/rest/caches/remove', {_id: item._id})
+                .success(function() {
+                    var index = $scope.caches.indexOf(item);
 
-            $scope.currentCache = cache;
+                    if (index !== -1) {
+                        $scope.caches.splice(index, 1);
 
-            $scope.editColumn = column;
+                        if ($scope.selectedItem == item) {
+                            $scope.selectedItem = undefined;
 
-            $scope.editCache = angular.copy(cache);
+                            $scope.backupItem = undefined;
+                        }
+                    }
+                })
+                .error(function(errorMessage) {
+                    console.log('Error: ' + errorMessage);
+                });
         };
 
-        $scope.revertCache = function() {
-            if ($scope.editColumn && $scope.currentCache) {
-                $scope.caches[$scope.caches.indexOf($scope.currentCache)] = $scope.editCache;
-
-                $scope.currentCache = undefined;
-
-                $scope.editColumn = undefined;
-
-                $scope.cachesTable.reload();
-            }
-        };
-
-        $scope.submit = function() {
-            if ($scope.editColumn && $scope.currentCache) {
-                var cache = $scope.currentCache;
-
-                var data = {
-                    _id: cache._id,
-                    space: cache.space,
-                    name: cache.name,
-                    mode: cache.mode,
-                    backups: cache.backups,
-                    atomicity: cache.atomicity
-                };
-
-                $scope.currentCache = undefined;
-
-                $scope.editColumn = undefined;
-
-                $http.post('/rest/caches/save', data)
-                    .success(function(data) {
-                        $scope.spaces = data.spaces;
-                        $scope.caches = data.caches;
-
-                        $scope.cachesTable.reload();
-                    })
-                    .error(function(errorMessage) {
-                        console.log('Error: ' + errorMessage);
+        // Save cache in db.
+        $scope.saveItem = function(item) {
+            $http.post('/rest/caches/save', item)
+                .success(function() {
+                    var cache = $scope.caches.find(function(cache) {
+                        return cache._id == item._id;
                     });
-            }
-        };
 
-        $scope.deleteCache = function(cache) {
-            $http.post('/rest/caches/remove', {_id: cache._id})
-                .success(function(data) {
-                    $scope.spaces = data.spaces;
-                    $scope.caches = data.caches;
-
-                    $scope.cachesTable.reload();
+                    if (cache)
+                        angular.extend(cache, item);
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);

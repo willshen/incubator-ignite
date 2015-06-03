@@ -57,12 +57,23 @@ router.get('/', function(req, res) {
  * Save cache.
  */
 router.post('/save', function(req, res) {
-    db.upsert(db.Cache, req.body, function(err) {
-        if (err)
-            return res.status(500).send(err);
+    if (req.body._id)
+        db.Cache.update({_id: req.body._id}, req.body, {upsert: true}, function(err) {
+            if (err)
+                return res.send(err);
 
-        selectAll(req, res);
-    });
+            res.sendStatus(200);
+        });
+    else {
+        var cache = new db.Cache(req.body);
+
+        cache.save(function(err, cache) {
+            if (err)
+                return res.send(err.message);
+
+            res.send(cache._id);
+        });
+    }
 });
 
 /**
@@ -73,7 +84,7 @@ router.post('/remove', function(req, res) {
         if (err)
             return res.send(err);
 
-        selectAll(req, res);
+        res.sendStatus(200);
     })
 });
 
