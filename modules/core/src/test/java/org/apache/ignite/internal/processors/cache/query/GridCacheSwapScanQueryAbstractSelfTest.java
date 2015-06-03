@@ -126,19 +126,19 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
         final int ENTRY_CNT = 500;
 
         for (int i = 0; i < ENTRY_CNT; i++)
-            cache.getAndPut(new Key(i), new Person("p-" + i, i));
+            cache.getAndPut(new Key(i), new Person2("p-" + i, i));
 
         try {
-            CacheQuery<Map.Entry<Key, Person>> qry =
+            CacheQuery<Map.Entry<Key, Person2>> qry =
                 cache.context().queries().createScanQuery(new QueryFilter(), false);
 
-            Collection<Map.Entry<Key, Person>> res = qry.execute().get();
+            Collection<Map.Entry<Key, Person2>> res = qry.execute().get();
 
             assertEquals(ENTRY_CNT / 2, res.size());
 
-            for (Map.Entry<Key, Person> e : res) {
+            for (Map.Entry<Key, Person2> e : res) {
                 Key k = e.getKey();
-                Person p = e.getValue();
+                Person2 p = e.getValue();
 
                 assertEquals(k.id, (Integer)p.salary);
                 assertEquals(0, k.id % 2);
@@ -169,11 +169,11 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
         GridTestUtils.runMultiThreaded(new Callable<Void>() {
             @SuppressWarnings("unchecked")
             @Override public Void call() throws Exception {
-                CacheQuery<Map.Entry<Key, Person>> qry = cache.context().queries().createScanQuery(
+                CacheQuery<Map.Entry<Key, Person2>> qry = cache.context().queries().createScanQuery(
                     new QueryFilter(), false);
 
                 for (int i = 0; i < 250; i++) {
-                    Collection<Map.Entry<Key, Person>> res = qry.execute().get();
+                    Collection<Map.Entry<Key, Person2>> res = qry.execute().get();
 
                     assertEquals(expCnt, res.size());
 
@@ -335,7 +335,7 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
      *
      */
     @SuppressWarnings("PublicInnerClass")
-    public static class Person {
+    public static class Person2 {
         /** */
         @SuppressWarnings("PublicField")
         public String name;
@@ -348,7 +348,7 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
          * @param name Name.
          * @param salary Salary.
          */
-        public Person(String name, int salary) {
+        public Person2(String name, int salary) {
             this.name = name;
             this.salary = salary;
         }
@@ -357,9 +357,9 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
     /**
      *
      */
-    private static class QueryFilter implements IgniteBiPredicate<Key, Person> {
+    private static class QueryFilter implements IgniteBiPredicate<Key, Person2> {
         /** {@inheritDoc} */
-        @Override public boolean apply(Key key, Person p) {
+        @Override public boolean apply(Key key, Person2 p) {
             assertEquals(key.id, (Integer)p.salary);
 
             return key.id % 2 == 0;
