@@ -217,6 +217,12 @@
 
         <property name="marshaller">
             <bean class="org.gridgain.grid.marshaller.portable.PortableMarshaller">
+                <property name="classNames">
+                    <list>
+                        <value>org.apache.ignite.yardstick.cache.model.*</value>
+                    </list>
+                </property>
+                <property name="metaDataEnabled" value="false" />
             </bean>
         </property>
 
