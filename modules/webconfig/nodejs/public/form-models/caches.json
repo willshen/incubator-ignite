@@ -12,9 +12,9 @@
       "placeholder": "Choose mode",
       "items": "modes",
       "tip": ["Cache modes:<br/>",
-        "<ul><li>Partitioned - In this mode the overall key set will be divided into partitions and all partitions will be split equally between participating nodes.</li>",
-        "<li>Replicated - In this mode all the keys are distributed to all participating nodes.</li>",
-        "<li>Local - In this mode TODO.</li></ul>"]
+        "<ul><li>Partitioned - in this mode the overall key set will be divided into partitions and all partitions will be split equally between participating nodes.</li>",
+        "<li>Replicated - in this mode all the keys are distributed to all participating nodes.</li>",
+        "<li>Local - in this mode caches residing on different grid nodes will not know about each other.</li></ul>"]
     },
     {
       "label": "Atomicity",
