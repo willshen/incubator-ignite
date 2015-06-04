@@ -106,7 +106,7 @@ public class IgniteCacheTestSuite extends TestSuite {
         suite.addTestSuite(GridCacheConcurrentMapSelfTest.class);
         suite.addTestSuite(GridCacheAffinityMapperSelfTest.class);
         GridTestUtils.addTestIfNeeded(suite, GridCacheAffinityRoutingSelfTest.class, ignoredTests);
-        suite.addTestSuite(GridCacheMvccSelfTest.class);
+        GridTestUtils.addTestIfNeeded(suite, GridCacheMvccSelfTest.class, ignoredTests);
         suite.addTestSuite(GridCacheMvccPartitionedSelfTest.class);
         suite.addTestSuite(GridCacheMvccManagerSelfTest.class);
 //        suite.addTestSuite(GridCacheP2PUndeploySelfTest.class); TODO uncomment in DR branch.
