@@ -133,12 +133,12 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
         $scope.saveItem = function(item) {
             $http.post('/rest/caches/save', item)
                 .success(function() {
-                    var cache = $scope.caches.find(function(cache) {
+                    var i = _.findIndex($scope.caches, function(cache) {
                         return cache._id == item._id;
                     });
 
-                    if (cache)
-                        angular.extend(cache, item);
+                    if (i >= 0)
+                        angular.extend($scope.caches[i], item);
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);
