@@ -15,11 +15,11 @@
     limitations under the License.
 
 ul.select.dropdown-menu(tabindex='-1', ng-show='$isVisible()', role='select')
-    li(ng-if='$showAllNoneButtons')
-        .btn-group(style='margin-left: 5px')
-            button.btn.btn-default.btn-xs(type='button', ng-click='$selectAll()') {{$allText}}
-            button.btn.btn-default.btn-xs(type='button', ng-click='$selectNone()') {{$noneText}}
     li(role='presentation', ng-repeat='match in $matches')
         a(style='cursor: default;', role='menuitem', tabindex='-1', ng-click='$select($index, $event)')
             i.pull-right(class='{{$iconCheckmark}}', ng-if='$isMultiple && $isActive($index)')
             span(ng-bind='match.label')
+    li(ng-if='$showAllNoneButtons || $matches.length > 5')
+        hr(style='margin: 5px 0')
+        a(ng-click='$selectAll()') {{$allText}}
+        a(ng-click='$selectNone()') {{$noneText}}

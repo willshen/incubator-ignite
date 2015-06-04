@@ -52,6 +52,17 @@ var DiscoveryObj = {
     addresses: [String]
 };
 
+// Define cache model.
+var CacheSchema = new Schema({
+    space: { type: ObjectId, ref: 'Space' },
+    name: String,
+    mode: { type: String, enum: ['PARTITIONED', 'REPLICATED', 'LOCAL'] },
+    backups: Number,
+    atomicity: { type: String, enum: ['ATOMIC', 'TRANSACTIONAL'] }
+});
+
+exports.Cache =  mongoose.model('Cache', CacheSchema);
+
 // Define discovery model.
 exports.Discovery =  mongoose.model('Discovery', new Schema(DiscoveryObj));
 
@@ -62,6 +73,7 @@ var ClusterSchema = new Schema({
         kind: { type: String, enum: ['Vm', 'Multicast', 'S3', 'Cloud', 'GoogleStorage', 'Jdbc', 'SharedFs'] },
         addresses: [String]
     },
+    caches: [{ type: ObjectId, ref: 'Cache' }],
     pubPoolSize: Number,
     sysPoolSize: Number,
     mgmtPoolSize: Number,
@@ -70,29 +82,6 @@ var ClusterSchema = new Schema({
 
 // Define cluster model.
 exports.Cluster =  mongoose.model('Cluster', ClusterSchema);
-
-ClusterSchema.pre('remove', function(next) {
-    var discovery = false;
-
-    if (this._doc && this._doc.discovery) discovery = {_id:this._doc.discovery._id};
-
-    Discovery.remove(discovery, function(err) {
-        if (err)
-            next(err);
-
-        next();
-    });
-});
-
-// Define cache model.
-exports.Cache =  mongoose.model('Cache', new Schema({
-    space: { type: ObjectId, ref: 'Space' },
-    name: String,
-    mode: { type: String, enum: ['PARTITIONED', 'REPLICATED', 'LOCAL'] },
-    backups: Number,
-    atomicity: { type: String, enum: ['ATOMIC', 'TRANSACTIONAL'] },
-    clusters: [{ type: ObjectId, ref: 'Cluster' }]
-}));
 
 exports.upsert = function(model, data, cb){
     if (data._id) {

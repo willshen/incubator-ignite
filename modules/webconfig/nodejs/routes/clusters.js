@@ -32,16 +32,25 @@ function selectAll(req, res) {
         if (err)
             return res.status(500).send(err);
 
-        var space_ids = spaces.map(function(value, index) {
+        var space_ids = spaces.map(function(value) {
             return value._id;
         });
 
-        // Get all clusters for spaces.
-        db.Cluster.find({space: {$in: space_ids}}, function (err, clusters) {
+        db.Cache.find({space: {$in: space_ids}}, '_id name', function (err, caches) {
             if (err)
                 return res.status(500).send(err);
 
-            res.json({spaces: spaces, clusters: clusters});
+            // Get all clusters for spaces.
+            db.Cluster.find({space: {$in: space_ids}}, function (err, clusters) {
+                if (err)
+                    return res.status(500).send(err);
+
+                var cachesJson = caches.map(function(cache) {
+                    return {value: cache._id, label: cache.name};
+                });
+
+                res.json({spaces: spaces, caches: cachesJson, clusters: clusters});
+            });
         });
     });
 }

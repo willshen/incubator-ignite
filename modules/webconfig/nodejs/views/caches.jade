@@ -33,7 +33,7 @@ block content
             table.col-sm-12(st-table='rowCollection' st-safe-src='caches')
                 tbody
                     tr(ng-repeat='row in rowCollection')
-                        td.col-sm-6(ng-class="{active: row == selectedItem}")
+                        td.col-sm-6(ng-class="{active: row._id == selectedItem._id}")
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.mode | displayValue:modes:'Cache mode not set'}}, {{row.atomicity | displayValue:atomicities:'Cache atomicity not set'}}
         .row.col-sm-12
             hr

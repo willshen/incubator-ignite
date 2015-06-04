@@ -47,11 +47,10 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
             {value: 'EVTS_IGFS', label: 'Igfs'}
         ];
 
-        $scope.caches = [
-            {value: '1', label: 'Cache1'},
-            {value: '2', label: 'Cache2'},
-            {value: '3', label: 'Cache3'},
-            {value: '4', label: 'Cache4'}
+        $scope.cacheModes = [
+            {value: 'LOCAL', label: 'LOCAL'},
+            {value: 'REPLICATED', label: 'REPLICATED'},
+            {value: 'PARTITIONED', label: 'PARTITIONED'}
         ];
 
         $scope.clusters = [];
@@ -71,6 +70,7 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
         // When landing on the page, get clusters and show them.
         $http.get('/rest/clusters')
             .success(function(data) {
+                $scope.caches = data.caches;
                 $scope.spaces = data.spaces;
                 $scope.clusters = data.clusters;
             });

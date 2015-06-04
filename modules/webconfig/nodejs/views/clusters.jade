@@ -33,11 +33,8 @@ block content
             table.col-sm-12(st-table='rowCollection' st-safe-src='clusters')
                 tbody
                     tr(ng-repeat='row in rowCollection')
-                        td.col-sm-6(ng-class="{active: row == selectedItem}")
+                        td.col-sm-6(ng-class="{active: row._id == selectedItem._id}")
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.discovery.kind | displayValue:discoveries:'Discovery not set'}}
-                        //td
-                        //    span(type='button' ng-click='removeItem(row)')
-                        //        i(class=['fa', 'fa-remove'])
         .row.col-sm-12
             hr
         form.form-horizontal(name='editForm' ng-if='backupItem')
@@ -62,7 +59,7 @@ block content
                     .settings-row
                         span.col-sm-2 Cache mode:
                         .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.atomic.cacheMode' placeholder='PARTITIONED')
+                            button.form-control(style='text-align: left' ng-model='backupItem.atomic.cacheMode' data-template='/select' data-placeholder='PARTITIONED' bs-options='item.value as item.label for item in cacheModes' bs-select)
                     .settings-row
                         span.col-sm-2 Sequence reserve size:
                         .col-sm-3

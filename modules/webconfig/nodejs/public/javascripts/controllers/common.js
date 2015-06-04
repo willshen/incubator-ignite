@@ -17,6 +17,13 @@
 
 var configuratorModule =  angular.module('ignite-web-configurator', ['smart-table', 'mgcrea.ngStrap']);
 
+configuratorModule.config(function($selectProvider) {
+    angular.extend($selectProvider.defaults, {
+        allText: 'Select All',
+        noneText: 'Clear All'
+    });
+});
+
 // Decode name using map(value, label).
 configuratorModule.filter('displayValue', function () {
     return function (v, m, dflt) {
