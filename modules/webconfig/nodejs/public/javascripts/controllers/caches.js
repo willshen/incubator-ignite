@@ -51,6 +51,12 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
             {value: 'OFHV', label: 'Offheap values'}
             ];
 
+        $scope.generalGrp = [
+            {name: "Name", type: "text", model: 'name'},
+            {name: "Mode", type: "dropdown", model: 'mode', placeholder: 'Choose mode', items: 'modes'},
+            {name: "Atomicity", type: "dropdown", model: 'atomicity', placeholder: 'Choose atomicity', items: 'atomicities'}
+        ];
+
         //DefaultLockTimeout dfltLockTimeout
         //invalidate
         //TransactionManagerLookupClassName tmLookupClsName

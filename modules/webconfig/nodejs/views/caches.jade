@@ -39,20 +39,19 @@ block content
             hr
         form.form-horizontal(name='editForm' ng-if='backupItem')
             h3 General
-            .settings-row
-                span.col-sm-2 Name:
-                .col-sm-3
-                    input.form-control(type='text' ng-model='backupItem.name')
-            .settings-row
-                span.col-sm-2 Mode:
-                .col-sm-3
-                    button.form-control(style='text-align: left' ng-model='backupItem.mode' data-template='/select' data-placeholder='Choose mode' bs-options='item.value as item.label for item in modes' bs-select)
-            .settings-row
-                span.col-sm-2 Atomicity:
-                .col-sm-3
-                    button.form-control(style='text-align: left' ng-model='backupItem.atomicity' data-template='/select' data-placeholder='Choose Atomicity' bs-options='item.value as item.label for item in atomicities' bs-select)
+            .settings-row(ng-repeat='fld in generalGrp')
+                span.col-sm-2 {{fld.name}}:
+                .col-sm-3(ng-switch on='fld.type')
+                    div(ng-switch-when='text')
+                        input.form-control(type='text' ng-model='backupItem[fld.model]')
+                    div(ng-switch-when='dropdown')
+                        button.form-control(style='text-align: left' ng-model='backupItem[fld.model]' data-template='/select' data-placeholder='{{fld.placeholder}}' bs-options='item.value as item.label for item in {{fld.items}}' bs-select)
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
+                    .settings-row
+                        span.col-sm-2 Atomicity:
+                        .col-sm-3
+                            button.form-control(style='text-align: left' ng-model='backupItem.atomicity' data-template='/select' data-placeholder='Choose Atomicity' bs-options='item.value as item.label for item in atomicities' bs-select)
                     .settings-row
                         span.col-sm-2 Backups:
                         .col-sm-3

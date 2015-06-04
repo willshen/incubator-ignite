@@ -71,17 +71,6 @@ var ClusterSchema = new Schema({
 // Define cluster model.
 exports.Cluster =  mongoose.model('Cluster', ClusterSchema);
 
-//ClusterSchema.pre('save', function(next) {
-//    // swap account model for the id
-//    var id = this._doc.discovery._id;
-//    //save the account model, which fires it's own middleware
-//    this._doc.discovery.save();
-//    // reset the account to the id before it is saved
-//    this._doc.discovery = id;
-//
-//    next();
-//});
-
 ClusterSchema.pre('remove', function(next) {
     var discovery = false;
 
