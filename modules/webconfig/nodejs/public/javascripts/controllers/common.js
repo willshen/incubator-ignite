@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var configuratorModule =  angular.module('ignite-web-configurator', ['smart-table', 'mgcrea.ngStrap']);
+var configuratorModule =  angular.module('ignite-web-configurator', ['smart-table', 'mgcrea.ngStrap', 'ngSanitize']);
 
 configuratorModule.config(function($selectProvider) {
     angular.extend($selectProvider.defaults, {

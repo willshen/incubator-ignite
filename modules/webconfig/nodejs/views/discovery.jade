@@ -21,8 +21,8 @@ div(class=['modal', 'center'] tabindex='-1' role='dialog')
                 button.close(type='button', ng-click='$hide()', aria-hidden='true') &times;
                 h4.modal-title Configure Static IPs
             .modal-body
-                div.block-edit-parameters
-                    div.btn-group
+                .block-edit-parameters
+                    .btn-group
                         button(ng-click='add()' class=['btn', 'btn-default', 'fa', 'fa-plus'] ) &nbspAdd
                 table(ng-table='tcpDiscoveryVmIpFinderTable' class=['table', 'table-bordered', 'table-hover'])
                     tr(ng-repeat='address in $data')
@@ -32,7 +32,7 @@ div(class=['modal', 'center'] tabindex='-1' role='dialog')
                                 span(ng-if='cluster.name') {{'127.0.0.1:47500..47509'}}
                                 span.pull-right(type='button' ng-click='beginEditStaticIps(cluster);')
                                     i(class=['fa', 'fa-pencil'])
-                            div.input-group(ng-if='editColumn == "name" && currentRow == cluster')
+                            .input-group(ng-if='editColumn == "name" && currentRow == cluster')
                                 input.form-control(type='text' ng-model='cluster.name')
                                 span.input-group-addon
                                     i(class=['fa', 'fa-repeat'] ng-click='revert();')

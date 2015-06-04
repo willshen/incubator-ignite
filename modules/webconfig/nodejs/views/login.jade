@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-div.modal.center(tabindex='-1' role='dialog')
+.modal.center(tabindex='-1' role='dialog')
     .modal-dialog
         .modal-content
             .modal-header.header
@@ -28,15 +28,15 @@ div.modal.center(tabindex='-1' role='dialog')
                     div(ng-show='errorMessage')
                         p.text-center.error-message {{errorMessage}}
                     .col-xs-9.login.col-xs-offset-1
-                        div.form-group(ng-show='action == "register"')
+                        .form-group(ng-show='action == "register"')
                             label.col-sm-3.control-label Full Name
                             .controls.col-sm-9
                                 input.form-control(type='text', ng-model='user_info.username', placeholder='John Smith', focus-me='action=="register"', ng-required='action=="register"')
-                        div.form-group
+                        .form-group
                             label.col-sm-3.control-label Email
                             .controls.col-sm-9
                                 input.form-control(type='email', ng-model='user_info.email', placeholder='you@domain.com', focus-me='action=="login"', required)
-                        div.form-group
+                        .form-group
                             label.col-sm-3.control-label Password
                             .controls.col-sm-9
                                 input.form-control(type='password', ng-model='user_info.password', placeholder='Password', required)

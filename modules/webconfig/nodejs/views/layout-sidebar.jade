@@ -19,9 +19,9 @@ extends layout
 append scripts
 
 block container
-    div.row
-        div(class=['col-sm-2', 'border-right', 'section-left', 'greedy'])
-            div.sidebar-nav
+    .row
+        .col-sm-2.border-right.section-left.greedy
+            .sidebar-nav
                 ul.menu(ng-controller='activeLink')
                     li
                         a(ng-class="{active: isActive('/clusters')}" href='/clusters') Clusters
@@ -36,6 +36,6 @@ block container
                     li
                         p
                         a(ng-class="{active: isActive('/overview')}" href='/overview') Summary
-        div(class=['col-sm-10', 'border-left', 'section-right'])
-            div.docs-content
+        .col-sm-10.border-left.section-right
+            .docs-content
                 block content
