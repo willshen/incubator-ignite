@@ -42,11 +42,6 @@ public abstract class AbstractMarshaller implements Marshaller {
     }
 
     /** {@inheritDoc} */
-    @Override public MarshallerContext getContext() {
-        return ctx;
-    }
-
-    /** {@inheritDoc} */
     @Override public byte[] marshal(@Nullable Object obj) throws IgniteCheckedException {
         GridByteArrayOutputStream out = null;
 

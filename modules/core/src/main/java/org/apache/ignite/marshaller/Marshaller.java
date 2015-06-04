@@ -73,13 +73,6 @@ public interface Marshaller {
     public void setContext(MarshallerContext ctx);
 
     /**
-     * Returns {@link MarshallerContext}.
-     *
-     * @return Marshaller context.
-     */
-    public MarshallerContext getContext();
-
-    /**
      * Marshals object to the output stream. This method should not close
      * given output stream.
      *
