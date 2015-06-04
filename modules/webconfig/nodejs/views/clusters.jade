@@ -34,7 +34,7 @@ block content
                 tbody
                     tr(ng-repeat='row in rowCollection')
                         td.col-sm-6(ng-class="{active: row == selectedItem}")
-                            a(ng-click='selectItem(row)') {{row.name}}, {{row.discovery.kind | displayValue:discoveries:'Discovery not set'}}
+                            a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.discovery.kind | displayValue:discoveries:'Discovery not set'}}
                         //td
                         //    span(type='button' ng-click='removeItem(row)')
                         //        i(class=['fa', 'fa-remove'])
@@ -50,6 +50,8 @@ block content
                 span.col-sm-2 Discovery:
                 .col-sm-3
                     button.form-control(style='text-align: left' ng-model='backupItem.discovery.kind' data-template='/select' data-placeholder='Choose discovery' bs-options='item.value as item.label for item in discoveries' bs-select)
+                span(type='button' data-trigger="click" data-title='{{model.tooltip}}' data-html='true' data-type="success" bs-tooltip)
+                    i(style='margin-left: 5px'  class=['fa', 'fa-question-circle'])
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
                     h3 Atomic data structures
