@@ -139,6 +139,8 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
 
                     if (i >= 0)
                         angular.extend($scope.caches[i], item);
+
+                    $scope.selectItem(item);
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);

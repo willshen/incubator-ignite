@@ -131,6 +131,8 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
 
                     if (i >= 0)
                         angular.extend($scope.clusters[i], item);
+
+                    $scope.selectItem(item);
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);
