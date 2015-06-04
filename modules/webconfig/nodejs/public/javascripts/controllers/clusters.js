@@ -125,12 +125,12 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
         $scope.saveItem = function(item) {
             $http.post('/rest/clusters/save', item)
                 .success(function() {
-                    var cluster = $scope.clusters.find(function(cluster) {
+                    var i = _.findIndex($scope.clusters, function(cluster) {
                         return cluster._id == item._id;
                     });
 
-                    if (cluster)
-                        angular.extend(cluster, item);
+                    if (i >= 0)
+                        angular.extend($scope.clusters[i], item);
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);

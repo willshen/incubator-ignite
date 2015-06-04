@@ -15,15 +15,40 @@
  * limitations under the License.
  */
 
+if (!Array.prototype.find) {
+    Array.prototype.find = function(predicate) {
+        if (this == null) {
+            throw new TypeError('Array.prototype.find called on null or undefined');
+        }
+        if (typeof predicate !== 'function') {
+            throw new TypeError('predicate must be a function');
+        }
+        var list = Object(this);
+        var length = list.length >>> 0;
+        var thisArg = arguments[1];
+        var value;
+
+        for (var i = 0; i < length; i++) {
+            value = list[i];
+            if (predicate.call(thisArg, value, i, list)) {
+                return value;
+            }
+        }
+        return undefined;
+    };
+}
+
 var configuratorModule =  angular.module('ignite-web-configurator', ['smart-table', 'mgcrea.ngStrap']);
 
 // Decode name using map(value, label).
 configuratorModule.filter('displayValue', function () {
     return function (v, m, dflt) {
-        for (var i = 0; i < m.length; i++) {
-            if (m[i].value == v)
-                return m[i].label;
-        }
+        var i = _.findIndex(m, function(item) {
+            return item.value == v;
+        });
+
+        if (i >= 0)
+            return m[i].label;
 
         if (dflt)
             return dflt;
