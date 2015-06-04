@@ -376,8 +376,7 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
 
         //Near Creation from client node after closed.
 
-        grid(2).getOrCreateCache(cCfgCNear);
-        grid(2).createNearCache(CACHE_NAME_CLOSE_NEAR, new NearCacheConfiguration());
+        grid(2).getOrCreateNearCache(CACHE_NAME_CLOSE_NEAR, new NearCacheConfiguration());
 
         grid(2).cache(CACHE_NAME_CLOSE_NEAR).put(KEY_VAL, KEY_VAL);
         grid(0).cache(CACHE_NAME_CLOSE_NEAR).put(KEY_VAL, KEY_VAL + "recreated");

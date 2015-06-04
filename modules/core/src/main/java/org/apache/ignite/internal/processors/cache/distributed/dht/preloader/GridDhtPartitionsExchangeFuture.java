@@ -468,6 +468,9 @@ public class GridDhtPartitionsExchangeFuture extends GridFutureAdapter<AffinityT
 
                 oldestNode.set(oldest);
 
+                if (!F.isEmpty(reqs))
+                    blockGateways();
+
                 startCaches();
 
                 // True if client node joined or failed.
@@ -694,9 +697,6 @@ public class GridDhtPartitionsExchangeFuture extends GridFutureAdapter<AffinityT
 
                 if (log.isDebugEnabled())
                     log.debug("After waiting for partition release future: " + this);
-
-                if (!F.isEmpty(reqs))
-                    blockGateways();
 
                 if (exchId.isLeft())
                     cctx.mvcc().removeExplicitNodeLocks(exchId.nodeId(), exchId.topologyVersion());
