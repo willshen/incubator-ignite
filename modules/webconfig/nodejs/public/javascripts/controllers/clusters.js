@@ -57,7 +57,8 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
 
         $http.get('/form-models/clusters.json')
             .success(function(data) {
-                $scope.model = data;
+                $scope.general = data.general;
+                $scope.advanced = data.advanced;
             });
 
         // Create popup for discovery advanced settings.

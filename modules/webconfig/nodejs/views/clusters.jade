@@ -39,15 +39,14 @@ block content
             hr
         form.form-horizontal(name='editForm' ng-if='backupItem')
             h3 General
-            .settings-row
-                span.col-sm-2 Name:
-                .col-sm-3
-                    input.form-control(type='text' ng-model='backupItem.name')
-            .settings-row
-                span.col-sm-2 Discovery:
-                .col-sm-3
-                    button.form-control(style='text-align: left' ng-model='backupItem.discovery.kind' data-template='/select' data-placeholder='Choose discovery' bs-options='item.value as item.label for item in discoveries' bs-select)
-                span(type='button' data-trigger="click" data-title='{{model.tooltip}}' data-html='true' data-type="success" bs-tooltip)
+            .settings-row(ng-repeat='field in general')
+                span.col-sm-2 {{field.label}}:
+                .col-sm-3(ng-switch on='field.type')
+                    div(ng-switch-when='text')
+                        input.form-control(type='text' ng-model='backupItem[field.model]')
+                    div(ng-switch-when='dropdown')
+                        button.form-control(style='text-align: left' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
+                span(type='button' ng-show="field.tooltip" data-trigger="click" data-placement='right' data-title='{{field.tooltip}}' data-html='true' data-type="success" bs-tooltip)
                     i(style='margin-left: 5px'  class=['fa', 'fa-question-circle'])
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)

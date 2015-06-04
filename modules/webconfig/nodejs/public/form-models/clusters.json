@@ -1,3 +1,67 @@
 {
-  "tooltip": "Discovery allows to discover remote nodes in grid."
+  "general": [
+    {
+      "label": "Name",
+      "type": "text",
+      "model": "name"
+    },
+    {
+      "label": "Discovery",
+      "type": "dropdown",
+      "model": "discovery.kind",
+      "placeholder": "Choose discovery",
+      "items": "discoveries",
+      "tooltip": "Discovery allows to discover remote nodes in grid."
+    }
+  ],
+  "advanced": [
+    {
+      "label": "G1",
+      "fields": [
+        {
+          "label": "Name",
+          "type": "text",
+          "model": "name"
+        },
+        {
+          "label": "Mode",
+          "type": "dropdown",
+          "model": "mode",
+          "placeholder": "Choose mode",
+          "items": "modes"
+        },
+        {
+          "label": "Atomicity",
+          "type": "dropdown",
+          "model": "atomicity",
+          "placeholder": "Choose atomicity",
+          "items": "atomicities"
+        }
+      ]
+    },
+    {
+      "label": "G2",
+      "fields": [
+        {
+          "label": "Name",
+          "type": "text",
+          "model": "name"
+        },
+        {
+          "label": "Mode",
+          "type": "dropdown",
+          "model": "mode",
+          "placeholder": "Choose mode",
+          "items": "modes"
+        },
+        {
+          "label": "Atomicity",
+          "type": "dropdown",
+          "model": "atomicity",
+          "placeholder": "Choose atomicity",
+          "items": "atomicities"
+        }
+      ]
+    }
+  ]
 }
