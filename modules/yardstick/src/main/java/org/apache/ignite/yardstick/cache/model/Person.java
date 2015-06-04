@@ -24,7 +24,7 @@ import java.io.*;
 /**
  * Person record used for query test.
  */
-public class Person {
+public class Person implements Externalizable {
     /** Person ID. */
     @QuerySqlField(index = true)
     private int id;
@@ -151,6 +151,23 @@ public class Person {
         this.salary = salary;
     }
 
+    /** {@inheritDoc} */
+    @Override public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(id);
+        out.writeInt(orgId);
+        out.writeUTF(firstName);
+        out.writeUTF(lastName);
+        out.writeDouble(salary);
+    }
+
+    /** {@inheritDoc} */
+    @Override public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        id = in.readInt();
+        orgId = in.readInt();
+        firstName = in.readUTF();
+        lastName = in.readUTF();
+        salary = in.readDouble();
+    }
 
     /** {@inheritDoc} */
     @Override public boolean equals(Object o) {
