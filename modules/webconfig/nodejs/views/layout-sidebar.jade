@@ -22,7 +22,7 @@ block container
     div.row
         div(class=['col-sm-2', 'border-right', 'section-left', 'greedy'])
             div.sidebar-nav
-                ul(ng-controller='activeLink' class="menu")
+                ul.menu(ng-controller='activeLink')
                     li
                         a(ng-class="{active: isActive('/clusters')}" href='/clusters') Clusters
                     li

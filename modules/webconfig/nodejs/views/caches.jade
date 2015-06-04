@@ -19,15 +19,18 @@ extends layout-sidebar
 append scripts
     script(src='/javascripts/controllers/caches.js')
 
+mixin tip
+    i.tip.fa.fa-question-circle(bs-tooltip ng-if='field.tip' type='button' data-placement='right' data-trigger='hover' data-title='$sce.trustAsHtml({{field.tip.join("")}})' data-html='true')
+
 block content
     .docs-header
         h1 Caches
         p Create and configure Ignite caches.
         hr
     .docs-body(ng-controller='cachesController')
-        button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cache
-        span from template:&nbsp
-        button(class=['btn', 'btn-default'] ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cache template' bs-options='item.value as item.label for item in templates' bs-select)
+        button.btn.btn-primary(ng-click='createItem()' ng-disabled='!create.template') &nbspAdd cache
+        label from template:&nbsp
+        button.btn.btn-default(bs-select ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cache template' bs-options='item.value as item.label for item in templates')
         h3(ng-hide='caches.length == 0') Caches
         .links
             table.col-sm-12(st-table='rowCollection' st-safe-src='caches')
@@ -40,27 +43,28 @@ block content
         form.form-horizontal(name='editForm' ng-if='backupItem')
             h3 General
             .settings-row(ng-repeat='field in general')
-                span.col-sm-2 {{field.label}}:
+                label.col-sm-2 {{field.label}}:
                 .col-sm-3(ng-switch on='field.type')
                     div(ng-switch-when='text')
                         input.form-control(type='text' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
                     div(ng-switch-when='dropdown')
-                        button.form-control(style='text-align: left' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
-                span(ng-show='field.tip' type='button' data-placement='right' data-trigger='click' data-title='{{field.tip.join("")}}' data-html='true' data-type='success' bs-tooltip)
-                    i(style='margin-left: 5px'  class=['fa', 'fa-question-circle'])
+                        button.form-control(bs-select ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
+                +tip
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
                     div(ng-repeat='group in advanced')
                         h3 {{group.label}}
                         .settings-row(ng-repeat='field in group.fields')
-                            span.col-sm-2 {{field.label}}:
-                            .col-sm-3(ng-switch on='field.type')
-                                div(ng-switch-when='text')
-                                    input.form-control(type='text' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
-                                div(ng-switch-when='dropdown')
-                                    button.form-control(style='text-align: left' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
-                            span(ng-show='field.tip' type='button' data-placement='right' data-trigger='click' data-title='{{field.tip.join("")}}' data-html='true' data-type='success' bs-tooltip)
-                                i(style='margin-left: 5px'  class=['fa', 'fa-question-circle'])
+                            div(ng-if='field.type != "check"')
+                                label.col-sm-2 {{field.label}}:
+                                .col-sm-3
+                                    input.form-control(ng-if='field.type == "text"' type='text' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
+                                    button.form-control(ng-if='field.type == "dropdown"' bs-select ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
+                                +tip
+                            div(ng-if='field.type == "check"')
+                                input(type='checkbox' ng-model='backupItem[field.model]')
+                                label(ng-click='backupItem[field.model] = !backupItem[field.model]') {{field.label}}
+                                +tip
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)

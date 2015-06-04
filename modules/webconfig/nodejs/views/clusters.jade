@@ -27,13 +27,13 @@ block content
     .docs-body(ng-controller='clustersController')
         button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cluster
         span from template:&nbsp
-        button(class=['btn', 'btn-default'] ng-init="create.template = templates[0].value" ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
+        button.btn.btn-default(ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
         h3(ng-hide='clusters.length == 0') Clusters
         .links
             table.col-sm-12(st-table='rowCollection' st-safe-src='clusters')
                 tbody
                     tr(ng-repeat='row in rowCollection')
-                        td.col-sm-6(ng-class="{active: row._id == selectedItem._id}")
+                        td.col-sm-6(ng-class='{active: row._id == selectedItem._id}')
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.discovery.kind | displayValue:discoveries:'Discovery not set'}}
         .row.col-sm-12
             hr
@@ -45,9 +45,8 @@ block content
                     div(ng-switch-when='text')
                         input.form-control(type='text' ng-model='backupItem[field.model]')
                     div(ng-switch-when='dropdown')
-                        button.form-control(style='text-align: left' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
-                span(type='button' ng-show="field.tooltip" data-trigger="click" data-placement='right' data-title='{{field.tooltip}}' data-html='true' data-type="success" bs-tooltip)
-                    i(style='margin-left: 5px'  class=['fa', 'fa-question-circle'])
+                        button.form-control(ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
+                i.tip.fa.fa-question-circle(bs-tooltip type='button' ng-show='field.tip' data-trigger='hover' data-placement='right' data-title='{{field.tip.join("")}}' data-html='true')
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
                     h3 Atomic data structures
@@ -58,7 +57,7 @@ block content
                     .settings-row
                         span.col-sm-2 Cache mode:
                         .col-sm-3
-                            button.form-control(style='text-align: left' ng-model='backupItem.atomic.cacheMode' data-template='/select' data-placeholder='PARTITIONED' bs-options='item.value as item.label for item in cacheModes' bs-select)
+                            button.form-control(ng-model='backupItem.atomic.cacheMode' data-template='/select' data-placeholder='PARTITIONED' bs-options='item.value as item.label for item in cacheModes' bs-select)
                     .settings-row
                         span.col-sm-2 Sequence reserve size:
                         .col-sm-3
@@ -67,15 +66,15 @@ block content
                     .settings-row
                         span.col-sm-2 Caches:
                         .col-sm-3
-                            button.form-control(style='text-align: left' ng-model='backupItem.caches' data-template='/select' data-multiple='1' data-max-length='3' data-placeholder='Choose caches' bs-options='item.value as item.label for item in caches' bs-select)
+                            button.form-control(ng-model='backupItem.caches' data-template='/select' data-multiple='1' data-max-length='3' data-placeholder='Choose caches' bs-options='item.value as item.label for item in caches' bs-select)
                     .settings-row
                         input(type='checkbox' ng-model='backupItem.cacheSanityCheckEnabled')
-                        span Enable cache sanity check.
+                        label(ng-click='backupItem.cacheSanityCheckEnabled = !backupItem.cacheSanityCheckEnabled') Enable cache sanity check.
                     h3 Events
                     .settings-row
                         span.col-sm-2 Include type:
                         .col-sm-3
-                            button.form-control(style='text-align: left' ng-model='backupItem.inclEvtTypes' data-template='/select' data-multiple='1' data-max-length='2' data-placeholder='Choose recorded event types' bs-options='item.value as item.label for item in events' bs-select)
+                            button.form-control(ng-model='backupItem.inclEvtTypes' data-template='/select' data-multiple='1' data-max-length='2' data-placeholder='Choose recorded event types' bs-options='item.value as item.label for item in events' bs-select)
                     h3 Marshaller
                     .settings-row
                         span.col-sm-2 Keep alive time:
@@ -122,7 +121,7 @@ block content
                     h3 Peer Class Loading
                     .settings-row
                         input(type='checkbox' ng-model='backupItem.p2pEnabled')
-                        span Enable peer class loading.
+                        label(ng-click='backupItem.p2pEnabled = !backupItem.p2pEnabled') Enable peer class loading.
                     .settings-row
                         span.col-sm-2 Local class path exclude:
                         .col-sm-3
@@ -164,7 +163,7 @@ block content
                             input.form-control(type='text' ng-model='backupItem.transactions.pessimisticTxLogSize' placeholder='0')
                     .settings-row
                         input(type='checkbox' ng-model='backupItem.transactions.txSerEnabled')
-                        span Enable serializable cache transactions.
+                        label(ng-click='backupItem.txSerEnabled = !backupItem.txSerEnabled') span Enable serializable cache transactions.
                     h3 Utility
                     .settings-row
                         span.col-sm-2 Keep alive time:

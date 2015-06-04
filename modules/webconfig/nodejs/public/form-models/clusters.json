@@ -11,7 +11,7 @@
       "model": "discovery.kind",
       "placeholder": "Choose discovery",
       "items": "discoveries",
-      "tooltip": "Discovery allows to discover remote nodes in grid."
+      "tip": ["Discovery allows to discover remote nodes in grid."]
     }
   ],
   "advanced": [

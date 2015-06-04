@@ -11,7 +11,7 @@
       "model": "mode",
       "placeholder": "Choose mode",
       "items": "modes",
-      "tip": ["Cache modes:<br/>",
+      "tip": ["Cache modes:",
         "<ul><li>Partitioned - in this mode the overall key set will be divided into partitions and all partitions will be split equally between participating nodes.</li>",
         "<li>Replicated - in this mode all the keys are distributed to all participating nodes.</li>",
         "<li>Local - in this mode caches residing on different grid nodes will not know about each other.</li></ul>"]
@@ -21,10 +21,42 @@
       "type": "dropdown",
       "model": "atomicity",
       "placeholder": "Choose atomicity",
-      "items": "atomicities"
+      "items": "atomicities",
+      "tip": ["Atomicity:",
+        "<ul><li>Transactional - in this mode specified fully ACID-compliant transactional cache behavior.</li>",
+        "<li>Atomic - in this mode distributed transactions and distributed locking are not supported.</li></ul>"]
     }
   ],
   "advanced": [
+    {
+      "label": "Memory",
+      "fields": [
+        {
+          "label": "Backups",
+          "type": "text",
+          "model": "backups",
+          "placeholder": "0",
+          "tip": ["Number of nodes used to back up single partition for partitioned cache."]
+        },
+        {
+          "label": "Mode",
+          "type": "dropdown",
+          "model": "memoryMode",
+          "placeholder": "Choose mode",
+          "items": "memoryModes",
+          "tip": ["Memory modes:",
+            "<ul><li>ONHEAP_TIERED - in this mode entries will be stored on-heap first.</li>",
+            "<li>OFFHEAP_TIERED - distributed caches will start immediately and will load all necessary data from other available grid nodes in the background.</li>",
+            "<li>OFFHEAP_VALUES - in this mode no rebalancing will take place which means that caches will be either loaded on demand from persistent store whenever data is accessed, or will be populated explicitly.</li></ul>"]
+        },
+        {
+          "label": "Swap enabled",
+          "type": "check",
+          "model": "swapEnabled",
+          "tip": ["Flag indicating whether swap storage is enabled or not for this cache."]
+        }
+      ]
+    },
     {
       "label": "Rebalance",
       "fields": [
@@ -34,10 +66,10 @@
           "model": "rebalanceMode",
           "placeholder": "Choose mode",
           "items": "rebalanceModes",
-          "tip": ["Rebalance modes:<br>",
-            "<ul><li>Synchronous - distributed caches will not start until all necessary data is loaded from other available grid nodes.</li>",
-            "<li>Asynchronous - distributed caches will start immediately and will load all necessary data from other available grid nodes in the background.</li>",
-            "<li>None - in this mode no rebalancing will take place which means that caches will be either loaded on demand from persistent store whenever data is accessed, or will be populated explicitly.</li></ul>"]
+          "tip": ["Rebalance modes:",
+            "<ul><li>Synchronous - in this mode distributed caches will not start until all necessary data is loaded from other available grid nodes.</li>",
+            "<li>Asynchronous - in this mode entries never end up in heap memory and get stored in offheap memory right away.</li>",
+            "<li>None - in this mode entry keys will be stored on heap memory, and values will be stored in offheap memory.</li></ul>"]
         },
         {
           "label": "Pool size",

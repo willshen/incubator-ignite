@@ -17,8 +17,7 @@
 
 configuratorModule.controller('cachesController', ['$scope', '$http', function($scope, $http) {
         $scope.templates = [
-            {value: {}, label: 'None'},
-            {value: {mode: 'PART', atomicity: 'ATOMIC'}, label: 'Partitioned'},
+            {value: {mode: 'PART', atomicity: 'TRANSACTIONAL'}, label: 'Partitioned'},
             {value: {mode: 'REPL', atomicity: 'ATOMIC'}, label: 'Replicated'},
             {value: {mode: 'LOCAL', atomicity: 'ATOMIC'}, label: 'Local'}
         ];
@@ -46,13 +45,15 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
         ];
 
         $scope.memoryModes = [
-            {value: 'ONHT', label: 'Onheap tiered'},
-            {value: 'OFHT', label: 'Offheap tiered'},
-            {value: 'OFHV', label: 'Offheap values'}
+            {value: 'ONHT', label: 'ONHEAP_TIERED'},
+            {value: 'OFHT', label: 'OFFHEAP_TIERED'},
+            {value: 'OFHV', label: 'OFFHEAP_VALUES'}
             ];
 
         $scope.general = [];
         $scope.advanced = [];
+
+
 
         $http.get('/form-models/caches.json')
             .success(function(data) {

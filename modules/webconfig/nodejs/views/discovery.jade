@@ -24,8 +24,8 @@ div(class=['modal', 'center'] tabindex='-1' role='dialog')
                 div.block-edit-parameters
                     div.btn-group
                         button(ng-click='add()' class=['btn', 'btn-default', 'fa', 'fa-plus'] ) &nbspAdd
-                table(ng-table="tcpDiscoveryVmIpFinderTable" class=['table', 'table-bordered', 'table-hover'])
-                    tr(ng-repeat="address in $data")
+                table(ng-table='tcpDiscoveryVmIpFinderTable' class=['table', 'table-bordered', 'table-hover'])
+                    tr(ng-repeat='address in $data')
                         td(data-title="'#'" class=['text-center', 'vcenter'] style='width: 50px') {{$index + 1}}
                         td.text-center(data-title="'IP Address with ports range'")
                             div(ng-if='!(editColumn == "ip" && currentRow == cluster)')

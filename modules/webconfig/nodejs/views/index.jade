@@ -19,17 +19,17 @@ block container
     div.row
         div(class=['col-sm-2', 'border-right', 'section-left'])
             div.sidebar-nav
-                ul(ng-controller='activeLink' class="menu")
+                ul.menu(ng-controller='activeLink')
                     li
-                        a(ng-class="{active: isActive('/clusters')}" href='/clusters') Clusters
+                        a(ng-class='{active: isActive("/clusters")}' href='/clusters') Clusters
                     li
-                        a(ng-class="{active: isActive('/caches')}" href='/caches') Caches
+                        a(ng-class='{active: isActive("/caches")}' href='/caches') Caches
                     li
-                        a(ng-class="{active: isActive('/persistence')}" href='/persistence') Persistence
+                        a(ng-class='{active: isActive("/persistence")}' href='/persistence') Persistence
                     li
-                        a(ng-class="{active: isActive('/sql')}" href='/sql') SQL
+                        a(ng-class='{active: isActive("/sql")}' href='/sql') SQL
                     li
-                        a(ng-class="{active: isActive('/clients')}" href='/clients') Clients
+                        a(ng-class='{active: isActive("/clients")}' href='/clients') Clients
         div(class=['col-sm-10', 'border-left', 'section-right'])
             div.docs-content
                 div
@@ -37,7 +37,7 @@ block container
                         | Apache Ignite<sup>tm</sup> In-Memory Data Fabric is a high-performance,
                         | integrated and distributed in-memory platform for computing and transacting on large-scale data
                         | sets in real-time, orders of magnitude faster than possible with traditional disk-based or flash technologies.
-            div(class=['block-image', 'block-display-image'])
+            div.block-image.block-display-image
                     img(ng-src='https://www.filepicker.io/api/file/lydEeGB6Rs9hwbpcQxiw' alt='Apache Ignite stack')
             div.text-center(ng-controller='auth')
-                a(class=['btn', 'btn-default'] ng-click='login()' href='#') Configure Now
+                a.btn.btn-default(ng-click='login()' href='#') Configure Now
