@@ -27,36 +27,40 @@ block content
     .docs-body(ng-controller='cachesController')
         button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cache
         span from template:&nbsp
-        button(class=['btn', 'btn-default'] ng-init="create.template = templates[0].value" ng-model='create.template' data-template='/select' data-placeholder='Choose cache template' bs-options='item.value as item.label for item in templates' bs-select)
+        button(class=['btn', 'btn-default'] ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cache template' bs-options='item.value as item.label for item in templates' bs-select)
         h3(ng-hide='caches.length == 0') Caches
         .links
             table.col-sm-12(st-table='rowCollection' st-safe-src='caches')
                 tbody
                     tr(ng-repeat='row in rowCollection')
-                        td.col-sm-6(ng-class="{active: row._id == selectedItem._id}")
+                        td.col-sm-6(ng-class='{active: row._id == selectedItem._id}')
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.mode | displayValue:modes:'Cache mode not set'}}, {{row.atomicity | displayValue:atomicities:'Cache atomicity not set'}}
         .row.col-sm-12
             hr
         form.form-horizontal(name='editForm' ng-if='backupItem')
             h3 General
             .settings-row(ng-repeat='field in general')
-                span.col-sm-2 {{field.name}}:
+                span.col-sm-2 {{field.label}}:
                 .col-sm-3(ng-switch on='field.type')
                     div(ng-switch-when='text')
-                        input.form-control(type='text' ng-model='backupItem[field.model]')
+                        input.form-control(type='text' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
                     div(ng-switch-when='dropdown')
                         button.form-control(style='text-align: left' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
+                span(ng-show='field.tip' type='button' data-placement='right' data-trigger='click' data-title='{{field.tip.join("")}}' data-html='true' data-type='success' bs-tooltip)
+                    i(style='margin-left: 5px'  class=['fa', 'fa-question-circle'])
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
                     div(ng-repeat='group in advanced')
-                        h3 {{group.name}}
+                        h3 {{group.label}}
                         .settings-row(ng-repeat='field in group.fields')
-                            span.col-sm-2 {{field.name}}:
+                            span.col-sm-2 {{field.label}}:
                             .col-sm-3(ng-switch on='field.type')
                                 div(ng-switch-when='text')
-                                    input.form-control(type='text' ng-model='backupItem[field.model]')
+                                    input.form-control(type='text' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
                                 div(ng-switch-when='dropdown')
                                     button.form-control(style='text-align: left' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
+                            span(ng-show='field.tip' type='button' data-placement='right' data-trigger='click' data-title='{{field.tip.join("")}}' data-html='true' data-type='success' bs-tooltip)
+                                i(style='margin-left: 5px'  class=['fa', 'fa-question-circle'])
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)

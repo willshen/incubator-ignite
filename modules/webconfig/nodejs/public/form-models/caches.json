@@ -1,19 +1,23 @@
 {
   "general": [
     {
-      "name": "Name",
+      "label": "Name",
       "type": "text",
       "model": "name"
     },
     {
-      "name": "Mode",
+      "label": "Mode",
       "type": "dropdown",
       "model": "mode",
       "placeholder": "Choose mode",
-      "items": "modes"
+      "items": "modes",
+      "tip": ["Cache modes:<br/>",
+        "<ul><li>Partitioned - In this mode the overall key set will be divided into partitions and all partitions will be split equally between participating nodes.</li>",
+        "<li>Replicated - In this mode all the keys are distributed to all participating nodes.</li>",
+        "<li>Local - In this mode TODO.</li></ul>"]
     },
     {
-      "name": "Atomicity",
+      "label": "Atomicity",
       "type": "dropdown",
       "model": "atomicity",
       "placeholder": "Choose atomicity",
@@ -22,50 +26,64 @@
   ],
   "advanced": [
     {
-      "name": "G1",
+      "label": "Rebalance",
       "fields": [
         {
-          "name": "Name",
-          "type": "text",
-          "model": "name"
-        },
-        {
-          "name": "Mode",
+          "label": "Mode",
           "type": "dropdown",
-          "model": "mode",
+          "model": "rebalanceMode",
           "placeholder": "Choose mode",
-          "items": "modes"
+          "items": "rebalanceModes",
+          "tip": ["Rebalance modes:<br>",
+            "<ul><li>Synchronous - distributed caches will not start until all necessary data is loaded from other available grid nodes.</li>",
+            "<li>Asynchronous - distributed caches will start immediately and will load all necessary data from other available grid nodes in the background.</li>",
+            "<li>None - in this mode no rebalancing will take place which means that caches will be either loaded on demand from persistent store whenever data is accessed, or will be populated explicitly.</li></ul>"]
         },
         {
-          "name": "Atomicity",
-          "type": "dropdown",
-          "model": "atomicity",
-          "placeholder": "Choose atomicity",
-          "items": "atomicities"
+          "label": "Pool size",
+          "type": "text",
+          "model": "rebalancePoolSize",
+          "placeholder": "2"
+        },
+        {
+          "label": "Batch size",
+          "type": "text",
+          "model": "rebalanceBatchSize",
+          "placeholder": "512 * 1024"
+        },
+        {
+          "label": "Order",
+          "type": "text",
+          "model": "rebalanceOrder",
+          "placeholder": "0"
+        },
+        {
+          "label": "Delay",
+          "type": "text",
+          "model": "rebalanceDelay",
+          "placeholder": "0"
+        },
+        {
+          "label": "Timeout",
+          "type": "text",
+          "model": "rebalanceTimeout",
+          "placeholder": "10000"
+        },
+        {
+          "label": "Throttle",
+          "type": "text",
+          "model": "rebalanceThrottle",
+          "placeholder": "0"
         }
       ]
     },
     {
-      "name": "G2",
+      "label": "Write behind",
       "fields": [
         {
-          "name": "Name",
+          "label": "Name2",
           "type": "text",
-          "model": "name"
-        },
-        {
-          "name": "Mode",
-          "type": "dropdown",
-          "model": "mode",
-          "placeholder": "Choose mode",
-          "items": "modes"
-        },
-        {
-          "name": "Atomicity",
-          "type": "dropdown",
-          "model": "atomicity",
-          "placeholder": "Choose atomicity",
-          "items": "atomicities"
+          "model": "name2"
         }
       ]
     }
