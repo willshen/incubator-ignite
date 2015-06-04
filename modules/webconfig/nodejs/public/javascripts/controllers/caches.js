@@ -51,11 +51,15 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
             {value: 'OFHV', label: 'Offheap values'}
             ];
 
-        $scope.generalGrp = [
-            {name: "Name", type: "text", model: 'name'},
-            {name: "Mode", type: "dropdown", model: 'mode', placeholder: 'Choose mode', items: 'modes'},
-            {name: "Atomicity", type: "dropdown", model: 'atomicity', placeholder: 'Choose atomicity', items: 'atomicities'}
-        ];
+        $scope.general = [];
+        $scope.advanced = [];
+
+        $http.get('/form-models/caches.json')
+            .success(function(data) {
+                $scope.general = data.general;
+                $scope.advanced = data.advanced;
+            });
+
 
         //DefaultLockTimeout dfltLockTimeout
         //invalidate

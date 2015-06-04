@@ -39,52 +39,24 @@ block content
             hr
         form.form-horizontal(name='editForm' ng-if='backupItem')
             h3 General
-            .settings-row(ng-repeat='fld in generalGrp')
-                span.col-sm-2 {{fld.name}}:
-                .col-sm-3(ng-switch on='fld.type')
+            .settings-row(ng-repeat='field in general')
+                span.col-sm-2 {{field.name}}:
+                .col-sm-3(ng-switch on='field.type')
                     div(ng-switch-when='text')
-                        input.form-control(type='text' ng-model='backupItem[fld.model]')
+                        input.form-control(type='text' ng-model='backupItem[field.model]')
                     div(ng-switch-when='dropdown')
-                        button.form-control(style='text-align: left' ng-model='backupItem[fld.model]' data-template='/select' data-placeholder='{{fld.placeholder}}' bs-options='item.value as item.label for item in {{fld.items}}' bs-select)
+                        button.form-control(style='text-align: left' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
-                    .settings-row
-                        span.col-sm-2 Atomicity:
-                        .col-sm-3
-                            button.form-control(style='text-align: left' ng-model='backupItem.atomicity' data-template='/select' data-placeholder='Choose Atomicity' bs-options='item.value as item.label for item in atomicities' bs-select)
-                    .settings-row
-                        span.col-sm-2 Backups:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.backups' placeholder='0')
-                    h3 Rebalance
-                    .settings-row
-                        span.col-sm-2 Mode:
-                        .col-sm-3
-                            button.form-control(style='text-align: left' ng-model='backupItem.rebalanceMode' data-template='/select' data-placeholder='Choose Mode' bs-options='item.value as item.label for item in rebalanceModes' bs-select)
-                    .settings-row
-                        span.col-sm-2 Pool size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.rebalancePoolSize' placeholder='2')
-                    .settings-row
-                        span.col-sm-2 Order:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.rebalanceOrder' placeholder='0')
-                    .settings-row
-                        span.col-sm-2 Batch size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.rebalanceBatchSize' placeholder='512 * 1024')
-                    .settings-row
-                        span.col-sm-2 Timeout:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.rebalanceTimeout' placeholder='10000')
-                    .settings-row
-                        span.col-sm-2 Delay:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.rebalanceDelay' placeholder='0')
-                    .settings-row
-                        span.col-sm-2 Throttle:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.rebalanceThrottle' placeholder='0')
+                    div(ng-repeat='group in advanced')
+                        h3 {{group.name}}
+                        .settings-row(ng-repeat='field in group.fields')
+                            span.col-sm-2 {{field.name}}:
+                            .col-sm-3(ng-switch on='field.type')
+                                div(ng-switch-when='text')
+                                    input.form-control(type='text' ng-model='backupItem[field.model]')
+                                div(ng-switch-when='dropdown')
+                                    button.form-control(style='text-align: left' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)

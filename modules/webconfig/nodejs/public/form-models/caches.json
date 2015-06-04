@@ -1,0 +1,73 @@
+{
+  "general": [
+    {
+      "name": "Name",
+      "type": "text",
+      "model": "name"
+    },
+    {
+      "name": "Mode",
+      "type": "dropdown",
+      "model": "mode",
+      "placeholder": "Choose mode",
+      "items": "modes"
+    },
+    {
+      "name": "Atomicity",
+      "type": "dropdown",
+      "model": "atomicity",
+      "placeholder": "Choose atomicity",
+      "items": "atomicities"
+    }
+  ],
+  "advanced": [
+    {
+      "name": "G1",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "text",
+          "model": "name"
+        },
+        {
+          "name": "Mode",
+          "type": "dropdown",
+          "model": "mode",
+          "placeholder": "Choose mode",
+          "items": "modes"
+        },
+        {
+          "name": "Atomicity",
+          "type": "dropdown",
+          "model": "atomicity",
+          "placeholder": "Choose atomicity",
+          "items": "atomicities"
+        }
+      ]
+    },
+    {
+      "name": "G2",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "text",
+          "model": "name"
+        },
+        {
+          "name": "Mode",
+          "type": "dropdown",
+          "model": "mode",
+          "placeholder": "Choose mode",
+          "items": "modes"
+        },
+        {
+          "name": "Atomicity",
+          "type": "dropdown",
+          "model": "atomicity",
+          "placeholder": "Choose atomicity",
+          "items": "atomicities"
+        }
+      ]
+    }
+  ]
+}
