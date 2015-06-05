@@ -1360,9 +1360,6 @@ public class IgniteCacheProxy<K, V> extends AsyncSupportAdapter<IgniteCache<K, V
 
         try {
             fut = ctx.kernalContext().cache().dynamicCloseCache(ctx.name());
-
-            if (fut == null)
-                return;
         }
         finally {
             onLeave();

@@ -17,6 +17,7 @@
 
 package org.apache.ignite.internal.processors.cache;
 
+import org.apache.ignite.*;
 import org.apache.ignite.cache.*;
 import org.apache.ignite.cluster.*;
 import org.apache.ignite.configuration.*;
@@ -46,28 +47,16 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
     protected static String KEY_VAL = "1";
 
     /** cache name 1. */
-    protected static String CACHE_NAME_DESTROY_DHT = "cache_d";
+    protected static String CACHE_NAME_DHT = "cache";
 
     /** cache name 2. */
-    protected static String CACHE_NAME_CLOSE_DHT = "cache_c";
+    protected static String CACHE_NAME_CLIENT = "cache_client";
 
-    /** cache name 3. */
-    protected static String CACHE_NAME_DESTROY_CLIENT = "cache_d_client";
+    /** near cache name. */
+    protected static String CACHE_NAME_NEAR = "cache_near";
 
-    /** cache name 4. */
-    protected static String CACHE_NAME_CLOSE_CLIENT = "cache_c_client";
-
-    /** near cache name 1. */
-    protected static String CACHE_NAME_DESTROY_NEAR = "cache_d_near";
-
-    /** near cache name 2. */
-    protected static String CACHE_NAME_CLOSE_NEAR = "cache_c_near";
-
-    /** local cache name 1. */
-    protected static String CACHE_NAME_DESTROY_LOC = "cache_d_local";
-
-    /** local cache name 2. */
-    protected static String CACHE_NAME_CLOSE_LOC = "cache_c_local";
+    /** local cache name. */
+    protected static String CACHE_NAME_LOC = "cache_local";
 
     /**
      * @return Grids count to start.
@@ -121,95 +110,86 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
     }
 
     /**
-     * Test.
+     * @return dht config
+     */
+    private CacheConfiguration getDhtConfig() {
+        CacheConfiguration cfg = defaultCacheConfiguration();
+        cfg.setName(CACHE_NAME_DHT);
+        cfg.setCacheMode(CacheMode.PARTITIONED);
+        return cfg;
+    }
+
+    /**
+     * @return client config
+     */
+    private CacheConfiguration getClientConfig() {
+        CacheConfiguration cfg = defaultCacheConfiguration();
+        cfg.setName(CACHE_NAME_CLIENT);
+        cfg.setCacheMode(CacheMode.PARTITIONED);
+        return cfg;
+    }
+
+    /**
+     * @return near config
+     */
+    private CacheConfiguration getNearConfig() {
+        CacheConfiguration cfg = defaultCacheConfiguration();
+        cfg.setName(CACHE_NAME_NEAR);
+        cfg.setCacheMode(CacheMode.PARTITIONED);
+        cfg.setNearConfiguration(new NearCacheConfiguration());
+        return cfg;
+    }
+
+    /**
+     * @return local config
+     */
+    private CacheConfiguration getLocalConfig() {
+        CacheConfiguration cfg = defaultCacheConfiguration();
+        cfg.setName(CACHE_NAME_LOC);
+        cfg.setCacheMode(CacheMode.LOCAL);
+        return cfg;
+    }
+
+    /**
+     * Test Double Destroy.
      *
      * @throws Exception If failed.
      */
-    public void testCacheStopAndDestroy() throws Exception {
-        startGridsMultiThreaded(gridCount());
+    public void testDhtDoubleDestroy() throws Exception {
+        dhtDestroy();
+        dhtDestroy();
+    }
 
-        //GridDhtTxPrepareRequest requests to Client node will be counted.
-        CountingTxRequestsToClientNodeTcpCommunicationSpi.nodeFilter = grid(2).context().localNodeId();
+    /**
+     * Test DHT Destroy.
+     *
+     * @throws Exception If failed.
+     */
+    private void dhtDestroy() throws Exception {
+        grid(0).getOrCreateCache(getDhtConfig());
 
-        CacheConfiguration cCfgD = defaultCacheConfiguration();
-        cCfgD.setName(CACHE_NAME_DESTROY_DHT);
-        cCfgD.setCacheMode(CacheMode.PARTITIONED);
+        assert grid(0).cache(CACHE_NAME_DHT).get(KEY_VAL) == null;
 
-        CacheConfiguration cCfgC = defaultCacheConfiguration();
-        cCfgC.setName(CACHE_NAME_CLOSE_DHT);
-        cCfgC.setCacheMode(CacheMode.PARTITIONED);
+        grid(0).cache(CACHE_NAME_DHT).put(KEY_VAL, KEY_VAL);
 
-        CacheConfiguration cCfgDClient = defaultCacheConfiguration();
-        cCfgDClient.setName(CACHE_NAME_DESTROY_CLIENT);
-        cCfgDClient.setCacheMode(CacheMode.PARTITIONED);
-
-        CacheConfiguration cCfgCClient = defaultCacheConfiguration();
-        cCfgCClient.setName(CACHE_NAME_CLOSE_CLIENT);
-        cCfgCClient.setCacheMode(CacheMode.PARTITIONED);
-
-        CacheConfiguration cCfgDNear = defaultCacheConfiguration();
-        cCfgDNear.setName(CACHE_NAME_DESTROY_NEAR);
-        cCfgDNear.setCacheMode(CacheMode.PARTITIONED);
-        cCfgDNear.setNearConfiguration(new NearCacheConfiguration());
-
-        CacheConfiguration cCfgCNear = defaultCacheConfiguration();
-        cCfgCNear.setName(CACHE_NAME_CLOSE_NEAR);
-        cCfgCNear.setCacheMode(CacheMode.PARTITIONED);
-        cCfgCNear.setNearConfiguration(new NearCacheConfiguration());
-
-        CacheConfiguration cCfgDLoc = defaultCacheConfiguration();
-        cCfgDLoc.setName(CACHE_NAME_DESTROY_LOC);
-        cCfgDLoc.setCacheMode(CacheMode.LOCAL);
-
-        CacheConfiguration cCfgCLoc = defaultCacheConfiguration();
-        cCfgCLoc.setName(CACHE_NAME_CLOSE_LOC);
-        cCfgCLoc.setCacheMode(CacheMode.LOCAL);
-
-        grid(0).getOrCreateCache(cCfgD);
-        grid(0).getOrCreateCache(cCfgC);
-        grid(0).getOrCreateCache(cCfgDClient);
-        grid(0).getOrCreateCache(cCfgCClient);
-        grid(0).getOrCreateCache(cCfgDNear);
-        grid(0).getOrCreateCache(cCfgCNear);
-        grid(0).getOrCreateCache(cCfgDLoc);
-        grid(0).getOrCreateCache(cCfgCLoc);
-
-        grid(0).cache(CACHE_NAME_DESTROY_DHT).put(KEY_VAL, KEY_VAL);
-        grid(0).cache(CACHE_NAME_CLOSE_DHT).put(KEY_VAL, KEY_VAL);
-        grid(0).cache(CACHE_NAME_DESTROY_CLIENT).put(KEY_VAL, KEY_VAL);
-        grid(0).cache(CACHE_NAME_CLOSE_CLIENT).put(KEY_VAL, KEY_VAL);
-        grid(0).cache(CACHE_NAME_DESTROY_LOC).put(KEY_VAL, KEY_VAL + 0);
-        grid(0).cache(CACHE_NAME_CLOSE_LOC).put(KEY_VAL, KEY_VAL + 0);
-        grid(1).cache(CACHE_NAME_DESTROY_LOC).put(KEY_VAL, KEY_VAL + 1);
-        grid(1).cache(CACHE_NAME_CLOSE_LOC).put(KEY_VAL, KEY_VAL + 1);
-
-        assert grid(0).cache(CACHE_NAME_DESTROY_DHT).get(KEY_VAL).equals(KEY_VAL);
-        assert grid(0).cache(CACHE_NAME_CLOSE_DHT).get(KEY_VAL).equals(KEY_VAL);
-        assert grid(0).cache(CACHE_NAME_DESTROY_CLIENT).get(KEY_VAL).equals(KEY_VAL);
-        assert grid(0).cache(CACHE_NAME_CLOSE_CLIENT).get(KEY_VAL).equals(KEY_VAL);
-        assert grid(0).cache(CACHE_NAME_DESTROY_LOC).get(KEY_VAL).equals(KEY_VAL + 0);
-        assert grid(0).cache(CACHE_NAME_CLOSE_LOC).get(KEY_VAL).equals(KEY_VAL + 0);
-        assert grid(1).cache(CACHE_NAME_DESTROY_LOC).get(KEY_VAL).equals(KEY_VAL + 1);
-        assert grid(1).cache(CACHE_NAME_CLOSE_LOC).get(KEY_VAL).equals(KEY_VAL + 1);
-
-        //Destroy:
+        assert grid(0).cache(CACHE_NAME_DHT).get(KEY_VAL).equals(KEY_VAL);
 
         //DHT Destroy. Cache should be removed from each node.
 
-        grid(0).cache(CACHE_NAME_DESTROY_DHT).destroy();
+        grid(0).cache(CACHE_NAME_DHT).destroy();
 
         try {
-            grid(0).cache(CACHE_NAME_DESTROY_DHT).get(KEY_VAL);
+            grid(0).cache(CACHE_NAME_DHT).get(KEY_VAL);
             assert false;
         }
         catch (IllegalArgumentException | IllegalStateException ignored0) {
             try {
-                grid(1).cache(CACHE_NAME_DESTROY_DHT).get(KEY_VAL);
+                grid(1).cache(CACHE_NAME_DHT).get(KEY_VAL);
                 assert false;
             }
             catch (IllegalArgumentException | IllegalStateException ignored1) {
                 try {
-                    grid(2).cache(CACHE_NAME_DESTROY_DHT).get(KEY_VAL);
+                    grid(2).cache(CACHE_NAME_DHT).get(KEY_VAL);
                     assert false;
                 }
                 catch (IllegalArgumentException | IllegalStateException ignored2) {
@@ -217,23 +197,48 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
                 }
             }
         }
+    }
+
+    /**
+     * Test Double Destroy.
+     *
+     * @throws Exception If failed.
+     */
+    public void testClientDoubleDestroy() throws Exception {
+        clientDestroy();
+        clientDestroy();
+    }
+
+    /**
+     * Test Client Destroy.
+     *
+     * @throws Exception If failed.
+     */
+    private void clientDestroy() throws Exception {
+        grid(0).getOrCreateCache(getClientConfig());
+
+        assert grid(0).cache(CACHE_NAME_CLIENT).get(KEY_VAL) == null;
+
+        grid(0).cache(CACHE_NAME_CLIENT).put(KEY_VAL, KEY_VAL);
+
+        assert grid(0).cache(CACHE_NAME_CLIENT).get(KEY_VAL).equals(KEY_VAL);
 
         //DHT Destroy from client node. Cache should be removed from each node.
 
-        grid(2).cache(CACHE_NAME_DESTROY_CLIENT).destroy();// Client node.
+        grid(2).cache(CACHE_NAME_CLIENT).destroy();// Client node.
 
         try {
-            grid(0).cache(CACHE_NAME_DESTROY_CLIENT).get(KEY_VAL);
+            grid(0).cache(CACHE_NAME_CLIENT).get(KEY_VAL);
             assert false;
         }
         catch (IllegalArgumentException | IllegalStateException ignored0) {
             try {
-                grid(1).cache(CACHE_NAME_DESTROY_CLIENT).get(KEY_VAL);
+                grid(1).cache(CACHE_NAME_CLIENT).get(KEY_VAL);
                 assert false;
             }
             catch (IllegalArgumentException | IllegalStateException ignored1) {
                 try {
-                    grid(2).cache(CACHE_NAME_DESTROY_CLIENT).get(KEY_VAL);
+                    grid(2).cache(CACHE_NAME_CLIENT).get(KEY_VAL);
                     assert false;
                 }
                 catch (IllegalArgumentException | IllegalStateException ignored2) {
@@ -241,23 +246,52 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
                 }
             }
         }
+    }
+
+    /**
+     * Test Double Destroy.
+     *
+     * @throws Exception If failed.
+     */
+    public void testNearDoubleDestroy() throws Exception {
+        nearDestroy();
+        nearDestroy();
+    }
+
+    /**
+     * Test Near Destroy.
+     *
+     * @throws Exception If failed.
+     */
+    private void nearDestroy() throws Exception {
+        grid(0).getOrCreateCache(getNearConfig());
+
+        grid(2).getOrCreateNearCache(CACHE_NAME_NEAR, new NearCacheConfiguration());
+
+        assert grid(0).cache(CACHE_NAME_NEAR).get(KEY_VAL) == null;
+        assert grid(2).cache(CACHE_NAME_NEAR).get(KEY_VAL) == null;
+
+        grid(2).cache(CACHE_NAME_NEAR).put(KEY_VAL, KEY_VAL);
+        grid(0).cache(CACHE_NAME_NEAR).put(KEY_VAL, "near-test");
+
+        assert grid(2).cache(CACHE_NAME_NEAR).localPeek(KEY_VAL).equals("near-test");
 
         //Local destroy. Cache should be removed from each node.
 
-        grid(0).cache(CACHE_NAME_DESTROY_LOC).destroy();
+        grid(2).cache(CACHE_NAME_NEAR).destroy();
 
         try {
-            grid(0).cache(CACHE_NAME_DESTROY_LOC).get(KEY_VAL);
+            grid(0).cache(CACHE_NAME_NEAR).get(KEY_VAL);
             assert false;
         }
         catch (IllegalArgumentException | IllegalStateException ignored0) {
             try {
-                grid(1).cache(CACHE_NAME_DESTROY_LOC).get(KEY_VAL);
+                grid(1).cache(CACHE_NAME_NEAR).get(KEY_VAL);
                 assert false;
             }
             catch (IllegalArgumentException | IllegalStateException ignored1) {
                 try {
-                    grid(2).cache(CACHE_NAME_DESTROY_LOC).get(KEY_VAL);
+                    grid(2).cache(CACHE_NAME_NEAR).get(KEY_VAL);
                     assert false;
                 }
                 catch (IllegalArgumentException | IllegalStateException ignored2) {
@@ -265,33 +299,51 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
                 }
             }
         }
+    }
 
-        //Near destroy. Cache should be removed from each node.
+    /**
+     * Test Double Destroy.
+     *
+     * @throws Exception If failed.
+     */
+    public void testNearLocalDestroy() throws Exception {
+        localDestroy();
+        localDestroy();
+    }
 
-        grid(0).createNearCache(CACHE_NAME_DESTROY_NEAR, new NearCacheConfiguration());
-        grid(1).createNearCache(CACHE_NAME_DESTROY_NEAR, new NearCacheConfiguration());
-        grid(2).createNearCache(CACHE_NAME_DESTROY_NEAR, new NearCacheConfiguration());
+    /**
+     * Test Local Destroy.
+     *
+     * @throws Exception If failed.
+     */
+    private void localDestroy() throws Exception {
+        grid(0).getOrCreateCache(getLocalConfig());
 
-        grid(0).cache(CACHE_NAME_DESTROY_NEAR).put(KEY_VAL, KEY_VAL);
+        assert grid(0).cache(CACHE_NAME_LOC).get(KEY_VAL) == null;
+        assert grid(1).cache(CACHE_NAME_LOC).get(KEY_VAL) == null;
 
-        assert grid(0).cache(CACHE_NAME_DESTROY_NEAR).get(KEY_VAL).equals(KEY_VAL);
-        assert grid(1).cache(CACHE_NAME_DESTROY_NEAR).get(KEY_VAL).equals(KEY_VAL);
-        assert grid(2).cache(CACHE_NAME_DESTROY_NEAR).get(KEY_VAL).equals(KEY_VAL);
+        grid(0).cache(CACHE_NAME_LOC).put(KEY_VAL, KEY_VAL + 0);
+        grid(1).cache(CACHE_NAME_LOC).put(KEY_VAL, KEY_VAL + 1);
 
-        grid(0).cache(CACHE_NAME_DESTROY_NEAR).destroy();
+        assert grid(0).cache(CACHE_NAME_LOC).get(KEY_VAL).equals(KEY_VAL + 0);
+        assert grid(1).cache(CACHE_NAME_LOC).get(KEY_VAL).equals(KEY_VAL + 1);
+
+        //Local destroy. Cache should be removed from each node.
+
+        grid(0).cache(CACHE_NAME_LOC).destroy();
 
         try {
-            grid(0).cache(CACHE_NAME_DESTROY_NEAR).get(KEY_VAL);
+            grid(0).cache(CACHE_NAME_LOC).get(KEY_VAL);
             assert false;
         }
         catch (IllegalArgumentException | IllegalStateException ignored0) {
             try {
-                grid(1).cache(CACHE_NAME_DESTROY_NEAR).get(KEY_VAL);
+                grid(1).cache(CACHE_NAME_LOC).get(KEY_VAL);
                 assert false;
             }
             catch (IllegalArgumentException | IllegalStateException ignored1) {
                 try {
-                    grid(2).cache(CACHE_NAME_DESTROY_NEAR).get(KEY_VAL);
+                    grid(2).cache(CACHE_NAME_LOC).get(KEY_VAL);
                     assert false;
                 }
                 catch (IllegalArgumentException | IllegalStateException ignored2) {
@@ -299,75 +351,195 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
                 }
             }
         }
+    }
 
-        //Close:
+    /**
+     * Test Dht close.
+     *
+     * @throws Exception If failed.
+     */
+    public void testDhtClose() throws Exception {
+        IgniteCache<String, String> dhtCache0 = grid(0).getOrCreateCache(getDhtConfig());
+
+        assert dhtCache0.get(KEY_VAL) == null;
+
+        dhtCache0.put(KEY_VAL, KEY_VAL);
+
+        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL);
 
         //DHT Close. No-op.
 
-        grid(0).cache(CACHE_NAME_CLOSE_DHT).close();
+        IgniteCache<String, String> dhtCache1 = grid(1).cache(CACHE_NAME_DHT);
+        IgniteCache<String, String> dhtCache2 = grid(2).cache(CACHE_NAME_DHT);
 
-        assert grid(0).cache(CACHE_NAME_CLOSE_DHT).get(KEY_VAL).equals(KEY_VAL);// Not affected.
-        assert grid(1).cache(CACHE_NAME_CLOSE_DHT).get(KEY_VAL).equals(KEY_VAL);// Not affected.
-        assert grid(2).cache(CACHE_NAME_CLOSE_DHT).get(KEY_VAL).equals(KEY_VAL);// Not affected.
+        dhtCache0.close();
+
+        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL);// Not affected.
+        assert dhtCache1.get(KEY_VAL).equals(KEY_VAL);// Not affected.
+        assert dhtCache2.get(KEY_VAL).equals(KEY_VAL);// Not affected.
 
         //DHT Creation after closed.
 
-        grid(0).getOrCreateCache(cCfgC);
+        dhtCache0 = grid(0).cache(CACHE_NAME_DHT);
 
-        grid(0).cache(CACHE_NAME_CLOSE_DHT).put(KEY_VAL, KEY_VAL + "recreated");
+        dhtCache0.put(KEY_VAL, KEY_VAL + "recreated");
 
-        assert grid(0).cache(CACHE_NAME_CLOSE_DHT).get(KEY_VAL).equals(KEY_VAL + "recreated");
-        assert grid(1).cache(CACHE_NAME_CLOSE_DHT).get(KEY_VAL).equals(KEY_VAL + "recreated");
-        assert grid(2).cache(CACHE_NAME_CLOSE_DHT).get(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL + "recreated");
+    }
+
+    /**
+     * Test Dht close.
+     *
+     * @throws Exception If failed.
+     */
+    public void testDhtCloseWithTry() throws Exception {
+        String curVal = null;
+
+        for (int i = 0; i < 3; i++) {
+            try (IgniteCache<String, String> cache0 = grid(0).getOrCreateCache(getDhtConfig())) {
+                IgniteCache<String, String> cache1 = grid(1).cache(CACHE_NAME_DHT);
+                IgniteCache<String, String> cache2 = grid(2).cache(CACHE_NAME_DHT);
+
+                assert cache0.get(KEY_VAL) == null || cache0.get(KEY_VAL).equals(curVal);
+                assert cache1.get(KEY_VAL) == null || cache1.get(KEY_VAL).equals(curVal);
+                assert cache2.get(KEY_VAL) == null || cache2.get(KEY_VAL).equals(curVal);
+
+                curVal = KEY_VAL + curVal;
+
+                cache0.put(KEY_VAL, curVal);
+
+                assert cache0.get(KEY_VAL).equals(curVal);
+                assert cache1.get(KEY_VAL).equals(curVal);
+                assert cache2.get(KEY_VAL).equals(curVal);
+            }
+        }
+    }
+
+    /**
+     * Test Client close.
+     *
+     * @throws Exception If failed.
+     */
+    public void testClientClose() throws Exception {
+        IgniteCache<String, String> cache0 = grid(0).getOrCreateCache(getClientConfig());
+
+        assert cache0.get(KEY_VAL) == null;
+
+        cache0.put(KEY_VAL, KEY_VAL);
+
+        assert cache0.get(KEY_VAL).equals(KEY_VAL);
 
         //DHT Close from client node. Should affect only client node.
 
-        grid(2).cache(CACHE_NAME_CLOSE_CLIENT).close();// Client node.
+        IgniteCache<String, String> cache1 = grid(1).cache(CACHE_NAME_CLIENT);
+        IgniteCache<String, String> cache2 = grid(2).cache(CACHE_NAME_CLIENT);
 
-        assert grid(0).cache(CACHE_NAME_CLOSE_CLIENT).get(KEY_VAL).equals(KEY_VAL);// Not affected.
-        assert grid(1).cache(CACHE_NAME_CLOSE_CLIENT).get(KEY_VAL).equals(KEY_VAL);// Not affected.
+        assert cache2.get(KEY_VAL).equals(KEY_VAL);
+
+        cache2.close();// Client node.
+
+        assert cache0.get(KEY_VAL).equals(KEY_VAL);// Not affected.
+        assert cache1.get(KEY_VAL).equals(KEY_VAL);// Not affected.
 
         try {
-            grid(2).cache(CACHE_NAME_CLOSE_CLIENT).get(KEY_VAL);// Affected.
+            cache2.get(KEY_VAL);// Affected.
             assert false;
         }
-        catch (IllegalArgumentException | IllegalStateException ignored) {
+        catch (IllegalStateException ignored) {
             // No-op
         }
 
         //DHT Creation from client node after closed.
+        cache2 = grid(2).cache(CACHE_NAME_CLIENT);
 
-        grid(2).getOrCreateCache(cCfgCClient);
+        assert cache2.get(KEY_VAL).equals(KEY_VAL);
 
-        grid(0).cache(CACHE_NAME_CLOSE_CLIENT).put(KEY_VAL, KEY_VAL + "recreated");
+        cache0.put(KEY_VAL, KEY_VAL + "recreated");
 
-        assert grid(0).cache(CACHE_NAME_CLOSE_CLIENT).get(KEY_VAL).equals(KEY_VAL + "recreated");
-        assert grid(1).cache(CACHE_NAME_CLOSE_CLIENT).get(KEY_VAL).equals(KEY_VAL + "recreated");
-        assert grid(2).cache(CACHE_NAME_CLOSE_CLIENT).get(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert cache0.get(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert cache1.get(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert cache2.get(KEY_VAL).equals(KEY_VAL + "recreated");
+    }
+
+    /**
+     * Test Client close.
+     *
+     * @throws Exception If failed.
+     */
+    public void testClientCloseWithTry() throws Exception {
+        String curVal = null;
+
+        for (int i = 0; i < 3; i++) {
+            try (IgniteCache<String, String> cache2 = grid(2).getOrCreateCache(getClientConfig())) {
+                IgniteCache<String, String> cache0 = grid(0).cache(CACHE_NAME_CLIENT);
+                IgniteCache<String, String> cache1 = grid(1).cache(CACHE_NAME_CLIENT);
+
+                assert cache0.get(KEY_VAL) == null || cache0.get(KEY_VAL).equals(curVal);
+                assert cache1.get(KEY_VAL) == null || cache1.get(KEY_VAL).equals(curVal);
+                assert cache2.get(KEY_VAL) == null || cache2.get(KEY_VAL).equals(curVal);
+
+                curVal = KEY_VAL + curVal;
+
+                cache2.put(KEY_VAL, curVal);
+
+                assert cache0.get(KEY_VAL).equals(curVal);
+                assert cache1.get(KEY_VAL).equals(curVal);
+                assert cache2.get(KEY_VAL).equals(curVal);
+            }
+        }
+    }
+
+    /**
+     * Test Near close.
+     *
+     * @throws Exception If failed.
+     */
+    public void testNearClose() throws Exception {
+        IgniteCache<String, String> cache0 = grid(0).getOrCreateCache(getNearConfig());
+
+        //GridDhtTxPrepareRequest requests to Client node will be counted.
+        CountingTxRequestsToClientNodeTcpCommunicationSpi.nodeFilter = grid(2).context().localNodeId();
 
         //Near Close from client node.
 
-        grid(2).createNearCache(CACHE_NAME_CLOSE_NEAR, new NearCacheConfiguration());
+        IgniteCache<String, String> cache1 = grid(1).cache(CACHE_NAME_NEAR);
+        IgniteCache<String, String> cache2 = grid(2).createNearCache(CACHE_NAME_NEAR, new NearCacheConfiguration());
+
+        assert cache2.get(KEY_VAL) == null;
 
         //Subscribing to events.
-        grid(2).cache(CACHE_NAME_CLOSE_NEAR).put(KEY_VAL, KEY_VAL);
+        cache2.put(KEY_VAL, KEY_VAL);
 
-        grid(2).cache(CACHE_NAME_CLOSE_NEAR).close();
+        CountingTxRequestsToClientNodeTcpCommunicationSpi.cnt.set(0);
+
+        cache0.put(KEY_VAL, "near-test");
+
+        U.sleep(1000);
+
+        //Ensure near cache was automatically updated.
+        assert CountingTxRequestsToClientNodeTcpCommunicationSpi.cnt.get() != 0;
+
+        assert cache2.localPeek(KEY_VAL).equals("near-test");
+
+        cache2.close();
 
         CountingTxRequestsToClientNodeTcpCommunicationSpi.cnt.set(0);
 
         //Should not produce messages to client node.
-        grid(0).cache(CACHE_NAME_CLOSE_NEAR).put(KEY_VAL, KEY_VAL + 0);
+        cache0.put(KEY_VAL, KEY_VAL + 0);
 
         U.sleep(1000);
 
+        //Ensure near cache was NOT automatically updated.
         assert CountingTxRequestsToClientNodeTcpCommunicationSpi.cnt.get() == 0;
 
-        assert grid(0).cache(CACHE_NAME_CLOSE_NEAR).get(KEY_VAL).equals(KEY_VAL + 0);// Not affected.
-        assert grid(1).cache(CACHE_NAME_CLOSE_NEAR).get(KEY_VAL).equals(KEY_VAL + 0);// Not affected.
+        assert cache0.get(KEY_VAL).equals(KEY_VAL + 0);// Not affected.
+        assert cache1.get(KEY_VAL).equals(KEY_VAL + 0);// Not affected.
 
         try {
-            grid(2).cache(CACHE_NAME_CLOSE_NEAR).get(KEY_VAL);// Affected.
+            cache2.get(KEY_VAL);// Affected.
             assert false;
         }
         catch (IllegalArgumentException | IllegalStateException ignored) {
@@ -376,31 +548,87 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
 
         //Near Creation from client node after closed.
 
-        grid(2).getOrCreateNearCache(CACHE_NAME_CLOSE_NEAR, new NearCacheConfiguration());
+        cache2 = grid(2).createNearCache(CACHE_NAME_NEAR, new NearCacheConfiguration());
 
-        grid(2).cache(CACHE_NAME_CLOSE_NEAR).put(KEY_VAL, KEY_VAL);
-        grid(0).cache(CACHE_NAME_CLOSE_NEAR).put(KEY_VAL, KEY_VAL + "recreated");
+        //Subscribing to events.
+        cache2.put(KEY_VAL, KEY_VAL);
 
-        assert grid(0).cache(CACHE_NAME_CLOSE_NEAR).get(KEY_VAL).equals(KEY_VAL + "recreated");
-        assert grid(1).cache(CACHE_NAME_CLOSE_NEAR).get(KEY_VAL).equals(KEY_VAL + "recreated");
-        assert grid(2).cache(CACHE_NAME_CLOSE_NEAR).localPeek(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert cache2.localPeek(KEY_VAL).equals(KEY_VAL);
+
+        cache0.put(KEY_VAL, KEY_VAL + "recreated");
+
+        assert cache0.get(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert cache1.get(KEY_VAL).equals(KEY_VAL + "recreated");
+        assert cache2.localPeek(KEY_VAL).equals(KEY_VAL + "recreated");
+    }
+
+    /**
+     * Test Near close.
+     *
+     * @throws Exception If failed.
+     */
+    public void testNearCloseWithTry() throws Exception {
+        String curVal = null;
+
+        grid(0).getOrCreateCache(getNearConfig());
+
+        for (int i = 0; i < 3; i++) {
+            try (IgniteCache<String, String> cache2 = grid(2).getOrCreateNearCache(CACHE_NAME_NEAR, new NearCacheConfiguration())) {
+                IgniteCache<String, String> cache0 = grid(0).cache(CACHE_NAME_NEAR);
+                IgniteCache<String, String> cache1 = grid(1).cache(CACHE_NAME_NEAR);
+
+                assert cache2.localPeek(KEY_VAL) == null;
+
+                assert cache0.get(KEY_VAL) == null || cache0.get(KEY_VAL).equals(curVal);
+                assert cache1.get(KEY_VAL) == null || cache1.get(KEY_VAL).equals(curVal);
+                assert cache2.get(KEY_VAL) == null || cache2.get(KEY_VAL).equals(curVal);
+
+                curVal = KEY_VAL + curVal;
+
+                cache2.put(KEY_VAL, curVal);
+
+                assert cache2.localPeek(KEY_VAL).equals(curVal);
+
+                assert cache0.get(KEY_VAL).equals(curVal);
+                assert cache1.get(KEY_VAL).equals(curVal);
+                assert cache2.get(KEY_VAL).equals(curVal);
+            }
+        }
+    }
+
+    /**
+     * Test Local close.
+     *
+     * @throws Exception If failed.
+     */
+    public void testLocalClose() throws Exception {
+        grid(0).getOrCreateCache(getLocalConfig());
+
+        assert grid(0).cache(CACHE_NAME_LOC).get(KEY_VAL) == null;
+        assert grid(1).cache(CACHE_NAME_LOC).get(KEY_VAL) == null;
+
+        grid(0).cache(CACHE_NAME_LOC).put(KEY_VAL, KEY_VAL + 0);
+        grid(1).cache(CACHE_NAME_LOC).put(KEY_VAL, KEY_VAL + 1);
+
+        assert grid(0).cache(CACHE_NAME_LOC).get(KEY_VAL).equals(KEY_VAL + 0);
+        assert grid(1).cache(CACHE_NAME_LOC).get(KEY_VAL).equals(KEY_VAL + 1);
 
         //Local close. Same as Local destroy.
 
-        grid(1).cache(CACHE_NAME_CLOSE_LOC).close();
+        grid(1).cache(CACHE_NAME_LOC).close();
 
         try {
-            grid(0).cache(CACHE_NAME_CLOSE_LOC).get(KEY_VAL);
+            grid(0).cache(CACHE_NAME_LOC).get(KEY_VAL);
             assert false;
         }
         catch (IllegalArgumentException | IllegalStateException ignored0) {
             try {
-                grid(1).cache(CACHE_NAME_CLOSE_LOC).get(KEY_VAL);
+                grid(1).cache(CACHE_NAME_LOC).get(KEY_VAL);
                 assert false;
             }
             catch (IllegalArgumentException | IllegalStateException ignored1) {
                 try {
-                    grid(2).cache(CACHE_NAME_CLOSE_LOC).get(KEY_VAL);
+                    grid(2).cache(CACHE_NAME_LOC).get(KEY_VAL);
                     assert false;
                 }
                 catch (IllegalArgumentException | IllegalStateException ignored2) {
@@ -411,15 +639,52 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
 
         //Local creation after closed.
 
-        grid(0).getOrCreateCache(cCfgCLoc);
+        grid(0).getOrCreateCache(getLocalConfig());
 
-        grid(0).cache(CACHE_NAME_CLOSE_LOC).put(KEY_VAL, KEY_VAL + "recreated0");
-        grid(1).cache(CACHE_NAME_CLOSE_LOC).put(KEY_VAL, KEY_VAL + "recreated1");
-        grid(2).cache(CACHE_NAME_CLOSE_LOC).put(KEY_VAL, KEY_VAL + "recreated2");
+        grid(0).cache(CACHE_NAME_LOC).put(KEY_VAL, KEY_VAL + "recreated0");
+        grid(1).cache(CACHE_NAME_LOC).put(KEY_VAL, KEY_VAL + "recreated1");
+        grid(2).cache(CACHE_NAME_LOC).put(KEY_VAL, KEY_VAL + "recreated2");
 
-        assert grid(0).cache(CACHE_NAME_CLOSE_LOC).get(KEY_VAL).equals(KEY_VAL + "recreated0");
-        assert grid(1).cache(CACHE_NAME_CLOSE_LOC).get(KEY_VAL).equals(KEY_VAL + "recreated1");
-        assert grid(2).cache(CACHE_NAME_CLOSE_LOC).get(KEY_VAL).equals(KEY_VAL + "recreated2");
+        assert grid(0).cache(CACHE_NAME_LOC).get(KEY_VAL).equals(KEY_VAL + "recreated0");
+        assert grid(1).cache(CACHE_NAME_LOC).get(KEY_VAL).equals(KEY_VAL + "recreated1");
+        assert grid(2).cache(CACHE_NAME_LOC).get(KEY_VAL).equals(KEY_VAL + "recreated2");
+    }
+
+    /**
+     * Test Local close.
+     *
+     * @throws Exception If failed.
+     */
+    public void testLocalCloseWithTry() throws Exception {
+        String curVal = null;
+
+        for (int i = 0; i < 3; i++) {
+            try (IgniteCache<String, String> cache2 = grid(2).getOrCreateCache(getLocalConfig())) {
+                IgniteCache<String, String> cache0 = grid(0).cache(CACHE_NAME_LOC);
+                IgniteCache<String, String> cache1 = grid(1).cache(CACHE_NAME_LOC);
+
+                assert cache0.get(KEY_VAL) == null;
+                assert cache1.get(KEY_VAL) == null;
+                assert cache2.get(KEY_VAL) == null;
+
+                curVal = KEY_VAL + curVal;
+
+                cache0.put(KEY_VAL, curVal + 1);
+                cache1.put(KEY_VAL, curVal + 2);
+                cache2.put(KEY_VAL, curVal + 3);
+
+                assert cache0.get(KEY_VAL).equals(curVal + 1);
+                assert cache1.get(KEY_VAL).equals(curVal + 2);
+                assert cache2.get(KEY_VAL).equals(curVal + 3);
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override protected void beforeTest() throws Exception {
+        super.beforeTest();
+
+        startGridsMultiThreaded(gridCount());
     }
 
     /** {@inheritDoc} */

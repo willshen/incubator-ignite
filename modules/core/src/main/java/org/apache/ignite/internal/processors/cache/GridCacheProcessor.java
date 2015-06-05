@@ -1993,7 +1993,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
                 return F.first(initiateCacheChanges(F.asList(t)));
             }
 
-            return null; // No-op.
+            return new GridFinishedFuture<>(); // No-op.
         }
     }
 
@@ -2157,17 +2157,13 @@ public class GridCacheProcessor extends GridProcessorAdapter {
                     stopGateway(req);
 
                     prepareCacheStop(req);
-
-                    if (desc != null)
-                        registeredCaches.remove(maskNull(req.cacheName()), desc);
                 }
+                // Renew deployment id to have no race condition with start after stop request.
+                desc.deploymentId(IgniteUuid.randomUuid());
 
                 ctx.discovery().onClientCacheClose(req.cacheName(), req.initiatingNodeId());
 
-                DynamicCacheStartFuture changeFut = (DynamicCacheStartFuture)pendingFuts.get(maskNull(req.cacheName()));
-
-                if (changeFut != null && changeFut.deploymentId().equals(req.deploymentId()))
-                    changeFut.onDone();
+                completeStartFuture(req);
             }
             else {
                 if (desc == null) {
