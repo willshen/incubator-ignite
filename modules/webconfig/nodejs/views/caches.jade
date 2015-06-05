@@ -52,10 +52,15 @@ block content
                             div(ng-switch on='field.type')
                                 +form-row
                                 div(ng-switch-when='idxTypes')
-                                    .panel
-                                        label.col-sm-2 Key class
-                                        label.col-sm-2 Val class
+                                    div
+                                        label.col-sm-2 Key class:
+                                        .col-sm-3
+                                            +edt('create.keyCls', 'Fully qualified key class name')
                                         +tip
+                                    div
+                                        label.col-sm-2 Value class:
+                                        .col-sm-3
+                                            +edt('create.valCls', 'Fully qualified value class name')
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)

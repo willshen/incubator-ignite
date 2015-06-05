@@ -17,6 +17,9 @@
 mixin tip
     i.tip.fa.fa-question-circle(ng-if='field.tip' bs-tooltip='field.tip.join("")' type='button')
 
+mixin edt(mdl, ph)
+    input.form-control(type='text' ng-model=mdl placeholder=ph)
+
 mixin form-row
     div(ng-switch-when='check')
         input(type='checkbox' ng-model='backupItem[field.model]')
@@ -25,7 +28,7 @@ mixin form-row
     div(ng-switch-when='text')
         label.col-sm-2 {{field.label}}:
         .col-sm-3
-            input.form-control(type='text' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
+            +edt('backupItem[field.model]', '{{field.placeholder}}')
         +tip
     div(ng-switch-when='dropdown')
         label.col-sm-2 {{field.label}}:
