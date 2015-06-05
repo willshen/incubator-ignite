@@ -49,7 +49,7 @@ public class NodeJsSelfTest extends NodeJsAbstractTest {
 
         Map<String, String> env = new HashMap<>();
 
-        env.put("IGNITE_HOME", "C:\\Users\\GridGain\\Documents\\GitHub\\incubator-ignite");
+        env.put("IGNITE_HOME", IgniteUtils.getIgniteHome());
         try {
             proc = GridJavaProcess.exec(
                 cmd,
