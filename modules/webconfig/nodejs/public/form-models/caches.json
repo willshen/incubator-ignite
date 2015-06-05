@@ -11,10 +11,12 @@
       "model": "mode",
       "placeholder": "Choose mode",
       "items": "modes",
-      "tip": ["Cache modes:",
+      "tip": [
+        "Cache modes:",
         "<ul><li>Partitioned - in this mode the overall key set will be divided into partitions and all partitions will be split equally between participating nodes.</li>",
         "<li>Replicated - in this mode all the keys are distributed to all participating nodes.</li>",
-        "<li>Local - in this mode caches residing on different grid nodes will not know about each other.</li></ul>"]
+        "<li>Local - in this mode caches residing on different grid nodes will not know about each other.</li></ul>"
+      ]
     },
     {
       "label": "Atomicity",
@@ -22,9 +24,11 @@
       "model": "atomicity",
       "placeholder": "Choose atomicity",
       "items": "atomicities",
-      "tip": ["Atomicity:",
+      "tip": [
+        "Atomicity:",
         "<ul><li>Transactional - in this mode specified fully ACID-compliant transactional cache behavior.</li>",
-        "<li>Atomic - in this mode distributed transactions and distributed locking are not supported.</li></ul>"]
+        "<li>Atomic - in this mode distributed transactions and distributed locking are not supported.</li></ul>"
+      ]
     }
   ],
   "advanced": [
@@ -36,7 +40,9 @@
           "type": "text",
           "model": "backups",
           "placeholder": "0",
-          "tip": ["Number of nodes used to back up single partition for partitioned cache."]
+          "tip": [
+            "Number of nodes used to back up single partition for partitioned cache."
+          ]
         },
         {
           "label": "Mode",
@@ -44,16 +50,33 @@
           "model": "memoryMode",
           "placeholder": "Choose mode",
           "items": "memoryModes",
-          "tip": ["Memory modes:",
+          "tip": [
+            "Memory modes:",
             "<ul><li>ONHEAP_TIERED - in this mode entries will be stored on-heap first.</li>",
             "<li>OFFHEAP_TIERED - distributed caches will start immediately and will load all necessary data from other available grid nodes in the background.</li>",
-            "<li>OFFHEAP_VALUES - in this mode no rebalancing will take place which means that caches will be either loaded on demand from persistent store whenever data is accessed, or will be populated explicitly.</li></ul>"]
+            "<li>OFFHEAP_VALUES - in this mode no rebalancing will take place which means that caches will be either loaded on demand from persistent store whenever data is accessed, or will be populated explicitly.</li></ul>"
+          ]
+        },
+        {
+          "label": "Off-heap max memory",
+          "type": "text",
+          "model": "offHeapMaxMem",
+          "placeholder": "-1",
+          "tip": [
+            "Sets maximum amount of memory available to off-heap storage.<br/>",
+            "Possible values are:",
+            "<ul><li>-1 - means that off-heap storage is disabled.</li>",
+            "<li>0 - Ignite will not limit off-heap storage (it's up to user to properly add and remove entries from cache to ensure that off-heap storage does not grow infinitely.</li>",
+            "<li>Any positive value specifies the limit of off-heap storage in bytes.</li></ul>"
+          ]
         },
         {
           "label": "Swap enabled",
           "type": "check",
           "model": "swapEnabled",
-          "tip": ["Flag indicating whether swap storage is enabled or not for this cache."]
+          "tip": [
+            "Flag indicating whether swap storage is enabled or not for this cache."
+          ]
         }
       ]
     },
@@ -66,46 +89,69 @@
           "model": "rebalanceMode",
           "placeholder": "Choose mode",
           "items": "rebalanceModes",
-          "tip": ["Rebalance modes:",
+          "tip": [
+            "Rebalance modes:",
             "<ul><li>Synchronous - in this mode distributed caches will not start until all necessary data is loaded from other available grid nodes.</li>",
             "<li>Asynchronous - in this mode entries never end up in heap memory and get stored in offheap memory right away.</li>",
-            "<li>None - in this mode entry keys will be stored on heap memory, and values will be stored in offheap memory.</li></ul>"]
+            "<li>None - in this mode entry keys will be stored on heap memory, and values will be stored in offheap memory.</li></ul>"
+          ]
         },
         {
           "label": "Pool size",
           "type": "text",
           "model": "rebalancePoolSize",
-          "placeholder": "2"
+          "placeholder": "2",
+          "tip": [
+            "Size of rebalancing thread pool.<br>",
+            "Note that size serves as a hint and implementation may create more threads for rebalancing than specified here (but never less threads)."
+          ]
         },
         {
           "label": "Batch size",
           "type": "text",
           "model": "rebalanceBatchSize",
-          "placeholder": "512 * 1024"
+          "placeholder": "512 * 1024",
+          "tip": [
+            "Size (in bytes) to be loaded within a single rebalance message.<br/>",
+            "Rebalancing algorithm will split total data set on every node into multiple batches prior to sending data."
+          ]
         },
         {
           "label": "Order",
           "type": "text",
           "model": "rebalanceOrder",
-          "placeholder": "0"
+          "placeholder": "0",
+          "tip": [
+            "If cache rebalance order is positive, rebalancing for this cache will be started only when rebalancing ",
+            "for all caches with smaller rebalance order (except caches with rebalance order 0) will be completed."
+          ]
         },
         {
           "label": "Delay",
           "type": "text",
           "model": "rebalanceDelay",
-          "placeholder": "0"
+          "placeholder": "0",
+          "tip": [
+            "Delay in milliseconds upon a node joining or leaving topology (or crash) after which rebalancing should be started automatically."
+          ]
         },
         {
           "label": "Timeout",
           "type": "text",
           "model": "rebalanceTimeout",
-          "placeholder": "10000"
+          "placeholder": "10000",
+          "tip": [
+            "Rebalance timeout (ms)"
+          ]
         },
         {
           "label": "Throttle",
           "type": "text",
           "model": "rebalanceThrottle",
-          "placeholder": "0"
+          "placeholder": "0",
+          "tip": [
+            "Time in milliseconds to wait between rebalance messages to avoid overloading of CPU or network."
+          ]
         }
       ]
     },
@@ -113,9 +159,50 @@
       "label": "Write behind",
       "fields": [
         {
-          "label": "Name2",
+          "label": "Enabled",
+          "type": "check",
+          "model": "writeBehindEnabled",
+          "tip": [
+            "Flag indicating whether Ignite should use write-behind behaviour for the cache store."
+          ]
+        },
+        {
+          "label": "Batch size",
           "type": "text",
-          "model": "name2"
+          "model": "writeBehindBatchSize",
+          "placeholder": "512",
+          "tip": [
+            "Maximum batch size for write-behind cache store operations.<br/>",
+            "Store operations (get or remove) are combined in a batch of this size to be passed to cache store."
+          ]
+        },
+        {
+          "label": "Flush size",
+          "type": "text",
+          "model": "writeBehindFlushSize",
+          "placeholder": "10240",
+          "tip": [
+            "Maximum size of the write-behind cache.<br>",
+            "If cache size exceeds this value, all cached items are flushed to the cache store and write cache is cleared."
+          ]
+        },
+        {
+          "label": "Flush frequency",
+          "type": "text",
+          "model": "writeBehindFlushFreq",
+          "placeholder": "5000",
+          "tip": [
+            "Frequency with which write-behind cache is flushed to the cache store in milliseconds."
+          ]
+        },
+        {
+          "label": "Flush threads count",
+          "type": "text",
+          "model": "writeBehindFlushThreadCnt",
+          "placeholder": "1",
+          "tip": [
+            "Number of threads that will perform cache flushing."
+          ]
         }
       ]
     }

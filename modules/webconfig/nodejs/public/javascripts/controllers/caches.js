@@ -65,14 +65,7 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
         //DefaultLockTimeout dfltLockTimeout
         //invalidate
         //TransactionManagerLookupClassName tmLookupClsName
-        // swapEnabled
         // maxConcurrentAsyncOps
-        // writeBehindEnabled
-        // writeBehindFlushSize
-        // writeBehindFlushFreq
-        // writeBehindFlushThreadCnt
-        // writeBehindBatchSize
-        // offHeapMaxMem
 
         $scope.caches = [];
 
