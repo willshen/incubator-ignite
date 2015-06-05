@@ -42,15 +42,13 @@ block content
         form.form-horizontal(name='editForm' ng-if='backupItem')
             h3 General
             .settings-row(ng-repeat='field in general')
-                div(ng-switch on='field.type')
-                    +form-row
+                +form-row
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
                     div(ng-repeat='group in advanced')
                         h3 {{group.label}}
                         .settings-row(ng-repeat='field in group.fields')
-                            div(ng-switch on='field.type')
-                                +form-row
+                            +form-row
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)

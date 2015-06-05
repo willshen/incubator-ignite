@@ -7,7 +7,7 @@
     },
     {
       "label": "Discovery",
-      "type": "dropdown",
+      "type": "dropdown-details",
       "model": "discovery.kind",
       "placeholder": "Choose discovery",
       "items": "discoveries",
