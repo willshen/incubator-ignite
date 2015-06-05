@@ -32,3 +32,8 @@ mixin form-row
         .col-sm-3
             button.form-control(bs-select ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
         +tip
+    div(ng-switch-when='dropdown-multiple')
+        label.col-sm-2 {{field.label}}:
+        .col-sm-3
+            button.form-control(bs-select ng-model='backupItem[field.model]' data-multiple='1' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
+        +tip

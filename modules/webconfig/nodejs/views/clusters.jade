@@ -19,6 +19,8 @@ extends layout-sidebar
 append scripts
     script(src='/javascripts/controllers/clusters.js')
 
+include includes/controls
+
 block content
     .docs-header
         h1 Clusters
@@ -40,139 +42,15 @@ block content
         form.form-horizontal(name='editForm' ng-if='backupItem')
             h3 General
             .settings-row(ng-repeat='field in general')
-                span.col-sm-2 {{field.label}}:
-                .col-sm-3(ng-switch on='field.type')
-                    div(ng-switch-when='text')
-                        input.form-control(type='text' ng-model='backupItem[field.model]')
-                    div(ng-switch-when='dropdown')
-                        button.form-control(ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}' bs-select)
-                i.tip.fa.fa-question-circle(bs-tooltip type='button' ng-show='field.tip' data-trigger='hover' data-placement='right' data-title='{{field.tip.join("")}}' data-html='true')
+                div(ng-switch on='field.type')
+                    +form-row
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
-                    h3 Atomic data structures
-                    .settings-row
-                        span.col-sm-2 Number of backup nodes:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.atomic.backups' placeholder='0')
-                    .settings-row
-                        span.col-sm-2 Cache mode:
-                        .col-sm-3
-                            button.form-control(ng-model='backupItem.atomic.cacheMode' data-template='/select' data-placeholder='PARTITIONED' bs-options='item.value as item.label for item in cacheModes' bs-select)
-                    .settings-row
-                        span.col-sm-2 Sequence reserve size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.atomic.seqReserveSize' placeholder='1,000')
-                    h3 Cache configuration
-                    .settings-row
-                        span.col-sm-2 Caches:
-                        .col-sm-3
-                            button.form-control(ng-model='backupItem.caches' data-template='/select' data-multiple='1' data-max-length='3' data-placeholder='Choose caches' bs-options='item.value as item.label for item in caches' bs-select)
-                    .settings-row
-                        input(type='checkbox' ng-model='backupItem.cacheSanityCheckEnabled')
-                        label(ng-click='backupItem.cacheSanityCheckEnabled = !backupItem.cacheSanityCheckEnabled') Enable cache sanity check.
-                    h3 Events
-                    .settings-row
-                        span.col-sm-2 Include type:
-                        .col-sm-3
-                            button.form-control(ng-model='backupItem.inclEvtTypes' data-template='/select' data-multiple='1' data-max-length='2' data-placeholder='Choose recorded event types' bs-options='item.value as item.label for item in events' bs-select)
-                    h3 Marshaller
-                    .settings-row
-                        span.col-sm-2 Keep alive time:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.marshCacheKeepAliveTime' placeholder='10,000')
-                    .settings-row
-                        span.col-sm-2 Pool size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.marshCachePoolSize' placeholder='max(8, availableProcessors) * 2')
-                    h3 Metrics
-                    .settings-row
-                        span.col-sm-2 Elapsed time:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.metricsExpTime' placeholder='0')
-                    .settings-row
-                        span.col-sm-2 History size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.metricsHistSize' placeholder='10,000')
-                    .settings-row
-                        span.col-sm-2 Log frequency:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.metricsLogFreq' placeholder='60,000')
-                    .settings-row
-                        span.col-sm-2 Log frequency:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.metricsUpdateFreq' placeholder='60,000')
-                    .settings-row
-                        span.col-sm-2 Update frequency:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.metricsLogFreq' placeholder='60,000')
-                    h3 Network
-                    .settings-row
-                        span.col-sm-2 Timeout:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.netTimeout' placeholder='5,000')
-                    .settings-row
-                        span.col-sm-2 Send retry delay:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.sndRetryDelay' placeholder='1,000')
-                    .settings-row
-                        span.col-sm-2 Send retry count:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.sndRetryCnt' placeholder='3')
-                    h3 Peer Class Loading
-                    .settings-row
-                        input(type='checkbox' ng-model='backupItem.p2pEnabled')
-                        label(ng-click='backupItem.p2pEnabled = !backupItem.p2pEnabled') Enable peer class loading.
-                    .settings-row
-                        span.col-sm-2 Local class path exclude:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.p2pLocClsPathExcl' placeholder='[]')
-                    .settings-row
-                        span.col-sm-2 Missed resources cache size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.p2pMissedCacheSize' placeholder='100')
-                    .settings-row
-                        span.col-sm-2 Pool size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.p2pPoolSize' placeholder='availableProcessors')
-                    h3 Thread pools size
-                    .settings-row
-                        span.col-sm-2 Public:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.pubPoolSize' placeholder='max(8, availableProcessors) * 2')
-                    .settings-row
-                        span.col-sm-2 System:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.sysPoolSize' placeholder='max(8, availableProcessors) * 2')
-                    .settings-row
-                        span.col-sm-2 Management:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.mgmtPoolSize' placeholder='4')
-                    h3 Transactions configuration
-                    // TODO
-                    .settings-row
-                        span.col-sm-2 Default transaction timeout:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.transactions.dfltTxTimeout' placeholder='0')
-                    .settings-row
-                        span.col-sm-2 Pessimistic log cleanup delay:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.transactions.pessimisticTxLogSize' placeholder='10,000')
-                    .settings-row
-                        span.col-sm-2 Pessimistic transactions log size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.transactions.pessimisticTxLogSize' placeholder='0')
-                    .settings-row
-                        input(type='checkbox' ng-model='backupItem.transactions.txSerEnabled')
-                        label(ng-click='backupItem.txSerEnabled = !backupItem.txSerEnabled') span Enable serializable cache transactions.
-                    h3 Utility
-                    .settings-row
-                        span.col-sm-2 Keep alive time:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.utilityCacheKeepAliveTime' placeholder='10,000')
-                    .settings-row
-                        span.col-sm-2 Pool size:
-                        .col-sm-3
-                            input.form-control(type='text' ng-model='backupItem.utilityCachePoolSize' placeholder='max(8, availableProcessors) * 2')
+                    div(ng-repeat='group in advanced')
+                        h3 {{group.label}}
+                        .settings-row(ng-repeat='field in group.fields')
+                            div(ng-switch on='field.type')
+                                +form-row
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)

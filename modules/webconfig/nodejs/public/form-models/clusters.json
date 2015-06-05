@@ -16,50 +16,220 @@
   ],
   "advanced": [
     {
-      "label": "G1",
+      "label": "Atomic data structures",
       "fields": [
         {
-          "label": "Name",
+          "label": "Number of backup nodes",
           "type": "text",
-          "model": "name"
+          "model": "atomic.backups",
+          "placeholder": "0"
         },
         {
-          "label": "Mode",
+          "label": "Cache mode",
           "type": "dropdown",
-          "model": "mode",
-          "placeholder": "Choose mode",
-          "items": "modes"
+          "model": "atomic.cacheMode",
+          "placeholder": "PARTITIONED",
+          "items": "cacheModes"
         },
         {
-          "label": "Atomicity",
-          "type": "dropdown",
-          "model": "atomicity",
-          "placeholder": "Choose atomicity",
-          "items": "atomicities"
+          "label": "Sequence reserve size",
+          "type": "text",
+          "model": "atomic.seqReserveSize",
+          "placeholder": "1,000"
         }
       ]
     },
     {
-      "label": "G2",
+      "label": "Cache configuration",
       "fields": [
         {
-          "label": "Name",
+          "label": "Caches",
+          "type": "dropdown-multiple",
+          "model": "caches",
+          "placeholder": "Choose caches",
+          "items": "caches"
+        },
+        {
+          "label": "Enable cache sanity check",
+          "type": "check",
+          "model": "cacheSanityCheckEnabled"
+        }
+      ]
+    },
+    {
+      "label": "Events",
+      "fields": [
+        {
+          "label": "Include type",
+          "type": "dropdown-multiple",
+          "model": "inclEvtTypes",
+          "placeholder": "Choose recorded event types",
+          "items": "events"
+        }
+      ]
+    },
+    {
+      "label": "Marshaller",
+      "fields": [
+        {
+          "label": "Keep alive time",
           "type": "text",
-          "model": "name"
+          "model": "marshCacheKeepAliveTime",
+          "placeholder": "10,000"
         },
         {
-          "label": "Mode",
-          "type": "dropdown",
-          "model": "mode",
-          "placeholder": "Choose mode",
-          "items": "modes"
+          "label": "Pool size",
+          "type": "text",
+          "model": "marshCachePoolSize",
+          "placeholder": "max(8, availableProcessors) * 2"
+        }
+      ]
+    },
+    {
+      "label": "Metrics",
+      "fields": [
+        {
+          "label": "Elapsed time",
+          "type": "text",
+          "model": "metricsExpTime",
+          "placeholder": "0"
         },
         {
-          "label": "Atomicity",
-          "type": "dropdown",
-          "model": "atomicity",
-          "placeholder": "Choose atomicity",
-          "items": "atomicities"
+          "label": "History size",
+          "type": "text",
+          "model": "metricsHistSize",
+          "placeholder": "10,000"
+        },
+        {
+          "label": "Log frequency",
+          "type": "text",
+          "model": "metricsLogFreq",
+          "placeholder": "60,000"
+        },
+        {
+          "label": "Metrics update frequency",
+          "type": "text",
+          "model": "metricsUpdateFreq",
+          "placeholder": "60,000"
+        }
+      ]
+    },
+    {
+      "label": "Network",
+      "fields": [
+        {
+          "label": "Timeout",
+          "type": "text",
+          "model": "netTimeout",
+          "placeholder": "5,000"
+        },
+        {
+          "label": "Send retry delay",
+          "type": "text",
+          "model": "sndRetryDelay",
+          "placeholder": "1,000"
+        },
+        {
+          "label": "Send retry count",
+          "type": "text",
+          "model": "sndRetryCnt",
+          "placeholder": "3"
+        }
+      ]
+    },
+    {
+      "label": "Peer Class Loading",
+      "fields": [
+        {
+          "label": "Enable peer class loading",
+          "type": "check",
+          "model": "p2pEnabled"
+        },
+        {
+          "label": "Local class path exclude",
+          "type": "text",
+          "model": "p2pLocClsPathExcl",
+          "placeholder": "[]"
+        },
+        {
+          "label": "Missed resources cache size",
+          "type": "text",
+          "model": "p2pMissedCacheSize",
+          "placeholder": "100"
+        },
+        {
+          "label": "Pool size",
+          "type": "text",
+          "model": "p2pPoolSize",
+          "placeholder": "availableProcessors"
+        }
+      ]
+    },
+    {
+      "label": "Thread pools size",
+      "fields": [
+        {
+          "label": "Public",
+          "type": "text",
+          "model": "pubPoolSize",
+          "placeholder": "max(8, availableProcessors) * 2"
+        },
+        {
+          "label": "System",
+          "type": "text",
+          "model": "sysPoolSize",
+          "placeholder": "max(8, availableProcessors) * 2"
+        },
+        {
+          "label": "Management",
+          "type": "text",
+          "model": "mgmtPoolSize",
+          "placeholder": "4"
+        }
+      ]
+    },
+    {
+      "label": "Transactions configuration",
+      "fields": [
+        {
+          "label": "Default transaction timeout",
+          "type": "text",
+          "model": "dfltTxTimeout",
+          "placeholder": "0"
+        },
+        {
+          "label": "Pessimistic log cleanup delay",
+          "type": "text",
+          "model": "pessimisticTxLogLinger",
+          "placeholder": "10,000"
+        },
+        {
+          "label": "Pessimistic transactions log size",
+          "type": "text",
+          "model": "pessimisticTxLogSize",
+          "placeholder": "0"
+        },
+        {
+          "label": "Enable serializable cache transactions",
+          "type": "check",
+          "model": "txSerEnabled"
+        }
+      ]
+    },
+    {
+      "label": "Utility",
+      "fields": [
+        {
+          "label": "Keep alive time",
+          "type": "text",
+          "model": "utilityCacheKeepAliveTime",
+          "placeholder": "10,000"
+        },
+        {
+          "label": "Pool size",
+          "type": "text",
+          "model": "utilityCachePoolSize",
+          "placeholder": "max(8, availableProcessors) * 2"
         }
       ]
     }
