@@ -36,6 +36,12 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
     /** Cache name. */
     public static final String CACHE_NAME = "mycache";
 
+    /** Failed message. */
+    public static final String SCRIPT_FAILED = "node js test failed:";
+
+    /** Ok message. */
+    public static final String SCRIPT_FINISHED = "node js test finished.";
+
     /** {@inheritDoc} */
     @Override protected IgniteConfiguration getConfiguration(String gridName) throws Exception {
         IgniteConfiguration cfg = super.getConfiguration(gridName);
@@ -89,7 +95,7 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
 
         List<String> cmd = new ArrayList<>();
 
-        cmd.add("C:\\Program Files\\nodejs\\node_modules\\.bin\\nodeunit.cmd");
+        cmd.add("node");
 
         cmd.add(path);
 
@@ -106,10 +112,12 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
                     @Override public void apply(String s) {
                         info("Node js: " + s);
 
-                        if (s.contains("OK: "))
+                        s = s.toLowerCase();
+
+                        if (s.contains(SCRIPT_FINISHED))
                             readyLatch.countDown();
 
-                        if (s.contains("Error") || s.contains("FAILURES")) {
+                        if (s.contains("error") || s.contains("fail") || s.contains(SCRIPT_FAILED)) {
                             errors.add("Script failed: " + s);
 
                             readyLatch.countDown();
