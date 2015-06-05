@@ -30,7 +30,7 @@ function selectAll(req, res) {
     // Get owned space and all accessed space.
     db.Space.find({$or: [{owner: user_id}, {usedBy: {$elemMatch: {account: user_id}}}]}, function (err, spaces) {
         if (err)
-            return res.status(500).send(err);
+            return res.status(500).send(err.message);
 
         var space_ids = spaces.map(function(value, index) {
             return value._id;
@@ -39,7 +39,7 @@ function selectAll(req, res) {
         // Get all caches for spaces.
         db.Cache.find({space: {$in: space_ids}}, function (err, caches) {
             if (err)
-                return res.status(500).send(err);
+                return res.status(500).send(err.message);
 
             res.json({spaces: spaces, caches: caches});
         });
@@ -60,7 +60,7 @@ router.post('/save', function(req, res) {
     if (req.body._id)
         db.Cache.update({_id: req.body._id}, req.body, {upsert: true}, function(err) {
             if (err)
-                return res.send(err);
+                return res.status(500).send(err.message);
 
             res.sendStatus(200);
         });
@@ -69,7 +69,7 @@ router.post('/save', function(req, res) {
 
         cache.save(function(err, cache) {
             if (err)
-                return res.send(err.message);
+                return res.status(500).send(err.message);
 
             res.send(cache._id);
         });
@@ -82,7 +82,7 @@ router.post('/save', function(req, res) {
 router.post('/remove', function(req, res) {
     db.Cache.remove(req.body, function (err) {
         if (err)
-            return res.send(err);
+            return res.status(500).send(err.message);
 
         res.sendStatus(200);
     })

@@ -30,7 +30,7 @@ function selectAll(req, res) {
     // Get owned space and all accessed space.
     db.Space.find({$or: [{owner: user_id}, {usedBy: {$elemMatch: {account: user_id}}}]}, function (err, spaces) {
         if (err)
-            return res.status(500).send(err);
+            return res.status(500).send(err.message);
 
         var space_ids = spaces.map(function(value) {
             return value._id;
@@ -43,7 +43,7 @@ function selectAll(req, res) {
             // Get all clusters for spaces.
             db.Cluster.find({space: {$in: space_ids}}, function (err, clusters) {
                 if (err)
-                    return res.status(500).send(err);
+                    return res.status(500).send(err.message);
 
                 var cachesJson = caches.map(function(cache) {
                     return {value: cache._id, label: cache.name};
@@ -69,7 +69,7 @@ router.post('/save', function(req, res) {
     if (req.body._id)
         db.Cluster.update({_id: req.body._id}, req.body, {upsert: true}, function(err) {
             if (err)
-                return res.send(err);
+                return res.status(500).send(err.message);
 
             res.sendStatus(200);
         });
@@ -78,7 +78,7 @@ router.post('/save', function(req, res) {
 
         cluster.save(function(err, cluster) {
             if (err)
-                return res.send(err.message);
+                return res.status(500).send(err.message);
 
             res.send(cluster._id);
         });
@@ -91,7 +91,7 @@ router.post('/save', function(req, res) {
 router.post('/remove', function(req, res) {
     db.Cluster.remove(req.body, function (err) {
         if (err)
-            return res.send(err);
+            return res.status(500).send(err.message);
 
         res.sendStatus(200);
     })
