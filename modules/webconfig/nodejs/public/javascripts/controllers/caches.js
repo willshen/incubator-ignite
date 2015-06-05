@@ -17,8 +17,8 @@
 
 configuratorModule.controller('cachesController', ['$scope', '$http', function($scope, $http) {
         $scope.templates = [
-            {value: {mode: 'PART', atomicity: 'TRANSACTIONAL'}, label: 'Partitioned'},
-            {value: {mode: 'REPL', atomicity: 'ATOMIC'}, label: 'Replicated'},
+            {value: {mode: 'PARTITIONED', atomicity: 'TRANSACTIONAL'}, label: 'Partitioned'},
+            {value: {mode: 'REPLICATED', atomicity: 'ATOMIC'}, label: 'Replicated'},
             {value: {mode: 'LOCAL', atomicity: 'ATOMIC'}, label: 'Local'}
         ];
 
@@ -28,8 +28,8 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
         ];
 
         $scope.modes = [
-            {value: 'PART', label: 'Partitioned'},
-            {value: 'REPL', label: 'Replicated'},
+            {value: 'PARTITIONED', label: 'Partitioned'},
+            {value: 'REPLICATED', label: 'Replicated'},
             {value: 'LOCAL', label: 'Local'}
         ];
 
@@ -52,8 +52,6 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
 
         $scope.general = [];
         $scope.advanced = [];
-
-
 
         $http.get('/form-models/caches.json')
             .success(function(data) {

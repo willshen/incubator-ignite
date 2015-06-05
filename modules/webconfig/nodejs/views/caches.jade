@@ -51,6 +51,11 @@ block content
                         .settings-row(ng-repeat='field in group.fields')
                             div(ng-switch on='field.type')
                                 +form-row
+                                div(ng-switch-when='idxTypes')
+                                    .panel
+                                        label.col-sm-2 Key class
+                                        label.col-sm-2 Val class
+                                        +tip
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)

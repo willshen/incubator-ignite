@@ -205,6 +205,16 @@
           ]
         }
       ]
+    },
+    {
+      "label": "Query",
+      "fields": [
+        {
+          "type": "idxTypes",
+          "model": "idxTypes",
+          "tip": ["Collection of types to index"]
+        }
+      ]
     }
   ]
 }
