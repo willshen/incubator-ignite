@@ -17,73 +17,24 @@
 
 package org.apache.ignite.internal;
 
-import org.apache.ignite.internal.util.*;
-import org.apache.ignite.internal.util.typedef.*;
-
-import java.util.*;
-import java.util.concurrent.*;
-
-import static java.util.concurrent.TimeUnit.*;
-
 /**
  * Test node js client.
  */
 public class NodeJsSelfTest extends NodeJsAbstractTest {
+    /** {@inheritDoc} */
+    @Override protected void beforeTestsStarted() throws Exception {
+        startGrid(0);
+    }
+
+    /** {@inheritDoc} */
+    @Override protected void afterTestsStopped() throws Exception {
+        stopAllGrids();
+    }
+
     /**
      * @throws Exception If failed.
      */
     public void testPutGetJs() throws Exception {
-        startGrid(0);
-
-        final CountDownLatch readyLatch = new CountDownLatch(1);
-
-        GridJavaProcess proc = null;
-
-        final List<String> errors = new ArrayList<>();
-
-        List<String> cmd = new ArrayList<>();
-
-        cmd.add("C:\\Program Files\\nodejs\\node_modules\\.bin\\nodeunit.cmd");
-
-        cmd.add(getNodeJsTestDir() + "test.js");
-
-        Map<String, String> env = new HashMap<>();
-
-        env.put("IGNITE_HOME", IgniteUtils.getIgniteHome());
-        try {
-            proc = GridJavaProcess.exec(
-                cmd,
-                env,
-                log,
-                new CI1<String>() {
-                    @Override
-                    public void apply(String s) {
-                        info("Node js: " + s);
-
-                        if (s.contains("OK: "))
-                            readyLatch.countDown();
-
-                        if (s.contains("Error") || s.contains("FAILURES")) {
-                            errors.add("Script failed: " + s);
-
-                            readyLatch.countDown();
-                        }
-                    }
-                },
-                null
-            );
-
-            assertTrue(readyLatch.await(60, SECONDS));
-
-            assertEquals(errors.toString(), 0, errors.size());
-
-            proc.getProcess().waitFor();
-        }
-        finally {
-            stopAllGrids();
-
-            if (proc != null)
-                proc.killProcess();
-        }
+        runJsScript(getNodeJsTestDir() + "test.js");
     }
 }

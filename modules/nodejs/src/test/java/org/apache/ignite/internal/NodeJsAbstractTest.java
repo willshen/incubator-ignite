@@ -19,8 +19,15 @@ package org.apache.ignite.internal;
 
 import org.apache.ignite.cache.*;
 import org.apache.ignite.configuration.*;
+import org.apache.ignite.internal.util.*;
+import org.apache.ignite.internal.util.typedef.*;
 import org.apache.ignite.internal.util.typedef.internal.*;
 import org.apache.ignite.testframework.junits.common.*;
+
+import java.util.*;
+import java.util.concurrent.*;
+
+import static java.util.concurrent.TimeUnit.*;
 
 /**
  * Abstract class for Node JS testing.
@@ -67,5 +74,60 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
             sep + "src" +
             sep + "test" +
             sep + "nodejs" + sep;
+    }
+
+    /**
+     * @param path Path to script.
+     * @throws Exception If script failed.
+     */
+    protected void runJsScript(String path) throws Exception {
+        final CountDownLatch readyLatch = new CountDownLatch(1);
+
+        GridJavaProcess proc = null;
+
+        final List<String> errors = new ArrayList<>();
+
+        List<String> cmd = new ArrayList<>();
+
+        cmd.add("C:\\Program Files\\nodejs\\node_modules\\.bin\\nodeunit.cmd");
+
+        cmd.add(path);
+
+        Map<String, String> env = new HashMap<>();
+
+        env.put("IGNITE_HOME", IgniteUtils.getIgniteHome());
+
+        try {
+            proc = GridJavaProcess.exec(
+                cmd,
+                env,
+                log,
+                new CI1<String>() {
+                    @Override public void apply(String s) {
+                        info("Node js: " + s);
+
+                        if (s.contains("OK: "))
+                            readyLatch.countDown();
+
+                        if (s.contains("Error") || s.contains("FAILURES")) {
+                            errors.add("Script failed: " + s);
+
+                            readyLatch.countDown();
+                        }
+                    }
+                },
+                null
+            );
+
+            assertTrue(readyLatch.await(60, SECONDS));
+
+            assertEquals(errors.toString(), 0, errors.size());
+
+            proc.getProcess().waitFor();
+        }
+        finally {
+            if (proc != null)
+                proc.killProcess();
+        }
     }
 }
