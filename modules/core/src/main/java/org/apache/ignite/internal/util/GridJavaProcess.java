@@ -176,14 +176,15 @@ public final class GridJavaProcess {
     /**
      * Executes cmd in a separate system process.
      *
-     * @param cmd Command to run.
+     * @param cmd Commands to run.
+     * @param env Environment variable.
      * @param log Log to use.
      * @param printC Optional closure to be called each time wrapped process prints line to system.out or system.err.
      * @param procKilledC Optional closure to be called when process termination is detected.
      * @return Wrapper around {@link Process}
      * @throws Exception If any problem occurred.
      */
-    public static GridJavaProcess exec(String cmd, @Nullable IgniteLogger log,
+    public static GridJavaProcess exec(List<String> cmd, Map<String, String> env, @Nullable IgniteLogger log,
         @Nullable IgniteInClosure<String> printC, @Nullable GridAbsClosure procKilledC)
         throws Exception {
 
@@ -198,6 +199,8 @@ public final class GridJavaProcess {
         ProcessBuilder builder = new ProcessBuilder(cmd);
 
         builder.redirectErrorStream(true);
+
+        builder.environment().putAll(env);
 
         Process proc = builder.start();
 

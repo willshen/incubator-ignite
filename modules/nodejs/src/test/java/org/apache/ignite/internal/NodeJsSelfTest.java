@@ -41,9 +41,19 @@ public class NodeJsSelfTest extends NodeJsAbstractTest {
 
         final List<String> errors = new ArrayList<>();
 
+        List<String> cmd = new ArrayList<>();
+
+        cmd.add("C:\\Program Files\\nodejs\\node_modules\\.bin\\nodeunit.cmd");
+
+        cmd.add(getNodeJsTestDir() + "test.js");
+
+        Map<String, String> env = new HashMap<>();
+
+        env.put("IGNITE_HOME", "C:\\Users\\GridGain\\Documents\\GitHub\\incubator-ignite");
         try {
             proc = GridJavaProcess.exec(
-                getNodeJsTestDir() + "runtest.bat",
+                cmd,
+                env,
                 log,
                 new CI1<String>() {
                     @Override
