@@ -42,7 +42,7 @@ Ignition.start = function(port, hosts, callback) {
 
         console.log(error);
         if (!numConn)
-            callback.call(null, "Cannot connect to servers", null);
+            callback.call(null, "Cannot connect to servers.", null);
     }
 }
 

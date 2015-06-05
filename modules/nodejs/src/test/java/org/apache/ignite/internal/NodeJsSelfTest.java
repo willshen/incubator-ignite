@@ -37,4 +37,11 @@ public class NodeJsSelfTest extends NodeJsAbstractTest {
     public void testIgnitionStart() throws Exception {
         runJsScript(getNodeJsTestDir() + "test_ignition.js");
     }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testIgnitionFailedStart() throws Exception {
+        runJsScript(getNodeJsTestDir() + "test_ignition_fail.js");
+    }
 }
