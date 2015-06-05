@@ -89,7 +89,6 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
             item.name = 'Cache ' + ($scope.caches.length + 1);
             item.space = $scope.spaces[0]._id;
 
-
             $http.post('/rest/caches/save', item)
                 .success(function(_id) {
                     item._id = _id;
