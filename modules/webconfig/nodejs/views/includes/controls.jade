@@ -17,8 +17,33 @@
 mixin tip
     i.tip.fa.fa-question-circle(ng-if='field.tip' bs-tooltip='field.tip.join("")' type='button')
 
+mixin tip-detail
+    i.tip.fa.fa-question-circle(ng-if='detail.tip' bs-tooltip='detail.tip.join("")' type='button')
+
 mixin edt(mdl, ph)
     input.form-control(type='text' ng-model=mdl placeholder=ph)
+    
+mixin details-row
+    div(ng-switch='detail.type')
+        div(ng-switch-when='check')
+            input(type='checkbox' ng-model='backupItem[detail.model]')
+            label(ng-click='backupItem[detail.model] = !backupItem[detail.model]') {{detail.label}}
+            +tip-detail
+        div(ng-switch-when='text')
+            label.col-sm-2 {{detail.label}}:
+            .col-sm-3
+                +edt('backupItem[detail.model]', '{{detail.placeholder}}')
+            +tip-detail
+        div(ng-switch-when='dropdown')
+            label.col-sm-2 {{detail.label}}:
+            .col-sm-3
+                button.form-control(bs-select ng-model='backupItem[detail.model]' data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
+            +tip-detail
+        div(ng-switch-when='dropdown-multiple')
+            label.col-sm-2 {{detail.label}}:
+            .col-sm-3
+                button.form-control(bs-select ng-model='backupItem[detail.model]' data-multiple='1' data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
+            +tip-detail
 
 mixin form-row
     div(ng-switch='field.type')
@@ -46,8 +71,5 @@ mixin form-row
             .col-sm-3
                 button.form-control(bs-select ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
             +tip
-            div(ng-switch='backupItem[field.model]')
-                div(ng-switch-when='Vm')
-                    label.col-sm-2 {{backupItem[field.model]}}:
-                div(ng-switch-when='Multicast')
-                    label.col-sm-2 {{backupItem[field.model]}}:
+            .details-row(ng-repeat='detail in field.details[backupItem[field.model]]')
+                +details-row

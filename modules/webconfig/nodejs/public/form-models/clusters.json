@@ -11,7 +11,122 @@
       "model": "discovery.kind",
       "placeholder": "Choose discovery",
       "items": "discoveries",
-      "tip": ["Discovery allows to discover remote nodes in grid."]
+      "tip": ["Discovery allows to discover remote nodes in grid."],
+      "details": {
+        "Vm": [
+          {
+            "label": "Addresses",
+            "type": "table",
+            "model": "addresses"
+          }
+        ],
+        "Multicast": [
+          {
+            "label": "IP address",
+            "type": "text",
+            "model": "mcastGrp",
+            "placeholder": "228.1.2.4"
+          },
+          {
+            "label": "Port number",
+            "type": "text",
+            "model": "mcastPort",
+            "placeholder": "47400"
+          },
+          {
+            "label": "Waits for reply ",
+            "type": "text",
+            "model": "resWaitTime",
+            "placeholder": "500"
+          },
+          {
+            "label": "Attempts count",
+            "type": "text",
+            "model": "addrReqAttempts",
+            "placeholder": "2"
+          },
+          {
+            "label": "Local host address",
+            "type": "text",
+            "model": "locAddr"
+          }
+        ],
+        "S3": [
+          {
+            "label": "Bucket name",
+            "type": "text",
+            "model": "bucketName",
+            "placeholder": ""
+          }
+        ],
+        "Cloud": [
+          {
+            "label": "Credential",
+            "type": "text",
+            "model": "credential",
+            "placeholder": ""
+          },
+          {
+            "label": "Path to credential",
+            "type": "text",
+            "model": "credentialPath",
+            "placeholder": ""
+          },
+          {
+            "label": "Identity",
+            "type": "text",
+            "model": "identity",
+            "placeholder": ""
+          },
+          {
+            "label": "Provider",
+            "type": "text",
+            "model": "provider",
+            "placeholder": ""
+          }
+        ],
+        "GoogleStorage": [
+          {
+            "label": "Project name",
+            "type": "text",
+            "model": "projectName",
+            "placeholder": ""
+          },
+          {
+            "label": "Bucket name",
+            "type": "text",
+            "model": "bucketName",
+            "placeholder": ""
+          },
+          {
+            "label": "Service account private key path",
+            "type": "text",
+            "model": "serviceAccountP12FilePath",
+            "placeholder": ""
+          },
+          {
+            "label": "Service account id",
+            "type": "text",
+            "model": "addrReqAttempts",
+            "placeholder": ""
+          }
+        ],
+        "Jdbc": [
+          {
+            "label": "DB schema should be initialized by Ignite",
+            "type": "check",
+            "model": "initSchema"
+          }
+        ],
+        "SharedFs": [
+          {
+            "label": "File path",
+            "type": "text",
+            "model": "path",
+            "placeholder": "disco/tcp"
+          }
+        ]
+      }
     }
   ],
   "advanced": [
