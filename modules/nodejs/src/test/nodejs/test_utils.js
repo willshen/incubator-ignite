@@ -111,16 +111,16 @@ TestUtils.testDone = function() {
  */
 TestUtils.runTest = function() {
     var fileName = process.argv[2].toString().trim();
-    var tests = require("./" + fileName);
+    var Test = require("./" + fileName).TestIgnition;
     var functionName = process.argv[3].toString().trim();
-    for (var obj in tests) {
+    for (var obj in Test) {
         console.log("vvvvvvvvv " + obj);
     }
-    if (!tests[functionName]) {
+    if (!Test[functionName]) {
         console.log("node js test failed: function with name " + functionName + " not found");
         return;
     }
-    tests[functionName]();
+    Test[functionName]();
 }
 
 exports.TestUtils = TestUtils;
