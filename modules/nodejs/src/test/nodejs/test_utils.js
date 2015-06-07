@@ -106,4 +106,20 @@ TestUtils.testDone = function() {
     console.log("Node JS test finished.")
 }
 
+/**
+ * Test routine.
+ */
+TestUtils.runTest = function() {
+    var fileName = process.argv[2].toString().trim();
+    require("./" + fileName);
+    var functionName = process.argv[3].toString().trim();
+    if (!global[functionName]) {
+        console.log("node js test failed: function with name " + functionName + " not found");
+        return;
+    }
+    global[functionName]();
+}
+
 exports.TestUtils = TestUtils;
+
+TestUtils.runTest();

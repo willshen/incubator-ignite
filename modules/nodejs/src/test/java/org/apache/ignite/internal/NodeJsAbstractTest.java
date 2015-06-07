@@ -42,6 +42,16 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
     /** Ok message. */
     public static final String SCRIPT_FINISHED = "node js test finished.";
 
+    /** Node JS file with tests. */
+    private String fileName;
+
+    /**
+     * @param fileName Node JS file name.
+     */
+    protected NodeJsAbstractTest(String fileName) {
+        this.fileName = fileName;
+    }
+
     /** {@inheritDoc} */
     @Override protected IgniteConfiguration getConfiguration(String gridName) throws Exception {
         IgniteConfiguration cfg = super.getConfiguration(gridName);
@@ -83,10 +93,10 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
     }
 
     /**
-     * @param path Path to script.
+     * @param functionName Function name.
      * @throws Exception If script failed.
      */
-    protected void runJsScript(String path) throws Exception {
+    protected void runJsScript(String functionName) throws Exception {
         final CountDownLatch readyLatch = new CountDownLatch(1);
 
         GridJavaProcess proc = null;
@@ -97,7 +107,11 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
 
         cmd.add("node");
 
-        cmd.add(path);
+        cmd.add(getNodeJsTestDir() + "test_utils.js");
+
+        cmd.add(fileName);
+
+        cmd.add(functionName);
 
         Map<String, String> env = new HashMap<>();
 
@@ -130,8 +144,6 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
             assertTrue(readyLatch.await(60, SECONDS));
 
             assertEquals(errors.toString(), 0, errors.size());
-
-            proc.getProcess().waitFor();
         }
         finally {
             if (proc != null)

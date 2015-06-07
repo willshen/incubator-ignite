@@ -21,6 +21,11 @@ package org.apache.ignite.internal;
  * Test node js client.
  */
 public class NodeJsSelfTest extends NodeJsAbstractTest {
+    /** Constructor. */
+    public NodeJsSelfTest() {
+        super("test_ignition.js");
+    }
+
     /** {@inheritDoc} */
     @Override protected void beforeTestsStarted() throws Exception {
         startGrid(0);
@@ -35,13 +40,13 @@ public class NodeJsSelfTest extends NodeJsAbstractTest {
      * @throws Exception If failed.
      */
     public void testIgnitionStart() throws Exception {
-        runJsScript(getNodeJsTestDir() + "test_ignition.js");
+        runJsScript("ignition_start_success");
     }
 
     /**
      * @throws Exception If failed.
      */
     public void testIgnitionFailedStart() throws Exception {
-        runJsScript(getNodeJsTestDir() + "test_ignition_fail.js");
+        runJsScript("test_ignition_fail");
     }
 }
