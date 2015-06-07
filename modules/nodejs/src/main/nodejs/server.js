@@ -70,7 +70,7 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
                 else
                     callback.call(null, null, response.response);
             } catch (e) {
-                console.log("fail on json parse")
+                console.log("fail on json parse: " + response)
                 callback.call(null, e, null);
             }
         });
