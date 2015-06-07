@@ -119,7 +119,7 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
 
         cmd.add("node");
 
-        cmd.add(getNodeJsTestDir() + "test_utils.js");
+        cmd.add(getNodeJsTestDir() + "test_runner.js");
 
         cmd.add(fileName);
 
