@@ -14,7 +14,7 @@ TestRunner.runTest = function() {
 
     console.log("FileName " + fileName);
 
-    var Test = require(fileName);
+    var Test = require("./" + fileName);
 
     console.log("Test : " + Object.keys(Test))
 

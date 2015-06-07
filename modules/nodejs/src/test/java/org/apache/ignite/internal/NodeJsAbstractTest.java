@@ -55,7 +55,7 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
      * @param fileName Node JS file name.
      */
     protected NodeJsAbstractTest(String fileName) {
-        this.fileName = getNodeJsTestDir()  + fileName;
+        this.fileName = fileName;
     }
 
     /** {@inheritDoc} */
