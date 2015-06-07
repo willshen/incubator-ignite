@@ -24,7 +24,7 @@ TestIgnition.test_ignition_fail = function ()  {
 }
 
 TestIgnition.ignition_start_success = function() {
-    Ignition.start(['127.0.0.1:9090'], onConnect);
+    Ignition.start(['127.0.0.1:9095'], onConnect);
 
     function onConnect(error, server) {
         if (error) {

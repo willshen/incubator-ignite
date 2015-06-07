@@ -31,7 +31,7 @@
                     <SystemProperty name="IGNITE_JETTY_HOST" default="localhost"/>
                 </Set>
                 <Set name="port">
-                    <SystemProperty name="IGNITE_JETTY_PORT" default="9090"/>
+                    <SystemProperty name="IGNITE_JETTY_PORT" default="9095"/>
                 </Set>
                 <Set name="idleTimeout">30000</Set>
                 <Set name="reuseAddress">true</Set>
