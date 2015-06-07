@@ -1,3 +1,5 @@
+exports = module.exports = {};
+
 function TestIgnition () {
 }
 
