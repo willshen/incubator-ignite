@@ -22,6 +22,9 @@ import org.apache.ignite.configuration.*;
 import org.apache.ignite.internal.util.*;
 import org.apache.ignite.internal.util.typedef.*;
 import org.apache.ignite.internal.util.typedef.internal.*;
+import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
+import org.apache.ignite.spi.discovery.tcp.ipfinder.TcpDiscoveryIpFinder;
+import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 import org.apache.ignite.testframework.junits.common.*;
 
 import java.util.*;
@@ -45,6 +48,9 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
     /** Node JS file with tests. */
     private String fileName;
 
+    /** */
+    private static final TcpDiscoveryIpFinder IP_FINDER = new TcpDiscoveryVmIpFinder(true);
+
     /**
      * @param fileName Node JS file name.
      */
@@ -62,6 +68,12 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
         conCfg.setJettyPath(getNodeJsTestDir() + "rest-jetty.xml");
 
         cfg.setConnectorConfiguration(conCfg);
+
+        TcpDiscoverySpi disco = new TcpDiscoverySpi();
+
+        disco.setIpFinder(IP_FINDER);
+
+        cfg.setDiscoverySpi(disco);
 
         return cfg;
     }
