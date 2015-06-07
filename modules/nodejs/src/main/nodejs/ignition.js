@@ -40,7 +40,7 @@ Ignition.start = function(address, callback) {
             return;
         }
 
-        console.log(error);
+        console.log("onConnect:" + error);
 
         if (!numConn)
             callback.call(null, "Cannot connect to servers.", null);
