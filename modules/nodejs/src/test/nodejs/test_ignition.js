@@ -1,7 +1,7 @@
 var TestUtils = require("./test_utils").TestUtils;
 var Ignition = require(TestUtils.scriptPath() + "ignition").Ignition;
 
-test_ignition_fail = function ()  {
+exports.test_ignition_fail = function ()  {
     Ignition.start(['127.0.0.3:9091', '127.0.0.1:9092'], onConnect);
 
     function onConnect(error, server) {
@@ -18,7 +18,7 @@ test_ignition_fail = function ()  {
     }
 }
 
-ignition_start_success = function() {
+exports.ignition_start_success = function() {
     Ignition.start(['127.0.0.0:9090', '127.0.0.1:9090'], onConnect);
 
     function onConnect(error, server) {
