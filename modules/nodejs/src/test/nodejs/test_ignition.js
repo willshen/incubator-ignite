@@ -1,12 +1,7 @@
-exports = module.exports = {};
-
-function TestIgnition () {
-}
-
 var TestUtils = require("./test_utils").TestUtils;
 var Ignition = require(TestUtils.scriptPath() + "ignition").Ignition;
 
-TestIgnition.test_ignition_fail = function ()  {
+exports.test_ignition_fail = function ()  {
     Ignition.start(['127.0.0.3:9091', '127.0.0.1:9092'], onConnect);
 
     function onConnect(error, server) {
@@ -23,7 +18,7 @@ TestIgnition.test_ignition_fail = function ()  {
     }
 }
 
-TestIgnition.ignition_start_success = function() {
+exports.ignition_start_success = function() {
     Ignition.start(['127.0.0.1:9095'], onConnect);
 
     function onConnect(error, server) {
@@ -35,6 +30,3 @@ TestIgnition.ignition_start_success = function() {
         TestUtils.testDone();
     }
 }
-
-
-exports.TestIgnition = TestIgnition;
