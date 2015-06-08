@@ -49,28 +49,50 @@ Ignition.start = function(address, callback) {
     var portsRange = params[1].split("..");
 
     if (portsRange.length === 1) {
-      var server = new Server(params[0], portsRange[0]);
+      var port = parseInt(portsRange[0], 10);
 
-      numConn++;
+      if (isNaN(port)) {
+        incorrectAddress();
 
-      server.checkConnection(onConnect.bind(null, server));
+        return;
+      }
+
+      checkServer(params[0], port);
     }
     else if (portsRange.length === 2) {
       var start = parseInt(portsRange[0], 10);
 
       var end = parseInt(portsRange[1], 10);
 
+      if (isNaN(start) || isNaN(end)) {
+        incorrectAddress();
+
+        return;
+      }
+
       for (var i = start; i <= end; i++) {
-        numConn++;
-
-        var server = new Server(params[0], i);
-
-        server.checkConnection(onConnect.bind(null, server));
+        checkServer(params[0], i);
       }
     }
     else {
-      callback.call(null, "Incorrect address format.", null);
+      incorrectAddress();
+
+      return;
     }
+  }
+
+  function checkServer(host, port) {
+    numConn++;
+
+    var server = new Server(host, port);
+
+    server.checkConnection(onConnect.bind(null, server));
+  }
+
+  function incorrectAddress() {
+    callback.call(null, "Incorrect address format.", null);
+
+    callback = null;
   }
 
   function onConnect(server, error) {

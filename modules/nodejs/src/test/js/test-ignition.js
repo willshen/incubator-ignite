@@ -70,3 +70,21 @@ ignitionStartSuccessWithSeveralPorts = function() {
         TestUtils.testDone();
     }
 }
+
+ignitionNotStartWithSeveralPorts = function() {
+    Ignition.start(['127.0.0.1:9090...9100'], onConnect);
+
+    function onConnect(error, ignite) {
+        if (error) {
+            var assert = require("assert");
+
+            assert.ok(error.indexOf("Incorrect address format") !== -1, "Incorrect message.")
+
+            TestUtils.testDone();
+
+            return;
+        }
+
+        TestUtils.testFails("Exception should be thrown.");
+    }
+}
