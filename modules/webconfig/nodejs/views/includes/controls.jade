@@ -21,29 +21,33 @@ mixin tip-detail
     i.tip.fa.fa-question-circle(ng-if='detail.tip' bs-tooltip='detail.tip.join("")' type='button')
 
 mixin details-row
+    - var detailMdl = 'backupItem[field.group][backupItem[field.group][field.model]][detail.model]'
+
     div(ng-switch='detail.type')
         div(ng-switch-when='check')
-            .col-sm-7
-                input(type='checkbox' ng-model='backupItem[field.group][backupItem[field.group][field.model]][detail.model]')
-                label(ng-click='backupItem[field.group][backupItem[field.group][field.model]][detail.model] = !backupItem[field.group][backupItem[field.group][field.model]][detail.model]') {{detail.label}}
+            .col-sm-5
+                input(type='checkbox' ng-model=detailMdl)
+                label(ng-click='#{detailMdl} = !#{detailMdl}') {{detail.label}}
             +tip-detail
         div(ng-switch-when='text')
-            label.col-sm-3 {{detail.label}}:
-            .col-sm-5
-                input.form-control(type='text' ng-model='backupItem[field.group][backupItem[field.group][field.model]][detail.model]' placeholder='{{field.model}}{{detail.model}}')
+            label.col-sm-2.details-label {{detail.label}}:
+            .col-sm-3
+                input.form-control(type='text' ng-model=detailMdl placeholder='{{field.model}}{{detail.model}}')
             +tip-detail
         div(ng-switch-when='dropdown')
-            label.col-sm-3 {{detail.label}}:
-            .col-sm-5
-                button.form-control(bs-select ng-model='backupItem[field.group][backupItem[field.group][field.model]][detail.model]' data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
+            label.col-sm-2.details-label {{detail.label}}:
+            .col-sm-3
+                button.form-control(bs-select ng-model=detailMdl data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
             +tip-detail
         div(ng-switch-when='dropdown-multiple')
-            label.col-sm-3 {{detail.label}}:
-            .col-sm-5
-                button.form-control(bs-select ng-model='backupItem[field.group][backupItem[field.group][field.model]][detail.model]' data-multiple='1' data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
+            label.col-sm-2.details-label {{detail.label}}:
+            .col-sm-3
+                button.form-control(bs-select ng-model=detailMdl data-multiple='1' data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
             +tip-detail
 
 mixin form-row
+    - var masterMdl = 'backupItem[field.group][field.model]'
+
     div(ng-switch='field.type')
         div(ng-switch-when='check')
             .col-sm-5
@@ -68,11 +72,10 @@ mixin form-row
         div(ng-switch-when='dropdown-details')
             label.col-sm-2 {{field.label}}:
             .col-sm-3
-                button.form-control(bs-select ng-model='backupItem[field.group][field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
+                button.form-control(bs-select ng-model=masterMdl data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
             +tip
-            .panel.panel-default.col-sm-8
-                .settings-row(ng-repeat='detail in field.details[backupItem[field.group][field.model]]')
-                    +details-row
+            .details-row(ng-repeat='detail in field.details[#{masterMdl}]')
+                +details-row
         div(ng-switch-when='indexedTypes')
             label.col-sm-2 Indexed types:
             button.btn.btn-primary(ng-click='addIndexedTypes()') Add
