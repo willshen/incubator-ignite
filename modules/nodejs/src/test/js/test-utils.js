@@ -123,4 +123,15 @@ TestUtils.testDone = function() {
     console.log("Node JS test finished.")
 }
 
+/**
+ * Starts ignite node with default config
+ *
+ * @param {Ignition~onStart} callback Called on connect
+ */
+TestUtils.startIgniteNode = function(callback) {
+  var Apache = require(TestUtils.scriptPath());
+  var Ignition = Apache.Ignition;
+  Ignition.start(['127.0.0.1:9095'], callback);
+}
+
 exports.TestUtils = TestUtils;

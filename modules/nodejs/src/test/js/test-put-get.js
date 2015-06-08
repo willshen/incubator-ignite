@@ -18,16 +18,15 @@
 var TestUtils = require("./test-utils").TestUtils;
 
 var Apache = require(TestUtils.scriptPath());
-var Ignition = Apache.Ignition;
 var Cache = Apache.Cache;
 var Server = Apache.Server;
 
 testPutGet = function() {
-  Ignition.start(['127.0.0.1:9095'], onStart.bind(null, onPut, "mycache"));
+  TestUtils.startIgniteNode(onStart.bind(null, onPut, "mycache"));
 }
 
 testIncorrectCacheName = function() {
-  Ignition.start(['127.0.0.1:9095'], onStart.bind(null, onIncorrectPut, "mycache1"));
+  TestUtils.startIgniteNode(onStart.bind(null, onIncorrectPut, "mycache1"));
 }
 
 function onStart(onPut1, cacheName, error, ignite) {
@@ -51,6 +50,7 @@ function onGet(error, value) {
     console.error("Failed to get " + error);
 
     TestUtils.testFails("Incorrect error message: " + error);
+
     return;
   }
 
