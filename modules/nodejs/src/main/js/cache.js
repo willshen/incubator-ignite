@@ -153,8 +153,8 @@ Cache.prototype.getAll = function(keys, callback) {
 Cache.concatParams = function(pref, keys) {
   var temp = []
 
-  for (var i = 0; i < keys.length; ++i) {
-    temp.push(Server.pair(pref + i, keys[i]));
+  for (var i = 1; i <= keys.length; ++i) {
+    temp.push(Server.pair(pref + i, keys[i-1]));
   }
 
   return temp;

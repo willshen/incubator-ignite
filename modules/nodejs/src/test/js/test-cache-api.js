@@ -67,11 +67,13 @@ function onGetAll(cache, keys, expected, error, values) {
   console.log("error get all: " + error)
   assert(error == null, error);
 
-  console.log("values=" + values);
+  for (var i = 0; i < keys.length; ++i) {
+    var key = keys[i];
 
-  for (var i = 0; i < expected.length; ++i) {
-    console.log("valuei=" + values[i]);
-    //assert(value.properties[i].value == expected[i]);
+    assert(!!values[key], "Cannot find key. [key=" + key + "].");
+
+    assert(values[key] === expected[i], "Incorrect value. [key=" + key +
+      ", expected=" + expected[i] + ", val= " + values[key] + "].");
   }
 
   TestUtils.testDone();
