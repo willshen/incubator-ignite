@@ -79,18 +79,20 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
     });
 
     response.on('end', function () {
+      var response;
       try {
-        var response = JSON.parse(fullResponseString);
-
-        if (response.successStatus) {
-          callback.call(null, response.error, null)
-        }
-        else {
-          callback.call(null, null, response.response);
-        }
+        response = JSON.parse(fullResponseString);
       }
       catch (e) {
         callback.call(null, e, null);
+        return;
+      }
+
+      if (response.successStatus) {
+        callback.call(null, response.error, null)
+      }
+      else {
+        callback.call(null, null, response.response);
       }
     });
   }
