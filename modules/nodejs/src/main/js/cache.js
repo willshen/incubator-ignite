@@ -71,8 +71,9 @@ Cache.prototype.put = function(key, value, callback) {
 /**
  * Remove cache key
  *
+ * @this {Cache}
  * @param {string} key Key
- * @param {noValue} callback Called on finish
+ * @param {Cache~noValue} callback Called on finish
  */
 Cache.prototype.remove = function(key, callback) {
   this._server.runCommand("rmv", [this._cacheNameParam, Server.pair("key", key)], callback);
@@ -81,17 +82,81 @@ Cache.prototype.remove = function(key, callback) {
 /**
  * Remove cache keys
  *
+ * @this {Cache}
  * @param {string[]} keys Keys to remove
- * @param {noValue} callback Called on finish
+ * @param {Cache~noValue} callback Called on finish
  */
 Cache.prototype.removeAll = function(keys, callback) {
   var params = [this._cacheNameParam];
 
-  for (var i = 0; i < keys.length; ++i) {
-    params.push(Server.pair("k" + i, keys[i]));
-  }
+  params = params.concat(Cache.concatParams("k", keys));
 
   this._server.runCommand("rmvall", params, callback);
 }
 
+/**
+ * Put keys to cache
+ *
+ * @this {Cache}
+ * @param {string[]} keys Keys
+ * @param {string[]} values Values
+ * @param {Cache~noValue} callback Called on finish
+ */
+Cache.prototype.putAll = function(keys, values, callback) {
+  if (keys.length !== values.length) {
+    callback.call(null, "Number of keys is not equal to number of values." +
+      "keys size=" + keys.length + ", values size=" + values.length + "].");
+
+    return;
+  }
+
+  var params = Cache.concatParams("k", keys);
+  params = params.concat(Cache.concatParams("v", values));
+
+  params.push(this._cacheNameParam);
+
+  this._server.runCommand("putall", params, callback);
+}
+
+/**
+ * Callback for cache get
+ * @callback Cache~onGetAll
+ * @param {string} error Error
+ * @param {string[]} results Result values
+ */
+
+/**
+ * Get keys from the cache
+ *
+ * @this {Cache}
+ * @param {string[]} keys Keys
+ * @param {Cache~onGetAll} callback Called on finish
+ */
+Cache.prototype.getAll = function(keys, callback) {
+  var params = Cache.concatParams("k", keys);
+
+  params.push(this._cacheNameParam);
+
+
+  console.log("PARAM GET ALL "+ params);
+
+  this._server.runCommand("getall", params, callback);
+}
+
+/**
+ * Concatenate all parameters
+ *
+ * @param {string} pref Prefix
+ * @param {string[]} keys Keys
+ * @returns List of parameters.
+ */
+Cache.concatParams = function(pref, keys) {
+  var temp = []
+
+  for (var i = 0; i < keys.length; ++i) {
+    temp.push(Server.pair(pref + i, keys[i]));
+  }
+
+  return temp;
+}
 exports.Cache = Cache

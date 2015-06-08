@@ -43,6 +43,40 @@ testRemoveAll = function() {
   TestUtils.startIgniteNode(onStart.bind(null, onPutRemoveAll, "mycache"));
 }
 
+testPutAllGetAll = function() {
+  TestUtils.startIgniteNode(onStartGetAll.bind(null, "mycache"));
+}
+
+function onStartGetAll(cacheName, error, ignite) {
+  var cache = ignite.cache(cacheName);
+
+  var keys = ["key1", "key2"];
+
+  var values = ["val1", "val2"];
+
+  cache.putAll(keys, values, onPutAll.bind(null, cache, keys, values));
+}
+
+function onPutAll(cache, keys, values, error) {
+  assert(error == null);
+
+  cache.getAll(keys, onGetAll.bind(null, cache, keys, values));
+}
+
+function onGetAll(cache, keys, expected, error, values) {
+  console.log("error get all: " + error)
+  assert(error == null, error);
+
+  console.log("values=" + values);
+
+  for (var i = 0; i < expected.length; ++i) {
+    console.log("valuei=" + values[i]);
+    //assert(value.properties[i].value == expected[i]);
+  }
+
+  TestUtils.testDone();
+}
+
 function onStart(onPut1, cacheName, error, ignite) {
   var cache = ignite.cache(cacheName);
 
