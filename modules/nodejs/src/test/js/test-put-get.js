@@ -28,29 +28,31 @@ testPutGet = function() {
 
 function onStart(error, ignite) {
   var cache = ignite.cache("mycache");
+
   cache.put("key", "6", onPut.bind(null, cache));
 }
 
 function onPut(cache, error) {
-    if (error) {
-        TestUtils.testFails("Incorrect error message: " + error);
-        return;
-    }
+  if (error) {
+    TestUtils.testFails("Incorrect error message: " + error);
 
-    console.log("Put finished");
-    cache.get("key", onGet);
+    return;
+  }
+
+  console.log("Put finished");
+  cache.get("key", onGet);
 }
 
 function onGet(error, value) {
-    if (error) {
-        console.error("Failed to get " + error);
-        TestUtils.testFails("Incorrect error message: " + error);
-        return;
-    }
+  if (error) {
+    console.error("Failed to get " + error);
+    TestUtils.testFails("Incorrect error message: " + error);
+    return;
+  }
 
-    var assert = require("assert");
+  var assert = require("assert");
 
-    assert.equal(value, 6, "Get return incorrect value. + [expected=" + 6 + ", val=" + value + "].");
+  assert.equal(value, 6, "Get return incorrect value. + [expected=" + 6 + ", val=" + value + "].");
 
-    TestUtils.testDone();
+  TestUtils.testDone();
 }
