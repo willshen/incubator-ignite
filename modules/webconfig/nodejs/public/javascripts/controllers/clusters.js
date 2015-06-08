@@ -18,8 +18,8 @@
 configuratorModule.controller('clustersController', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
         $scope.templates = [
             {value: {}, label: 'None'},
-            {value: {discovery: {kind: 'Vm', addresses: ['127.0.0.1:47500..47510']}}, label: 'Local'},
-            {value: {discovery: {kind: 'Multicast'}}, label: 'Basic'}
+            {value: {discovery: {kind: 'Vm', Vm: {addresses: ['127.0.0.1:47500..47510']}}}, label: 'Local'},
+            {value: {discovery: {kind: 'Multicast', Multicast: {}}}, label: 'Basic'}
         ];
 
         $scope.discoveries = [
@@ -60,6 +60,20 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                 $scope.general = data.general;
                 $scope.advanced = data.advanced;
             });
+
+        $scope.ss = function (o, s) {
+            var a = s.split('.');
+
+            for (var i = 0, n = a.length; i < n; ++i) {
+                var k = a[i];
+
+                if (!(k in o))
+                    o[k] = {};
+
+                o = o[k];
+            }
+            return o;
+        };
 
         // Create popup for discovery advanced settings.
         var discoveryModal = $modal({scope: $scope, template: '/discovery', show: false});

@@ -8,7 +8,8 @@
     {
       "label": "Discovery",
       "type": "dropdown-details",
-      "model": "discovery.kind",
+      "group": "discovery",
+      "model": "kind",
       "placeholder": "Choose discovery",
       "items": "discoveries",
       "tip": ["Discovery allows to discover remote nodes in grid."],
@@ -99,13 +100,13 @@
             "placeholder": ""
           },
           {
-            "label": "Service account private key path",
+            "label": "Private key path",
             "type": "text",
             "model": "serviceAccountP12FilePath",
             "placeholder": ""
           },
           {
-            "label": "Service account id",
+            "label": "Account id",
             "type": "text",
             "model": "addrReqAttempts",
             "placeholder": ""
@@ -134,7 +135,7 @@
       "label": "Atomic data structures",
       "fields": [
         {
-          "label": "Number of backup nodes",
+          "label": "Backups",
           "type": "text",
           "model": "atomic.backups",
           "placeholder": "0"
@@ -147,7 +148,7 @@
           "items": "cacheModes"
         },
         {
-          "label": "Sequence reserve size",
+          "label": "Sequence reserve",
           "type": "text",
           "model": "atomic.seqReserveSize",
           "placeholder": "1,000"
@@ -222,7 +223,7 @@
           "placeholder": "60,000"
         },
         {
-          "label": "Metrics update frequency",
+          "label": "Update frequency",
           "type": "text",
           "model": "metricsUpdateFreq",
           "placeholder": "60,000"
@@ -304,10 +305,10 @@
       ]
     },
     {
-      "label": "Transactions configuration",
+      "label": "Transactions",
       "fields": [
         {
-          "label": "Default transaction timeout",
+          "label": "Default timeout",
           "type": "text",
           "model": "dfltTxTimeout",
           "placeholder": "0"
@@ -319,7 +320,7 @@
           "placeholder": "10,000"
         },
         {
-          "label": "Pessimistic transactions log size",
+          "label": "Pessimistic log size",
           "type": "text",
           "model": "pessimisticTxLogSize",
           "placeholder": "0"
