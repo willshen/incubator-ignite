@@ -18,12 +18,12 @@
 package org.apache.ignite.internal;
 
 /**
- * Test node js client.
+ * Test node js client put/get.
  */
-public class NodeJsSelfTest extends NodeJsAbstractTest {
+public class NodeJsPutGetSelfTest extends NodeJsAbstractTest {
     /** Constructor. */
-    public NodeJsSelfTest() {
-        super("test_ignition.js");
+    public NodeJsPutGetSelfTest() {
+        super("test_put_get.js");
     }
 
     /** {@inheritDoc} */
@@ -39,14 +39,7 @@ public class NodeJsSelfTest extends NodeJsAbstractTest {
     /**
      * @throws Exception If failed.
      */
-    public void testIgnitionStart() throws Exception {
-        runJsScript("ignition_start_success");
-    }
-
-    /**
-     * @throws Exception If failed.
-     */
-    public void testIgnitionFailedStart() throws Exception {
-        runJsScript("test_ignition_fail");
+    public void testPutGet() throws Exception {
+        runJsScript("testPutGet");
     }
 }
