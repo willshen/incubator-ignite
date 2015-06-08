@@ -15,25 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.ignite.testsuites;
-
-import junit.framework.*;
-import org.apache.ignite.internal.*;
+package org.apache.ignite.internal;
 
 /**
- * Node JS test suite.
+ * Test node js client put/get.
  */
-public class IgniteNodeJsTestSuite extends TestSuite {
+public class NodeJsPutGetSelfTest extends NodeJsAbstractTest {
+    /** Constructor. */
+    public NodeJsPutGetSelfTest() {
+        super("test_put_get.js");
+    }
+
+    /** {@inheritDoc} */
+    @Override protected void beforeTestsStarted() throws Exception {
+        startGrid(0);
+    }
+
+    /** {@inheritDoc} */
+    @Override protected void afterTestsStopped() throws Exception {
+        stopAllGrids();
+    }
+
     /**
-     * @return Suite.
      * @throws Exception If failed.
      */
-    public static TestSuite suite() throws Exception {
-        TestSuite suite = new TestSuite("Ignite Node JS Test Suite");
-
-        suite.addTest(new TestSuite(NodeJsSelfTest.class));
-        suite.addTest(new TestSuite(NodeJsPutGetSelfTest.class));
-
-        return suite;
+    public void testPutGet() throws Exception {
+        runJsScript("testPutGet");
     }
 }

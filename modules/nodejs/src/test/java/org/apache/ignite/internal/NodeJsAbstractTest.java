@@ -131,7 +131,7 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
                         if (s.contains(SCRIPT_FINISHED))
                             readyLatch.countDown();
 
-                        if (/*s.contains("error") || s.contains("fail") || */s.contains(SCRIPT_FAILED)) {
+                        if (s.contains("assert") || s.contains(SCRIPT_FAILED)) {
                             errors.add(s);
 
                             readyLatch.countDown();

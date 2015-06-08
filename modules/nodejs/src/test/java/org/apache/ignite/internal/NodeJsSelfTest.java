@@ -40,13 +40,13 @@ public class NodeJsSelfTest extends NodeJsAbstractTest {
      * @throws Exception If failed.
      */
     public void testIgnitionStart() throws Exception {
-        runJsScript("ignition_start_success");
+        runJsScript("ignitionStartSuccess");
     }
 
     /**
      * @throws Exception If failed.
      */
     public void testIgnitionFailedStart() throws Exception {
-        runJsScript("test_ignition_fail");
+        runJsScript("testIgnitionFail");
     }
 }
