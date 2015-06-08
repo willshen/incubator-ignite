@@ -36,7 +36,7 @@ testIgnitionFail = function ()  {
 }
 
 ignitionStartSuccess = function() {
-    Ignition.start(['127.0.0.0:9090', '127.0.0.1:9090'], onConnect);
+    Ignition.start(['127.0.0.0:9095', '127.0.0.1:9095'], onConnect);
 
     function onConnect(error, server) {
         if (error) {

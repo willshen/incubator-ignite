@@ -20,7 +20,7 @@ var Cache = require(TestUtils.scriptPath() + "cache").Cache;
 var Server = require(TestUtils.scriptPath() + "server").Server;
 
 testPutGet = function() {
-    var server = new Server('127.0.0.1', 9090);
+    var server = new Server('127.0.0.1', 9095);
     var cache = new Cache(server, "mycache");
     cache.put("key", "6", onPut.bind(null, cache));
 }
