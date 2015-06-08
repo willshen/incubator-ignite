@@ -16,7 +16,8 @@
  */
 
 var TestUtils = require("./test_utils").TestUtils;
-var Ignition = require(TestUtils.scriptPath() + "ignition").Ignition;
+var Apache = require(TestUtils.scriptPath());
+var Ignition = Apache.Ignition;
 
 testIgnitionFail = function ()  {
     Ignition.start(['127.0.0.3:9091', '127.0.0.1:9092'], onConnect);

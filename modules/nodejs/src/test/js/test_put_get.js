@@ -16,8 +16,10 @@
  */
 
 var TestUtils = require("./test_utils").TestUtils;
-var Cache = require(TestUtils.scriptPath() + "cache").Cache;
-var Server = require(TestUtils.scriptPath() + "server").Server;
+
+var Apache = require(TestUtils.scriptPath());
+var Cache = Apache.Cache;
+var Server = Apache.Server;
 
 testPutGet = function() {
     var server = new Server('127.0.0.1', 9095);

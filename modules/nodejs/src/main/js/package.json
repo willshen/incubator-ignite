@@ -1,0 +1,11 @@
+{
+  "name" : "apache-ignite",
+  "version" : "1.0.0",
+  "author" : "Semyon Boikov <sboikov@gridgain.com>",
+  "contributors": [{
+    "name": "Irina Vasilinets",
+    "email": "ivasilients@gridgain.com"
+  }],
+  "main" : "apache_ignite.js",
+  "license" : "Apache License, Version 2.0."
+}
