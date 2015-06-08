@@ -21,7 +21,7 @@
     {
       "label": "Atomicity",
       "type": "dropdown",
-      "model": "atomicity",
+      "model": "atomicityMode",
       "placeholder": "Choose atomicity",
       "items": "atomicities",
       "tip": [
@@ -60,7 +60,7 @@
         {
           "label": "Off-heap max memory",
           "type": "text",
-          "model": "offHeapMaxMem",
+          "model": "offHeapMaxMemory",
           "placeholder": "-1",
           "tip": [
             "Sets maximum amount of memory available to off-heap storage.<br/>",
@@ -99,7 +99,7 @@
         {
           "label": "Pool size",
           "type": "text",
-          "model": "rebalancePoolSize",
+          "model": "rebalanceThreadPoolSize",
           "placeholder": "2",
           "tip": [
             "Size of rebalancing thread pool.<br>",
@@ -189,7 +189,7 @@
         {
           "label": "Flush frequency",
           "type": "text",
-          "model": "writeBehindFlushFreq",
+          "model": "writeBehindFlushFrequency",
           "placeholder": "5000",
           "tip": [
             "Frequency with which write-behind cache is flushed to the cache store in milliseconds."
@@ -198,7 +198,7 @@
         {
           "label": "Flush threads count",
           "type": "text",
-          "model": "writeBehindFlushThreadCnt",
+          "model": "WriteBehindFlushThreadCount",
           "placeholder": "1",
           "tip": [
             "Number of threads that will perform cache flushing."
@@ -207,12 +207,38 @@
       ]
     },
     {
+      "label": "Transcation",
+      "fields": [
+        {
+          "label": "Invalidate",
+          "type": "check",
+          "model": "Invalidate",
+          "tip": [
+            "Invalidation flag for near cache entries in transaction.<br/>",
+            "If true, values will be invalidated (nullified) upon commit in near cache."
+          ]
+        },
+        {
+          "label": "Default lock timeout",
+          "type": "text",
+          "model": "DefaultLockTimeout",
+          "placeholder": "1",
+          "tip": [
+            "Default lock acquisition timeout.<br/>",
+            "If 0 thenlock acquisition will never timeout."
+          ]
+        }
+      ]
+    },
+    {
       "label": "Query",
       "fields": [
         {
-          "type": "idxTypes",
-          "model": "idxTypes",
-          "tip": ["Collection of types to index"]
+          "type": "indexedTypes",
+          "model": "indexedTypes",
+          "tip": [
+            "Collection of types to index"
+          ]
         }
       ]
     }

@@ -12,7 +12,9 @@
       "model": "kind",
       "placeholder": "Choose discovery",
       "items": "discoveries",
-      "tip": ["Discovery allows to discover remote nodes in grid."],
+      "tip": [
+        "Discovery allows to discover remote nodes in grid."
+      ],
       "details": {
         "Vm": [
           {
@@ -26,7 +28,11 @@
             "label": "IP address",
             "type": "text",
             "model": "mcastGrp",
-            "placeholder": "228.1.2.4"
+            "placeholder": "228.1.2.4",
+            "tip": [
+              "Sets IP address of multicast group.<br/>",
+              "If not provided, default value is 228.1.2.4."
+            ]
           },
           {
             "label": "Port number",
@@ -116,7 +122,10 @@
           {
             "label": "DB schema should be initialized by Ignite",
             "type": "check",
-            "model": "initSchema"
+            "model": "initSchema",
+            "tip": [
+              "Flag indicating whether DB schema should be initialized by Ignite or was explicitly created by user."
+            ]
           }
         ],
         "SharedFs": [

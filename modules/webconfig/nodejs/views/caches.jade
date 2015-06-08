@@ -49,16 +49,6 @@ block content
                         h3 {{group.label}}
                         .settings-row(ng-repeat='field in group.fields')
                             +form-row
-                            div(ng-switch-when='idxTypes')
-                                div
-                                    label.col-sm-2 Key class:
-                                    .col-sm-3
-                                        +edt('create.keyCls', 'Fully qualified key class name')
-                                    +tip
-                                div
-                                    label.col-sm-2 Value class:
-                                    .col-sm-3
-                                        +edt('create.valCls', 'Fully qualified value class name')
                 .panel-heading
                     .panel-title
                         span(bs-collapse-toggle)

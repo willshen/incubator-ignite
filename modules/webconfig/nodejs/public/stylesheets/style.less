@@ -982,7 +982,8 @@ button .caret {
 }
 
 .panel {
-  margin-top: -0.65em;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .tooltip.right .tooltip-arrow {
@@ -1003,4 +1004,15 @@ label {
 .tip {
   &:extend(.fa, .fa-question-circle);
   margin-left: 5px;
+}
+
+.table-nowrap {
+  table-layout:fixed;
+}
+
+.table-nowrap td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }
