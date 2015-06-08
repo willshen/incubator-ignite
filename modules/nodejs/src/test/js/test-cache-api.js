@@ -24,132 +24,122 @@ var Server = Apache.Server;
 var assert = require("assert");
 
 testPutGet = function() {
-  TestUtils.startIgniteNode(onStart.bind(null, onPut, "mycache"));
-}
-
-testIncorrectCacheName = function() {
-  TestUtils.startIgniteNode(onStart.bind(null, onIncorrectPut, "mycache1"));
+  startTest("mycache", {trace: [putSV, getExistSV], entry: "6"});
 }
 
 testRemove = function() {
-  TestUtils.startIgniteNode(onStart.bind(null, onPutRemove, "mycache"));
+  startTest("mycache", {trace: [putSV, getExistSV, removeSV, getNonExistSV], entry: "6"});
 }
 
 testRemoveNoKey = function() {
-  TestUtils.startIgniteNode(onStartRemove.bind(null, onRemove, "mycache"));
+  startTest("mycache", {trace: [removeSV, getNonExistSV], entry: "6"});
+}
+
+
+testPutAllGetAll = function() {
+  startTest("mycache", {trace: [putAll, getAll], entry: {"key1": "val1", "key2" : "val2"}});
 }
 
 testRemoveAll = function() {
-  TestUtils.startIgniteNode(onStart.bind(null, onPutRemoveAll, "mycache"));
+  startTest("mycache", {trace: [putAll, getAll, removeAll, getNone], entry: {"key1": "val1", "key2" : "val2"}});
 }
 
-testPutAllGetAll = function() {
-  TestUtils.startIgniteNode(onStartGetAll.bind(null, "mycache"));
+testIncorrectCacheName = function() {
+  startTest("mycache1", {trace: [incorrectPut], entry: "6"});
 }
 
-function onStartGetAll(cacheName, error, ignite) {
+function startTest(cacheName, testDescription) {
+  TestUtils.startIgniteNode(onStartSV.bind(null, cacheName, testDescription));
+}
+
+function onStartSV(cacheName, testDescription, error, ignite) {
   var cache = ignite.cache(cacheName);
+  callNext();
 
-  var map = {"key1": "val1", "key2" : "val2"};
-
-  cache.putAll(map, onPutAll.bind(null, cache, map));
-}
-
-function onPutAll(cache, map, error) {
-  assert(error == null);
-
-  cache.getAll(Object.keys(map), onGetAll.bind(null, cache, map));
-}
-
-function onGetAll(cache, expected, error, values) {
-  assert(error == null, error);
-
-  var keys = Object.keys(expected);
-
-  for (var i = 0; i < keys.length; ++i) {
-    var key = keys[i];
-
-    assert(!!values[key], "Cannot find key. [key=" + key + "].");
-
-    assert(values[key] === expected[key], "Incorrect value. [key=" + key +
-      ", expected=" + expected[key] + ", val= " + values[key] + "].");
+  function callNext(error) {
+    assert(!error);
+    var next = testDescription.trace.shift();
+    if (next)
+        next.call(null, cache, testDescription.entry, callNext);
+    else
+        TestUtils.testDone();
   }
-
-  TestUtils.testDone();
 }
 
-function onStart(onPut1, cacheName, error, ignite) {
-  var cache = ignite.cache(cacheName);
-
-  cache.put("key", "6", onPut1.bind(null, cache));
+function putSV(cache, entry, next) {
+    cache.put("key", entry, next);
 }
 
-function onStartRemove(onPut1, cacheName, error, ignite) {
-  var cache = ignite.cache(cacheName);
+function getExistSV(cache, entry, next) {
+    cache.get("key", onGet);
 
-  cache.remove("key", onRemove.bind(null, cache));
+    function onGet(error, value) {
+        assert(!error);
+        assert(value === entry);
+        next();
+    }
 }
 
-function onPutRemove(cache, error) {
-  assert(error == null);
-
-  cache.get("key", onGetRemove.bind(null, cache));
+function removeSV(cache, entry, next) {
+    cache.remove("key", next);
 }
 
-function onPutRemoveAll(cache, error) {
-  assert(error == null);
+function getNonExistSV(cache, entry, next) {
+    cache.get("key", onGet);
 
-  cache.get("key", onGetRemoveAll.bind(null, cache));
+    function onGet(error, value) {
+        assert(!error);
+        assert(!value);
+        next();
+    }
 }
 
-function onGetRemoveAll(cache, error, value) {
-  assert(error == null);
-
-  assert(value == 6);
-
-  cache.removeAll(["key"], onRemove.bind(null, cache));
+function putAll(cache, entries, next) {
+    cache.putAll(entries, next);
 }
 
-function onGetRemove(cache, error, value) {
-  assert(error == null);
+function getAll(cache, entries, next) {
+    cache.getAll(Object.keys(entries), onGetAll);
+    var expected = entries;
 
-  assert(value == 6);
+    function onGetAll(error, values) {
+        assert(!error, error);
 
-  cache.remove("key", onRemove.bind(null, cache));
+        var keys = Object.keys(expected);
+
+        for (var i = 0; i < keys.length; ++i) {
+            var key = keys[i];
+
+            assert(!!values[key], "Cannot find key. [key=" + key + "].");
+
+            assert(values[key] === expected[key], "Incorrect value. [key=" + key +
+              ", expected=" + expected[key] + ", val= " + values[key] + "].");
+        }
+        next();
+    }
 }
 
-function onRemove(cache, error) {
-  assert(error == null);
-
-  cache.get("key", onGet.bind(null, null));
+function removeAll(cache, entries, next) {
+    cache.removeAll(Object.keys(entries), next)
 }
 
-function onPut(cache, error) {
-  assert(error == null);
+function getNone(cache, entries, next) {
+    cache.getAll(Object.keys(entries), onGetAll);
 
-  cache.get("key", onGet.bind(null, 6));
+    function onGetAll(error, values) {
+        assert(!error, error);
+        assert(!values || !Object.keys(values).length);
+        next();
+    }
 }
 
-function onGet(expected, error, value) {
-  console.log("onGet [error=" + error + ", val=" + value + "].");
+function incorrectPut(cache, entry, next) {
+    cache.put("key", entry, callback);
 
-  assert(error == null);
-
-  assert.equal(value, expected, "Get return incorrect value. [expected=" + expected + ", val=" + value + "].");
-
-  TestUtils.testDone();
-}
-
-function onIncorrectPut(cache, error) {
-  if (error) {
-    console.error("Failed to put " + error);
-
-    assert(error.indexOf("Failed to find cache for given cache name") !== -1);
-
-    TestUtils.testDone();
-
-    return;
-  }
-
-  TestUtils.testFails("Exception should be thrown.");
+    function callback(error) {
+        assert(!!error);
+        console.error("Failed to put " + error);
+        assert(error.indexOf("Failed to find cache for given cache name") !== -1);
+        next();
+    }
 }
