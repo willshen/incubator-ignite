@@ -6,8 +6,9 @@
     "name": "Irina Vasilinets",
     "email": "ivasilients@gridgain.com"
   }],
-  "main" : "apache_ignite.js",
+  "main" : "apache-ignite.js",
   "license" : "Apache-2.0",
   "keywords" : "grid",
-  "homepage" : "https://ignite.incubator.apache.org/"
+  "homepage" : "https://ignite.incubator.apache.org/",
+  "engines" : { "node" : ">=0.12.4" }
 }
