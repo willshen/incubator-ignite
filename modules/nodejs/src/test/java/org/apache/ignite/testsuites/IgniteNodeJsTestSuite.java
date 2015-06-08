@@ -31,7 +31,7 @@ public class IgniteNodeJsTestSuite extends TestSuite {
     public static TestSuite suite() throws Exception {
         TestSuite suite = new TestSuite("Ignite Node JS Test Suite");
 
-        suite.addTest(new TestSuite(NodeJsSelfTest.class));
+        suite.addTest(new TestSuite(NodeJsIgnitionSelfTest.class));
         suite.addTest(new TestSuite(NodeJsPutGetSelfTest.class));
 
         return suite;
