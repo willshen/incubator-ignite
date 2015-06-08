@@ -20,10 +20,10 @@ package org.apache.ignite.internal;
 /**
  * Test node js client put/get.
  */
-public class NodeJsPutGetSelfTest extends NodeJsAbstractTest {
+public class NodeJsCacheApiSelfTest extends NodeJsAbstractTest {
     /** Constructor. */
-    public NodeJsPutGetSelfTest() {
-        super("test-put-get.js");
+    public NodeJsCacheApiSelfTest() {
+        super("test-cache-api.js");
     }
 
     /** {@inheritDoc} */
@@ -34,6 +34,13 @@ public class NodeJsPutGetSelfTest extends NodeJsAbstractTest {
     /** {@inheritDoc} */
     @Override protected void afterTestsStopped() throws Exception {
         stopAllGrids();
+    }
+
+    /** {@inheritDoc} */
+    @Override protected void beforeTest() throws Exception {
+        grid(0).cache(NodeJsAbstractTest.CACHE_NAME).removeAll();
+
+        assertNull(grid(0).cache(NodeJsAbstractTest.CACHE_NAME).get("key"));
     }
 
     /**
@@ -48,5 +55,19 @@ public class NodeJsPutGetSelfTest extends NodeJsAbstractTest {
      */
     public void testIncorrectCache() throws Exception {
         runJsScript("testIncorrectCacheName");
+    }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testRemove() throws Exception {
+        runJsScript("testRemove");
+    }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testRemoveNoKey() throws Exception {
+        runJsScript("testRemoveNoKey");
     }
 }

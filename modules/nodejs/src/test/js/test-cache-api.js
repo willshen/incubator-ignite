@@ -21,6 +21,8 @@ var Apache = require(TestUtils.scriptPath());
 var Cache = Apache.Cache;
 var Server = Apache.Server;
 
+var assert = require("assert");
+
 testPutGet = function() {
   TestUtils.startIgniteNode(onStart.bind(null, onPut, "mycache"));
 }
@@ -29,43 +31,65 @@ testIncorrectCacheName = function() {
   TestUtils.startIgniteNode(onStart.bind(null, onIncorrectPut, "mycache1"));
 }
 
+testRemove = function() {
+  TestUtils.startIgniteNode(onStart.bind(null, onPutRemove, "mycache"));
+}
+
+testRemoveNoKey = function() {
+  TestUtils.startIgniteNode(onStartRemove.bind(null, onRemove, "mycache"));
+}
+
 function onStart(onPut1, cacheName, error, ignite) {
   var cache = ignite.cache(cacheName);
 
   cache.put("key", "6", onPut1.bind(null, cache));
 }
 
-function onPut(cache, error) {
-  if (error) {
-    TestUtils.testFails("Incorrect error message: " + error);
+function onStartRemove(onPut1, cacheName, error, ignite) {
+  var cache = ignite.cache(cacheName);
 
-    return;
-  }
-
-  cache.get("key", onGet);
+  cache.remove("key", onRemove.bind(null, cache));
 }
 
-function onGet(error, value) {
-  if (error) {
-    console.error("Failed to get " + error);
+function onPutRemove(cache, error) {
+  assert(error == null);
 
-    TestUtils.testFails("Incorrect error message: " + error);
+  cache.get("key", onGetRemove.bind(null, cache));
+}
 
-    return;
-  }
+function onGetRemove(cache, error, value) {
+  assert(error == null);
 
-  var assert = require("assert");
+  assert(value == 6);
 
-  assert.equal(value, 6, "Get return incorrect value. + [expected=" + 6 + ", val=" + value + "].");
+  cache.remove("key", onRemove.bind(null, cache));
+}
+
+function onRemove(cache, error) {
+  assert(error == null);
+
+  cache.get("key", onGet.bind(null, null));
+}
+
+function onPut(cache, error) {
+  assert(error == null);
+
+  cache.get("key", onGet.bind(null, 6));
+}
+
+function onGet(expected, error, value) {
+  console.log("onGet [error=" + error + ", val=" + value + "].");
+
+  assert(error == null);
+
+  assert.equal(value, expected, "Get return incorrect value. [expected=" + expected + ", val=" + value + "].");
 
   TestUtils.testDone();
 }
 
 function onIncorrectPut(cache, error) {
   if (error) {
-    console.error("Failed to get " + error);
-
-    var assert = require("assert");
+    console.error("Failed to put " + error);
 
     assert(error.indexOf("Failed to find cache for given cache name") !== -1);
 

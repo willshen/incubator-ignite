@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+var Server = require("./server").Server;
+
 /**
  * Creates an instance of Cache
  *
@@ -24,25 +26,10 @@
  * @param {string} cacheName Cache name
  */
 function Cache(server, cacheName) {
-  var Server = require("./server").Server;
-
   this._server = server;
   this._cacheName = cacheName;
   this._cacheNameParam = Server.pair("cacheName", this._cacheName);
 }
-
-/**
- * Get cache value
- *
- * @this {Cache}
- * @param {string} key Key
- * @param {Cache~onGet} callback Called on finish
- */
-Cache.prototype.get = function(key, callback) {
-  var Server = require("./server").Server;
-
-  this._server.runCommand("get", [this._cacheNameParam, Server.pair("key", key)], callback);
-};
 
 /**
  * Callback for cache get
@@ -52,24 +39,43 @@ Cache.prototype.get = function(key, callback) {
  */
 
 /**
+ * Get cache value
+ *
+ * @this {Cache}
+ * @param {string} key Key
+ * @param {Cache~onGet} callback Called on finish
+ */
+Cache.prototype.get = function(key, callback) {
+  this._server.runCommand("get", [this._cacheNameParam, Server.pair("key", key)], callback);
+};
+
+/**
+ * Callback for cache put
+ * @callback Cache~noValue
+ * @param {string} error Error
+ */
+
+/**
  * Put cache value
  *
  * @this {Cache}
  * @param {string} key Key
  * @param {string} value Value
- * @param {Cache~onPut} callback Called on finish
+ * @param {Cache~noValue} callback Called on finish
  */
 Cache.prototype.put = function(key, value, callback) {
-  var Server = require("./server").Server;
-
   this._server.runCommand("put", [this._cacheNameParam, Server.pair("key", key), Server.pair("val", value)],
     callback);
 }
 
 /**
- * Callback for cache put
- * @callback Cache~onPut
- * @param {string} error Error
+ * Remove cache key
+ *
+ * @param {string} key Key
+ * @param {noValue} callback Called on finish
  */
+Cache.prototype.remove = function(key, callback) {
+  this._server.runCommand("rmv", [this._cacheNameParam, Server.pair("key", key)], callback);
+}
 
 exports.Cache = Cache
