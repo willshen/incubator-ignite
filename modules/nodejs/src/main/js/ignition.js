@@ -38,30 +38,30 @@ function Ignition() {
  * @param {Ignition~onStart} callback Called on finish
  */
 Ignition.start = function(address, callback) {
-    var Server = require("./server").Server;
-    var numConn = address.length;
-    for (var addr of address) {
-        var params = addr.split(":");
-        var server = new Server(params[0], params[1]);
-        server.checkConnection(onConnect.bind(null, server));
+  var Server = require("./server").Server;
+  var numConn = address.length;
+  for (var addr of address) {
+    var params = addr.split(":");
+    var server = new Server(params[0], params[1]);
+    server.checkConnection(onConnect.bind(null, server));
+  }
+
+  function onConnect(server, error) {
+    if (!callback) return;
+
+    numConn--;
+    if (!error) {
+      callback.call(null, null, server);
+      callback = null;
+      return;
     }
 
-    function onConnect(server, error) {
-        if (!callback)
-            return;
+    console.log("onConnect:" + error);
 
-        numConn--;
-        if (!error) {
-            callback.call(null, null, server);
-            callback = null;
-            return;
-        }
-
-        console.log("onConnect:" + error);
-
-        if (!numConn)
-            callback.call(null, "Cannot connect to servers.", null);
+    if (!numConn) {
+      callback.call(null, "Cannot connect to servers.", null);
     }
+  }
 }
 
 exports.Ignition = Ignition;

@@ -16,7 +16,7 @@
  */
 
 module.exports = {
-   Cache : require('./cache.js').Cache,
-   Ignition : require('./ignition.js').Ignition,
-   Server : require('./server.js').Server
+  Cache : require('./cache.js').Cache,
+  Ignition : require('./ignition.js').Ignition,
+  Server : require('./server.js').Server
 }

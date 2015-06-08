@@ -24,8 +24,8 @@
  * @param {number} port Port
  */
 function Server(host, port) {
-    this._host = host;
-    this._port = port;
+  this._host = host;
+  this._port = port;
 }
 
 /**
@@ -34,9 +34,8 @@ function Server(host, port) {
  * @this {Server}
  * @returns {string} Host value
  */
-Server.prototype.host = function()
-{
-    return this._host;
+Server.prototype.host = function() {
+  return this._host;
 }
 
 /**
@@ -56,49 +55,51 @@ Server.prototype.host = function()
  * @param {Server~onRunCommand} Called on finish
  */
 Server.prototype.runCommand = function(cmdName, params, callback) {
-    var paramsString = "";
+  var paramsString = "";
 
-    for (var p of params)
-        //TODO: escape value
-        paramsString += "&" + p.key + "=" + p.value;
+  for (var p of params) {
+    paramsString += "&" + p.key + "=" + p.value;
+  }
 
-    var requestQry = "cmd=" + cmdName + paramsString;
+  var requestQry = "cmd=" + cmdName + paramsString;
 
-    var http = require('http');
+  var http = require('http');
 
-    var options = {
-        host: this._host,
-        port: this._port,
-        path: "/ignite?" + requestQry
-    };
+  var options = {
+    host: this._host,
+    port: this._port,
+    path: "/ignite?" + requestQry
+  };
 
-    function streamCallback(response) {
-        var fullResponseString = '';
+  function streamCallback(response) {
+    var fullResponseString = '';
 
-        response.on('data', function (chunk) {
-            fullResponseString += chunk;
-        });
+    response.on('data', function (chunk) {
+      fullResponseString += chunk;
+    });
 
-        response.on('end', function () {
-            try {
-                var response = JSON.parse(fullResponseString);
-                if (response.successStatus)
-                    callback.call(null, response.error, null)
-                else
-                    callback.call(null, null, response.response);
-            } catch (e) {
-                console.log("fail on json parse: " + fullResponseString)
-                callback.call(null, e, null);
-            }
-        });
-    }
+    response.on('end', function () {
+      try {
+        var response = JSON.parse(fullResponseString);
 
-    var request = http.request(options, streamCallback);
+        if (response.successStatus) {
+          callback.call(null, response.error, null)
+        } else {
+          callback.call(null, null, response.response);
+        }
+      } catch (e) {
+        console.log("fail on json parse: " + fullResponseString);
+        callback.call(null, e, null);
+      }
+    });
+  }
 
-    request.setTimeout(5000, callback.bind(null, "Request timeout: >5 sec"));
+  var request = http.request(options, streamCallback);
 
-    request.on('error', callback);
-    request.end();
+  request.setTimeout(5000, callback.bind(null, "Request timeout: >5 sec"));
+
+  request.on('error', callback);
+  request.end();
 }
 
 /**
@@ -108,7 +109,7 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
  * @param {Server~onRunCommand} callback Called on finish
  */
 Server.prototype.checkConnection = function(callback) {
-    this.runCommand("version", [], callback);
+  this.runCommand("version", [], callback);
 }
 
 exports.Server = Server;
