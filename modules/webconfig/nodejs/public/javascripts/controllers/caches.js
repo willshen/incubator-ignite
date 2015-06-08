@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-configuratorModule.controller('cachesController', ['$scope', '$http', function($scope, $http) {
+configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
         $scope.templates = [
             {value: {mode: 'PARTITIONED', atomicity: 'TRANSACTIONAL'}, label: 'Partitioned'},
             {value: {mode: 'REPLICATED', atomicity: 'ATOMIC'}, label: 'Replicated'},
@@ -60,11 +60,11 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
             });
 
 
-        // Create popup for discovery advanced settings.
-        var discoveryModal = $modal({scope: $scope, template: '/discovery', show: false});
+        // Create popup for indexedTypes.
+        var indexedTypesModal = $modal({scope: $scope, template: '/indexedTypes', show: false});
 
-        $scope.editDiscovery = function(cluster) {
-            discoveryModal.$promise.then(discoveryModal.show);
+        $scope.editIndexedTypes = function(cache) {
+            indexedTypesModal.$promise.then(indexedTypesModal.show);
         };
 
 
