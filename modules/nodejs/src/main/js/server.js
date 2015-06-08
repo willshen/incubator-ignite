@@ -89,6 +89,7 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
         }
       } catch (e) {
         console.log("fail on json parse: " + fullResponseString);
+
         callback.call(null, e, null);
       }
     });
@@ -110,6 +111,17 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
  */
 Server.prototype.checkConnection = function(callback) {
   this.runCommand("version", [], callback);
+}
+
+/**
+ * Returns pair for runCommand
+ *
+ * @param {string} key Key
+ * @param {string} value Value
+ * @returns Pair of strings
+ */
+Server.pair = function(key, value) {
+  return {key: key, value: value}
 }
 
 exports.Server = Server;

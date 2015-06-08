@@ -28,7 +28,7 @@ function Ignition() {
  *
  * @callback Ignition~onStart
  * @param {string} error Error
- * @param {Server} server Connected server
+ * @param {Ignite} ignite Connected ignite
  */
 
 /**
@@ -39,7 +39,10 @@ function Ignition() {
  */
 Ignition.start = function(address, callback) {
   var Server = require("./server").Server;
+  var Ignite = require("./ignite").Ignite
+
   var numConn = address.length;
+
   for (var addr of address) {
     var params = addr.split(":");
     var server = new Server(params[0], params[1]);
@@ -51,7 +54,7 @@ Ignition.start = function(address, callback) {
 
     numConn--;
     if (!error) {
-      callback.call(null, null, server);
+      callback.call(null, null, new Ignite(server));
       callback = null;
       return;
     }

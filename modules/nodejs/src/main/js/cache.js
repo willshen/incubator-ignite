@@ -24,9 +24,11 @@
  * @param {string} cacheName Cache name
  */
 function Cache(server, cacheName) {
+  var Server = require("./server").Server;
+
   this._server = server;
   this._cacheName = cacheName;
-  this._cacheNameParam = _pair("cacheName", this._cacheName);
+  this._cacheNameParam = Server.pair("cacheName", this._cacheName);
 }
 
 /**
@@ -37,7 +39,9 @@ function Cache(server, cacheName) {
  * @param {Cache~onGet} callback Called on finish
  */
 Cache.prototype.get = function(key, callback) {
-  this._server.runCommand("get", [this._cacheNameParam, _pair("key", key)], callback);
+  var Server = require("./server").Server;
+
+  this._server.runCommand("get", [this._cacheNameParam, Server.pair("key", key)], callback);
 };
 
 /**
@@ -56,7 +60,9 @@ Cache.prototype.get = function(key, callback) {
  * @param {Cache~onPut} callback Called on finish
  */
 Cache.prototype.put = function(key, value, callback) {
-  this._server.runCommand("put", [this._cacheNameParam, _pair("key", key), _pair("val", value)],
+  var Server = require("./server").Server;
+
+  this._server.runCommand("put", [this._cacheNameParam, Server.pair("key", key), Server.pair("val", value)],
     callback);
 }
 
@@ -65,9 +71,5 @@ Cache.prototype.put = function(key, value, callback) {
  * @callback Cache~onPut
  * @param {string} error Error
  */
-
-function _pair(key, value) {
-  return {key: key, value: value}
-}
 
 exports.Cache = Cache

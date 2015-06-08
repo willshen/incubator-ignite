@@ -18,13 +18,17 @@
 var TestUtils = require("./test-utils").TestUtils;
 
 var Apache = require(TestUtils.scriptPath());
+var Ignition = Apache.Ignition;
 var Cache = Apache.Cache;
 var Server = Apache.Server;
 
 testPutGet = function() {
-    var server = new Server('127.0.0.1', 9095);
-    var cache = new Cache(server, "mycache");
-    cache.put("key", "6", onPut.bind(null, cache));
+  Ignition.start(['127.0.0.1:9095'], onStart);
+}
+
+function onStart(error, ignite) {
+  var cache = ignite.cache("mycache");
+  cache.put("key", "6", onPut.bind(null, cache));
 }
 
 function onPut(cache, error) {

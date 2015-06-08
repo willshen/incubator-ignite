@@ -15,9 +15,28 @@
  * limitations under the License.
  */
 
-module.exports = {
-  Cache : require('./cache.js').Cache,
-  Ignition : require('./ignition.js').Ignition,
-  Server : require('./server.js').Server,
-  Ignite : require('./ignite.js').Ignite
+/**
+ * Create an instance of Ignite
+ *
+ * @constructor
+ * @this {Ignite}
+ * @param {Server} Server
+ */
+function Ignite(server) {
+  this._server = server;
 }
+
+/**
+ * Get an instance of cache
+ *
+ * @this {Ignite}
+ * @param {string} Cache name
+ * @returns {Cache} Cache
+ */
+Ignite.prototype.cache = function(cacheName) {
+  var Cache = require("./cache").Cache;
+
+  return new Cache(this._server, cacheName);
+}
+
+exports.Ignite = Ignite;
