@@ -41,12 +41,36 @@ Ignition.start = function(address, callback) {
   var Server = require("./server").Server;
   var Ignite = require("./ignite").Ignite
 
-  var numConn = address.length;
+  var numConn = 0;
 
   for (var addr of address) {
     var params = addr.split(":");
-    var server = new Server(params[0], params[1]);
-    server.checkConnection(onConnect.bind(null, server));
+
+    var portsRange = params[1].split("..");
+
+    if (portsRange.length === 1) {
+      var server = new Server(params[0], portsRange[0]);
+
+      numConn++;
+
+      server.checkConnection(onConnect.bind(null, server));
+    }
+    else if (portsRange.length === 2) {
+      var start = parseInt(portsRange[0], 10);
+
+      var end = parseInt(portsRange[1], 10);
+
+      for (var i = start; i <= end; i++) {
+        numConn++;
+
+        var server = new Server(params[0], i);
+
+        server.checkConnection(onConnect.bind(null, server));
+      }
+    }
+    else {
+      callback.call(null, "Incorrect address format.", null);
+    }
   }
 
   function onConnect(server, error) {
@@ -55,7 +79,9 @@ Ignition.start = function(address, callback) {
     numConn--;
     if (!error) {
       callback.call(null, null, new Ignite(server));
+
       callback = null;
+
       return;
     }
 

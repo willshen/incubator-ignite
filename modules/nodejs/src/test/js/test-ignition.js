@@ -48,3 +48,25 @@ ignitionStartSuccess = function() {
         TestUtils.testDone();
     }
 }
+
+ignitionStartSuccessWithSeveralPorts = function() {
+    Ignition.start(['127.0.0.1:9090..9100'], onConnect);
+
+    function onConnect(error, ignite) {
+        if (error) {
+            TestUtils.testFails(error);
+
+            return;
+        }
+
+        var assert = require("assert");
+
+        var server = ignite.server();
+
+        var host = server.host();
+
+        assert.ok(host.indexOf('127.0.0.1') !== -1, "Incorrect host.");
+
+        TestUtils.testDone();
+    }
+}

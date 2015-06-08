@@ -27,6 +27,13 @@ function Ignite(server) {
 }
 
 /**
+ * @returns {Server} Server
+ */
+Ignite.prototype.server = function() {
+  return this._server;
+}
+
+/**
  * Get an instance of cache
  *
  * @this {Ignite}

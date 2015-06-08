@@ -85,6 +85,7 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
         if (response.successStatus) {
           callback.call(null, response.error, null)
         } else {
+
           callback.call(null, null, response.response);
         }
       } catch (e) {

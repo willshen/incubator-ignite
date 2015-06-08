@@ -49,4 +49,11 @@ public class NodeJsIgnitionSelfTest extends NodeJsAbstractTest {
     public void testIgnitionFailedStart() throws Exception {
         runJsScript("testIgnitionFail");
     }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testIgnitionStartWithSeveralPorts() throws Exception {
+        runJsScript("ignitionStartSuccessWithSeveralPorts");
+    }
 }
