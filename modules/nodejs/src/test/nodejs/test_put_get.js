@@ -5,7 +5,7 @@ var Server = require(TestUtils.scriptPath() + "server").Server;
 testPutGet = function() {
     var server = new Server('127.0.0.1', 9090);
     var cache = new Cache(server, "mycache");
-    cache.put("mykey", "6", onPut.bind(null, cache));
+    cache.put("key", "6", onPut.bind(null, cache));
 }
 
 function onPut(cache, error) {
@@ -15,7 +15,7 @@ function onPut(cache, error) {
     }
 
     console.log("Put finished");
-    cache.get("mykey", onGet);
+    cache.get("key", onGet);
 }
 
 function onGet(error, value) {
