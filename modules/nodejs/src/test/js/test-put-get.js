@@ -43,7 +43,6 @@ function onPut(cache, error) {
     return;
   }
 
-  console.log("Put finished");
   cache.get("key", onGet);
 }
 
