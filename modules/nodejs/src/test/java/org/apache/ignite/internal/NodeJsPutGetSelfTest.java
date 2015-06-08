@@ -42,4 +42,11 @@ public class NodeJsPutGetSelfTest extends NodeJsAbstractTest {
     public void testPutGet() throws Exception {
         runJsScript("testPutGet");
     }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testIncorrectCache() throws Exception {
+        runJsScript("testIncorrectCacheName");
+    }
 }

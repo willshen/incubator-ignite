@@ -23,13 +23,17 @@ var Cache = Apache.Cache;
 var Server = Apache.Server;
 
 testPutGet = function() {
-  Ignition.start(['127.0.0.1:9095'], onStart);
+  Ignition.start(['127.0.0.1:9095'], onStart.bind(null, onPut, "mycache"));
 }
 
-function onStart(error, ignite) {
-  var cache = ignite.cache("mycache");
+testIncorrectCacheName = function() {
+  Ignition.start(['127.0.0.1:9095'], onStart.bind(null, onIncorrectPut, "mycache1"));
+}
 
-  cache.put("key", "6", onPut.bind(null, cache));
+function onStart(onPut1, cacheName, error, ignite) {
+  var cache = ignite.cache(cacheName);
+
+  cache.put("key", "6", onPut1.bind(null, cache));
 }
 
 function onPut(cache, error) {
@@ -46,6 +50,7 @@ function onPut(cache, error) {
 function onGet(error, value) {
   if (error) {
     console.error("Failed to get " + error);
+
     TestUtils.testFails("Incorrect error message: " + error);
     return;
   }
@@ -55,4 +60,20 @@ function onGet(error, value) {
   assert.equal(value, 6, "Get return incorrect value. + [expected=" + 6 + ", val=" + value + "].");
 
   TestUtils.testDone();
+}
+
+function onIncorrectPut(cache, error) {
+  if (error) {
+    console.error("Failed to get " + error);
+
+    var assert = require("assert");
+
+    assert(error.indexOf("Failed to find cache for given cache name") !== -1);
+
+    TestUtils.testDone();
+
+    return;
+  }
+
+  TestUtils.testFails("Exception should be thrown.");
 }
