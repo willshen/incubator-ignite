@@ -16,7 +16,7 @@
  */
 
 /**
- * Create instance of TestUtils
+ * Create instance of TestRunner
  *
  * @constructor
  */
@@ -24,7 +24,7 @@ function TestRunner() {
 }
 
 /**
- * Test routine.
+ * Test routine
  */
 TestRunner.runTest = function() {
     var fileName = process.argv[2].toString().trim();
