@@ -31,7 +31,7 @@ mixin details-row
         div(ng-switch-when='text')
             label.col-sm-2.details-label {{detail.label}}:
             .col-sm-3
-                input.form-control(type='text' ng-model=detailMdl placeholder='{{field.model}}{{detail.model}}')
+                input.form-control(type='text' ng-model=detailMdl placeholder='{{detail.placeholder}}')
             +tip-detail
         div(ng-switch-when='dropdown')
             label.col-sm-2.details-label {{detail.label}}:
@@ -43,6 +43,21 @@ mixin details-row
             .col-sm-3
                 button.form-control(bs-select ng-model=detailMdl data-multiple='1' data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
             +tip-detail
+        div(ng-switch-when='addresses')
+            .details-label
+                button.btn.btn-primary(ng-click='addAddress()') Add address
+                //+tip
+            .col-sm-10.links.details-row(style='margin-bottom: 0px;')
+                table
+                    tbody
+                        tr
+                            td
+                                a 1. 127.0.0.1:47500..47510&nbsp;
+                                label.fa.fa-remove
+                        tr
+                            td
+                                a 2. 9.9.9.9:47501&nbsp;
+                                label.fa.fa-remove
 
 mixin form-row
     - var masterMdl = 'backupItem[field.group][field.model]'

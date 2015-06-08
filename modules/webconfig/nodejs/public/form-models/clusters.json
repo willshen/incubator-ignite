@@ -19,7 +19,7 @@
         "Vm": [
           {
             "label": "Addresses",
-            "type": "table",
+            "type": "addresses",
             "model": "addresses"
           }
         ],
