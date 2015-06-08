@@ -48,36 +48,25 @@ Ignition.start = function(address, callback) {
 
     var portsRange = params[1].split("..");
 
+    var start;
+    var end;
+
     if (portsRange.length === 1) {
-      var port = parseInt(portsRange[0], 10);
-
-      if (isNaN(port)) {
-        incorrectAddress();
-
-        return;
-      }
-
-      checkServer(params[0], port);
+       start = parseInt(portsRange[0], 10);
+       end = start;
     }
     else if (portsRange.length === 2) {
-      var start = parseInt(portsRange[0], 10);
-
-      var end = parseInt(portsRange[1], 10);
-
-      if (isNaN(start) || isNaN(end)) {
-        incorrectAddress();
-
-        return;
-      }
-
-      for (var i = start; i <= end; i++) {
-        checkServer(params[0], i);
-      }
+      start = parseInt(portsRange[0], 10);
+      end = parseInt(portsRange[1], 10);
     }
-    else {
+    if (isNaN(start) || isNaN(end)) {
       incorrectAddress();
 
       return;
+    }
+
+    for (var i = start; i <= end; i++) {
+      checkServer(params[0], i);
     }
   }
 

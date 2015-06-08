@@ -84,13 +84,12 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
 
         if (response.successStatus) {
           callback.call(null, response.error, null)
-        } else {
-
+        }
+        else {
           callback.call(null, null, response.response);
         }
-      } catch (e) {
-        console.log("fail on json parse: " + fullResponseString);
-
+      }
+      catch (e) {
         callback.call(null, e, null);
       }
     });

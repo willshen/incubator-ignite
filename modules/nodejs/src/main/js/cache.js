@@ -98,16 +98,16 @@ Cache.prototype.removeAll = function(keys, callback) {
  * Put keys to cache
  *
  * @this {Cache}
- * @param {string[]} keys Keys
- * @param {string[]} values Values
+ * @param {Object.<string, string>} collection of entries to put in the cache
  * @param {Cache~noValue} callback Called on finish
  */
-Cache.prototype.putAll = function(keys, values, callback) {
-  if (keys.length !== values.length) {
-    callback.call(null, "Number of keys is not equal to number of values." +
-      "keys size=" + keys.length + ", values size=" + values.length + "].");
+Cache.prototype.putAll = function(map, callback) {
+  var keys = Object.keys(map);
 
-    return;
+  var values = [];
+
+  for (var key of keys) {
+    values.push(map[key]);
   }
 
   var params = Cache.concatParams("k", keys);
@@ -136,9 +136,6 @@ Cache.prototype.getAll = function(keys, callback) {
   var params = Cache.concatParams("k", keys);
 
   params.push(this._cacheNameParam);
-
-
-  console.log("PARAM GET ALL "+ params);
 
   this._server.runCommand("getall", params, callback);
 }

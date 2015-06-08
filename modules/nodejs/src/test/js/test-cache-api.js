@@ -50,30 +50,29 @@ testPutAllGetAll = function() {
 function onStartGetAll(cacheName, error, ignite) {
   var cache = ignite.cache(cacheName);
 
-  var keys = ["key1", "key2"];
+  var map = {"key1": "val1", "key2" : "val2"};
 
-  var values = ["val1", "val2"];
-
-  cache.putAll(keys, values, onPutAll.bind(null, cache, keys, values));
+  cache.putAll(map, onPutAll.bind(null, cache, map));
 }
 
-function onPutAll(cache, keys, values, error) {
+function onPutAll(cache, map, error) {
   assert(error == null);
 
-  cache.getAll(keys, onGetAll.bind(null, cache, keys, values));
+  cache.getAll(Object.keys(map), onGetAll.bind(null, cache, map));
 }
 
-function onGetAll(cache, keys, expected, error, values) {
-  console.log("error get all: " + error)
+function onGetAll(cache, expected, error, values) {
   assert(error == null, error);
+
+  var keys = Object.keys(expected);
 
   for (var i = 0; i < keys.length; ++i) {
     var key = keys[i];
 
     assert(!!values[key], "Cannot find key. [key=" + key + "].");
 
-    assert(values[key] === expected[i], "Incorrect value. [key=" + key +
-      ", expected=" + expected[i] + ", val= " + values[key] + "].");
+    assert(values[key] === expected[key], "Incorrect value. [key=" + key +
+      ", expected=" + expected[key] + ", val= " + values[key] + "].");
   }
 
   TestUtils.testDone();
