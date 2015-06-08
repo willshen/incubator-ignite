@@ -15,36 +15,38 @@
  * limitations under the License.
  */
 
-var TestUtils = require("./test_utils").TestUtils;
+var TestUtils = require("./test-utils").TestUtils;
+
 var Apache = require(TestUtils.scriptPath());
-var Ignition = Apache.Ignition;
+var Cache = Apache.Cache;
+var Server = Apache.Server;
 
-testIgnitionFail = function ()  {
-    Ignition.start(['127.0.0.3:9091', '127.0.0.1:9092'], onConnect);
-
-    function onConnect(error, server) {
-        if (error) {
-            if (error.indexOf("Cannot connect to servers.") == -1)
-                TestUtils.testFails("Incorrect error message: " + error);
-            else
-                TestUtils.testDone();
-
-            return;
-        }
-
-        TestUtils.testFails("Test should fail.");
-    }
+testPutGet = function() {
+    var server = new Server('127.0.0.1', 9095);
+    var cache = new Cache(server, "mycache");
+    cache.put("key", "6", onPut.bind(null, cache));
 }
 
-ignitionStartSuccess = function() {
-    Ignition.start(['127.0.0.0:9095', '127.0.0.1:9095'], onConnect);
-
-    function onConnect(error, server) {
-        if (error) {
-            TestUtils.testFails(error);
-
-            return;
-        }
-        TestUtils.testDone();
+function onPut(cache, error) {
+    if (error) {
+        TestUtils.testFails("Incorrect error message: " + error);
+        return;
     }
+
+    console.log("Put finished");
+    cache.get("key", onGet);
+}
+
+function onGet(error, value) {
+    if (error) {
+        console.error("Failed to get " + error);
+        TestUtils.testFails("Incorrect error message: " + error);
+        return;
+    }
+
+    var assert = require("assert");
+
+    assert.equal(value, 6, "Get return incorrect value. + [expected=" + 6 + ", val=" + value + "].");
+
+    TestUtils.testDone();
 }

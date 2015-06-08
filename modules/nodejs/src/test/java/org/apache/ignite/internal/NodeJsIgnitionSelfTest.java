@@ -23,7 +23,7 @@ package org.apache.ignite.internal;
 public class NodeJsIgnitionSelfTest extends NodeJsAbstractTest {
     /** Constructor. */
     public NodeJsIgnitionSelfTest() {
-        super("test_ignition.js");
+        super("test-ignition.js");
     }
 
     /** {@inheritDoc} */

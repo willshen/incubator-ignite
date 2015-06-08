@@ -23,7 +23,7 @@ package org.apache.ignite.internal;
 public class NodeJsPutGetSelfTest extends NodeJsAbstractTest {
     /** Constructor. */
     public NodeJsPutGetSelfTest() {
-        super("test_put_get.js");
+        super("test-put-get.js");
     }
 
     /** {@inheritDoc} */
