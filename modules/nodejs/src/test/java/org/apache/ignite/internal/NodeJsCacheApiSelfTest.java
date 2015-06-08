@@ -70,4 +70,11 @@ public class NodeJsCacheApiSelfTest extends NodeJsAbstractTest {
     public void testRemoveNoKey() throws Exception {
         runJsScript("testRemoveNoKey");
     }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testRemoveAll() throws Exception {
+        runJsScript("testRemoveAll");
+    }
 }

@@ -39,6 +39,10 @@ testRemoveNoKey = function() {
   TestUtils.startIgniteNode(onStartRemove.bind(null, onRemove, "mycache"));
 }
 
+testRemoveAll = function() {
+  TestUtils.startIgniteNode(onStart.bind(null, onPutRemoveAll, "mycache"));
+}
+
 function onStart(onPut1, cacheName, error, ignite) {
   var cache = ignite.cache(cacheName);
 
@@ -55,6 +59,20 @@ function onPutRemove(cache, error) {
   assert(error == null);
 
   cache.get("key", onGetRemove.bind(null, cache));
+}
+
+function onPutRemoveAll(cache, error) {
+  assert(error == null);
+
+  cache.get("key", onGetRemoveAll.bind(null, cache));
+}
+
+function onGetRemoveAll(cache, error, value) {
+  assert(error == null);
+
+  assert(value == 6);
+
+  cache.removeAll(["key"], onRemove.bind(null, cache));
 }
 
 function onGetRemove(cache, error, value) {

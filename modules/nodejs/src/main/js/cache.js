@@ -78,4 +78,20 @@ Cache.prototype.remove = function(key, callback) {
   this._server.runCommand("rmv", [this._cacheNameParam, Server.pair("key", key)], callback);
 }
 
+/**
+ * Remove cache keys
+ *
+ * @param {string[]} keys Keys to remove
+ * @param {noValue} callback Called on finish
+ */
+Cache.prototype.removeAll = function(keys, callback) {
+  var params = [this._cacheNameParam];
+
+  for (var i = 0; i < keys.length; ++i) {
+    params.push(Server.pair("k" + i, keys[i]));
+  }
+
+  this._server.runCommand("rmvall", params, callback);
+}
+
 exports.Cache = Cache
