@@ -60,6 +60,14 @@ configuratorModule.controller('cachesController', ['$scope', '$http', function($
             });
 
 
+        // Create popup for discovery advanced settings.
+        var discoveryModal = $modal({scope: $scope, template: '/discovery', show: false});
+
+        $scope.editDiscovery = function(cluster) {
+            discoveryModal.$promise.then(discoveryModal.show);
+        };
+
+
         //DefaultLockTimeout dfltLockTimeout
         //invalidate
         //TransactionManagerLookupClassName tmLookupClsName

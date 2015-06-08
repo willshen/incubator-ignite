@@ -25,9 +25,8 @@ mixin details-row
 
     div(ng-switch='detail.type')
         div(ng-switch-when='check')
-            .col-sm-5
-                input(type='checkbox' ng-model=detailMdl)
-                label(ng-click='#{detailMdl} = !#{detailMdl}') {{detail.label}}
+            input(type='checkbox' ng-model=detailMdl)
+            label(ng-click='#{detailMdl} = !#{detailMdl}') {{detail.label}}
             +tip-detail
         div(ng-switch-when='text')
             label.col-sm-2.details-label {{detail.label}}:
@@ -50,9 +49,8 @@ mixin form-row
 
     div(ng-switch='field.type')
         div(ng-switch-when='check')
-            .col-sm-5
-                input(type='checkbox' ng-model='backupItem[field.model]')
-                label(ng-click='backupItem[field.model] = !backupItem[field.model]') {{field.label}}
+            input(type='checkbox' ng-model='backupItem[field.model]')
+            label(ng-click='backupItem[field.model] = !backupItem[field.model]') {{field.label}}
             +tip
         div(ng-switch-when='text')
             label.col-sm-2 {{field.label}}:
@@ -77,20 +75,18 @@ mixin form-row
             .details-row(ng-repeat='detail in field.details[#{masterMdl}]')
                 +details-row
         div(ng-switch-when='indexedTypes')
-            label.col-sm-2 Indexed types:
-            button.btn.btn-primary(ng-click='addIndexedTypes()') Add
-            +tip
-            .col-sm-5
-                table.table.table-striped.table-nowrap
-                    thead
-                        tr
-                            th Key class
-                            th Value class
+            div
+                button.btn.btn-primary(ng-click='addIndexedTypes()') Add indexed type
+                +tip
+            .col-sm-10.links(style='margin-left: 18px')
+                table
                     tbody
                         tr
-                            td org.apache.some.other.package.KeyClazz1
-                            td org.apache.some.other.package.ValueClazz1
+                            td
+                                a 1. o.a.s.other.package.KeyClazz1, o.a.s.other.package.ValueClazz1&nbsp;
+                                label.fa.fa-remove
                         tr
-                            td org.apache.some.KeyClazz2
-                            td org.apache.some.ValueClazz3
+                            td
+                                a 2. org.apache.some.KeyClazz2, og.a.s.v.v.long.package.ValueClazz3&nbsp;
+                                label.fa.fa-remove
 
