@@ -89,7 +89,7 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
             sep + "nodejs" +
             sep + "src" +
             sep + "test" +
-            sep + "nodejs" + sep;
+            sep + "js" + sep;
     }
 
     /**

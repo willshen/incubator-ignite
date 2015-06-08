@@ -32,7 +32,7 @@ TestUtils.scriptPath = function() {
        TestUtils.sep() + "nodejs" +
        TestUtils.sep() + "src" +
        TestUtils.sep() + "main" +
-       TestUtils.sep() + "nodejs" + TestUtils.sep();
+       TestUtils.sep() + "js" + TestUtils.sep();
 }
 
 /**
