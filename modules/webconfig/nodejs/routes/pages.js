@@ -32,6 +32,11 @@ router.get('/discovery', function(req, res) {
     res.render('discovery');
 });
 
+/* GET page for indexedTypes popup. */
+router.get('/indexedTypes', function(req, res) {
+    res.render('indexedTypes');
+});
+
 /* GET register page. */
 router.get('/register', function(req, res) {
     res.render('register');
