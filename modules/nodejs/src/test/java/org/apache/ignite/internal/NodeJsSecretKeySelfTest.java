@@ -17,13 +17,26 @@
 
 package org.apache.ignite.internal;
 
+import org.apache.ignite.configuration.*;
+
 /**
- * Test node js client put/get.
+ * Test secret key.
  */
-public class NodeJsCacheApiSelfTest extends NodeJsAbstractTest {
-    /** Constructor. */
-    public NodeJsCacheApiSelfTest() {
-        super("test-cache-api.js");
+public class NodeJsSecretKeySelfTest extends NodeJsAbstractTest {
+    /**
+     * Constructor.
+     */
+    public NodeJsSecretKeySelfTest() {
+        super("test-key.js");
+    }
+
+    /** {@inheritDoc} */
+    @Override protected IgniteConfiguration getConfiguration(String gridName) throws Exception {
+        IgniteConfiguration cfg = super.getConfiguration(gridName);
+
+        cfg.getConnectorConfiguration().setSecretKey("secret-key");
+
+        return cfg;
     }
 
     /** {@inheritDoc} */
@@ -36,50 +49,24 @@ public class NodeJsCacheApiSelfTest extends NodeJsAbstractTest {
         stopAllGrids();
     }
 
-    /** {@inheritDoc} */
-    @Override protected void beforeTest() throws Exception {
-        grid(0).cache(NodeJsAbstractTest.CACHE_NAME).removeAll();
+    /**
+     * @throws Exception If failed.
+     */
+    public void testStartWithoutKey() throws Exception {
+        runJsScript("testStartWithoutKey");
     }
 
     /**
      * @throws Exception If failed.
      */
-    public void testPutGet() throws Exception {
-        runJsScript("testPutGet");
+    public void testStartWithKey() throws Exception {
+        runJsScript("testStartWithKey");
     }
 
     /**
      * @throws Exception If failed.
      */
-    public void testIncorrectCache() throws Exception {
-        runJsScript("testIncorrectCacheName");
-    }
-
-    /**
-     * @throws Exception If failed.
-     */
-    public void testRemove() throws Exception {
-        runJsScript("testRemove");
-    }
-
-    /**
-     * @throws Exception If failed.
-     */
-    public void testRemoveNoKey() throws Exception {
-        runJsScript("testRemoveNoKey");
-    }
-
-    /**
-     * @throws Exception If failed.
-     */
-    public void testRemoveAll() throws Exception {
-        runJsScript("testRemoveAll");
-    }
-
-    /**
-     * @throws Exception If failed.
-     */
-    public void testPutAllGetAll() throws Exception {
-        runJsScript("testPutAllGetAll");
+    public void testStartWithIncorrectKey() throws Exception {
+        runJsScript("testStartWithIncorrectKey");
     }
 }

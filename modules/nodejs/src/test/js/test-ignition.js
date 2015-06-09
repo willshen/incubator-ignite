@@ -20,7 +20,7 @@ var Apache = require(TestUtils.scriptPath());
 var Ignition = Apache.Ignition;
 
 testIgnitionFail = function ()  {
-    Ignition.start(['127.0.0.3:9091', '127.0.0.1:9092'], onConnect);
+    Ignition.start(['127.0.0.3:9091', '127.0.0.1:9092'], null, onConnect);
 
     function onConnect(error, server) {
         if (error) {
@@ -37,7 +37,7 @@ testIgnitionFail = function ()  {
 }
 
 ignitionStartSuccess = function() {
-    Ignition.start(['127.0.0.0:9095', '127.0.0.1:9095'], onConnect);
+    Ignition.start(['127.0.0.0:9095', '127.0.0.1:9095'], null, onConnect);
 
     function onConnect(error, server) {
         if (error) {
@@ -51,7 +51,7 @@ ignitionStartSuccess = function() {
 }
 
 ignitionStartSuccessWithSeveralPorts = function() {
-    Ignition.start(['127.0.0.1:9090..9100'], onConnect);
+    Ignition.start(['127.0.0.1:9090..9100'], null, onConnect);
 
     function onConnect(error, ignite) {
         if (error) {
@@ -73,7 +73,7 @@ ignitionStartSuccessWithSeveralPorts = function() {
 }
 
 ignitionNotStartWithSeveralPorts = function() {
-    Ignition.start(['127.0.0.1:9090...9100'], onConnect);
+    Ignition.start(['127.0.0.1:9090...9100'], null, onConnect);
 
     function onConnect(error, ignite) {
         if (error) {

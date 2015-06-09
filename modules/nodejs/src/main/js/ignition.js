@@ -35,9 +35,10 @@ function Ignition() {
  * Open connection with server node
  *
  * @param {string[]} address List of nodes hosts with ports
+ * @param {string} secretKey Secret key.
  * @param {Ignition~onStart} callback Called on finish
  */
-Ignition.start = function(address, callback) {
+Ignition.start = function(address, secretKey, callback) {
   var Server = require("./server").Server;
   var Ignite = require("./ignite").Ignite
 
@@ -66,14 +67,14 @@ Ignition.start = function(address, callback) {
     }
 
     for (var i = start; i <= end; i++) {
-      checkServer(params[0], i);
+      checkServer(params[0], i, secretKey);
     }
   }
 
-  function checkServer(host, port) {
+  function checkServer(host, port, secretKey) {
     numConn++;
 
-    var server = new Server(host, port);
+    var server = new Server(host, port, secretKey);
 
     server.checkConnection(onConnect.bind(null, server));
   }
@@ -88,6 +89,7 @@ Ignition.start = function(address, callback) {
     if (!callback) return;
 
     numConn--;
+
     if (!error) {
       callback.call(null, null, new Ignite(server));
 
@@ -96,10 +98,8 @@ Ignition.start = function(address, callback) {
       return;
     }
 
-    console.log("onConnect:" + error);
-
     if (!numConn) {
-      callback.call(null, "Cannot connect to servers.", null);
+      callback.call(null, "Cannot connect to servers. " + error, null);
     }
   }
 }

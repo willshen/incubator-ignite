@@ -22,10 +22,12 @@
  * @this {Server}
  * @param {string} host Host address
  * @param {number} port Port
+ * @param {string} secretKey Secret key for connection
  */
-function Server(host, port) {
+function Server(host, port, secretKey) {
   this._host = host;
   this._port = port;
+  this._secretKey = secretKey;
 }
 
 /**
@@ -68,7 +70,8 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
   var options = {
     host: this._host,
     port: this._port,
-    path: "/ignite?" + requestQry
+    path: "/ignite?" + requestQry,
+    headers: this._signature()
   };
 
   function streamCallback(response) {
@@ -79,20 +82,32 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
     });
 
     response.on('end', function () {
-      var response;
+      if (response.statusCode !== 200) {
+        if (response.statusCode === 401) {
+          callback.call(null, "Authentication failed. Status code 401.");
+        }
+        else {
+          callback.call(null, "Request failed. Status code " + statusCode);
+        }
+
+        return;
+      }
+
+      var igniteResponse;
+
       try {
-        response = JSON.parse(fullResponseString);
+        igniteResponse = JSON.parse(fullResponseString);
       }
       catch (e) {
         callback.call(null, e, null);
         return;
       }
 
-      if (response.successStatus) {
-        callback.call(null, response.error, null)
+      if (igniteResponse.successStatus) {
+        callback.call(null, igniteResponse.error, null)
       }
       else {
-        callback.call(null, null, response.response);
+        callback.call(null, null, igniteResponse.response);
       }
     });
   }
@@ -102,6 +117,7 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
   request.setTimeout(5000, callback.bind(null, "Request timeout: >5 sec"));
 
   request.on('error', callback);
+
   request.end();
 }
 
@@ -124,6 +140,34 @@ Server.prototype.checkConnection = function(callback) {
  */
 Server.pair = function(key, value) {
   return {key: key, value: value}
+}
+
+/**
+ * Get signature for connection.
+ *
+ * @this {Server}
+ * @returns Signature
+ */
+Server.prototype._signature = function() {
+  if (!this._secretKey) {
+    return "";
+  }
+
+  var loadTimeInMS = Date.now();
+
+  var baseKey = '' + loadTimeInMS + ":" + this._secretKey;
+
+  var crypto = require('crypto')
+
+  var shasum = crypto.createHash('sha1');
+
+  shasum.update(baseKey, 'binary');
+
+  var hash = shasum.digest('base64');
+
+  var key = loadTimeInMS + ":" + hash;
+
+  return {"X-Signature" : key};
 }
 
 exports.Server = Server;
