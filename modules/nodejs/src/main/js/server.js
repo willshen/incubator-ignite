@@ -87,7 +87,7 @@ Server.prototype.runCommand = function(cmdName, params, callback) {
           callback.call(null, "Authentication failed. Status code 401.");
         }
         else {
-          callback.call(null, "Request failed. Status code " + statusCode);
+          callback.call(null, "Request failed. Status code " + response.statusCode);
         }
 
         return;
