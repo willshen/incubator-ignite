@@ -24,15 +24,15 @@ var Server = Apache.Server;
 var assert = require("assert");
 
 testPutGet = function() {
-  startTest("mycache", {trace: [putSV, getExistSV], entry: "6"});
+  startTest("mycache", {trace: [put, getExist], entry: "6"});
 }
 
 testRemove = function() {
-  startTest("mycache", {trace: [putSV, getExistSV, removeSV, getNonExistSV], entry: "6"});
+  startTest("mycache", {trace: [put, getExist, remove, getNonExist], entry: "6"});
 }
 
 testRemoveNoKey = function() {
-  startTest("mycache", {trace: [removeSV, getNonExistSV], entry: "6"});
+  startTest("mycache", {trace: [remove, getNonExist], entry: "6"});
 }
 
 
@@ -49,10 +49,10 @@ testIncorrectCacheName = function() {
 }
 
 function startTest(cacheName, testDescription) {
-  TestUtils.startIgniteNode(onStartSV.bind(null, cacheName, testDescription));
+  TestUtils.startIgniteNode(onStart.bind(null, cacheName, testDescription));
 }
 
-function onStartSV(cacheName, testDescription, error, ignite) {
+function onStart(cacheName, testDescription, error, ignite) {
   var cache = ignite.cache(cacheName);
   callNext();
 
@@ -66,11 +66,11 @@ function onStartSV(cacheName, testDescription, error, ignite) {
   }
 }
 
-function putSV(cache, entry, next) {
+function put(cache, entry, next) {
     cache.put("key", entry, next);
 }
 
-function getExistSV(cache, entry, next) {
+function getExist(cache, entry, next) {
     cache.get("key", onGet);
 
     function onGet(error, value) {
@@ -80,11 +80,11 @@ function getExistSV(cache, entry, next) {
     }
 }
 
-function removeSV(cache, entry, next) {
+function remove(cache, entry, next) {
     cache.remove("key", next);
 }
 
-function getNonExistSV(cache, entry, next) {
+function getNonExist(cache, entry, next) {
     cache.get("key", onGet);
 
     function onGet(error, value) {
