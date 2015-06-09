@@ -155,6 +155,8 @@ public class NodeJsAbstractTest extends GridCommonAbstractTest {
 
             assertTrue(readyLatch.await(60, SECONDS));
 
+            proc.getProcess().waitFor();
+
             assertEquals(errors.toString(), 0, errors.size());
         }
         finally {

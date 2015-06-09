@@ -45,6 +45,7 @@ ignitionStartSuccess = function() {
 
             return;
         }
+
         TestUtils.testDone();
     }
 }
