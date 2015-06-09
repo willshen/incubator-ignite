@@ -128,7 +128,8 @@ function getNone(cache, entries, next) {
   function onGetAll(error, values) {
     assert(!error, error);
     assert(!values || !Object.keys(values).length);
-      next();
+
+    next();
   }
 }
 
@@ -136,9 +137,10 @@ function incorrectPut(cache, entry, next) {
   cache.put("key", entry, callback);
 
   function callback(error) {
-    assert(!!error);
-    console.error("Failed to put " + error);
-    assert(error.indexOf("Failed to find cache for given cache name") !== -1);
+    assert(!!error, "Do not get error for not exist cache");
+    assert(error.indexOf("Failed to find cache for given cache name") !== -1,
+      "Incorrect message on not exist cache. " + error);
+
     next();
   }
 }
