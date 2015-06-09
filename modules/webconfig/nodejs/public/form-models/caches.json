@@ -198,7 +198,7 @@
         {
           "label": "Flush threads count",
           "type": "text",
-          "model": "WriteBehindFlushThreadCount",
+          "model": "writeBehindFlushThreadCount",
           "placeholder": "1",
           "tip": [
             "Number of threads that will perform cache flushing."
@@ -207,25 +207,33 @@
       ]
     },
     {
-      "label": "Transcation",
+      "label": "Transaction",
       "fields": [
         {
           "label": "Invalidate",
           "type": "check",
-          "model": "Invalidate",
+          "model": "invalidate",
           "tip": [
             "Invalidation flag for near cache entries in transaction.<br/>",
-            "If true, values will be invalidated (nullified) upon commit in near cache."
+            "If set then values will be invalidated (nullified) upon commit in near cache."
           ]
         },
         {
           "label": "Default lock timeout",
           "type": "text",
-          "model": "DefaultLockTimeout",
+          "model": "defaultLockTimeout",
           "placeholder": "1",
           "tip": [
             "Default lock acquisition timeout.<br/>",
-            "If 0 thenlock acquisition will never timeout."
+            "If 0 then lock acquisition will never timeout."
+          ]
+        },
+        {
+          "label": "Manager finder",
+          "type": "text",
+          "model": "transactionManagerLookupClassName",
+          "tip": [
+            "Class name of transaction manager finder for integration for JEE app servers."
           ]
         }
       ]
@@ -234,10 +242,77 @@
       "label": "Query",
       "fields": [
         {
+          "label": "Escape all",
+          "type": "check",
+          "model": "sqlEscapeAll",
+          "tip": [
+            "If set then all the SQL table and field names will be escaped with double quotes.<br/>",
+            "This enforces case sensitivity for field names and also allows having special characters in table and field names."
+          ]
+        },
+        {
+          "label": "Cached rows",
+          "type": "text",
+          "model": "sqlOnheapRowCacheSize",
+          "placeholder": "10240",
+          "tip": [
+            "Number of SQL rows which will be cached onheap to avoid deserialization on each SQL index access."
+          ]
+        },
+        {
+          "label": "Long query timeout",
+          "type": "text",
+          "model": "longQueryWarningTimeout",
+          "placeholder": "3000",
+          "tip": [
+            "Timeout in milliseconds after which long query warning will be printed."
+          ]
+        },
+        {
           "type": "indexedTypes",
           "model": "indexedTypes",
           "tip": [
             "Collection of types to index"
+          ]
+        },
+        {
+          "label": "SQL functions",
+          "type": "text",
+          "model": "sqlFunctionClasses",
+          "tip": [
+            "Classes with user-defined functions for SQL queries."
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Misc",
+      "fields": [
+        {
+          "label": "Read from backup",
+          "type": "check",
+          "model": "readFromBackup",
+          "tip": [
+            "Flag indicating whether data can be read from backup.<br/>",
+            "If not set then always get data from primary node (never from backup)."
+          ]
+        },
+        {
+          "label": "Copy on read",
+          "type": "check",
+          "model": "copyOnRead",
+          "tip": [
+            "Flag indicating whether copy of of the value stored in cache should be created for cache operation implying return value.<br/>",
+            " Also if this flag is set copies are created for values passed to CacheInterceptor and to CacheEntryProcessor."
+          ]
+        },
+        {
+          "label": "Max concurrent async operations",
+          "type": "text",
+          "model": "maxConcurrentAsyncOperations",
+          "tip": [
+            "Maximum number of allowed concurrent asynchronous operations.<br/>",
+            "If 0 returned then number of concurrent asynchronous operations is unlimited."
           ]
         }
       ]

@@ -67,12 +67,6 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
             indexedTypesModal.$promise.then(indexedTypesModal.show);
         };
 
-
-        //DefaultLockTimeout dfltLockTimeout
-        //invalidate
-        //TransactionManagerLookupClassName tmLookupClsName
-        // maxConcurrentAsyncOps
-
         $scope.caches = [];
 
         // When landing on the page, get caches and show them.

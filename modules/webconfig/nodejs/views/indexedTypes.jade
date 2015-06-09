@@ -11,7 +11,7 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-div(class=['modal', 'center'] tabindex='-1' role='dialog')
+.modal.center(role='dialog')
     .modal-dialog
         .modal-content
             .modal-header
@@ -23,11 +23,11 @@ div(class=['modal', 'center'] tabindex='-1' role='dialog')
                         .form-group
                             label.col-sm-3.control-label Key Class:
                             .controls.col-sm-9
-                                input.form-control(type='text')
+                                input.form-control(type='text' required)
                         .form-group
                             label.col-sm-3.control-label Value Class:
                             .controls.col-sm-9
-                                input.form-control(type='text')
+                                input.form-control(type='text' required)
                 .modal-footer
-                    button.btn.btn-primary(ng-click='saveIndexedType(key, val)' ng-disabled='discoveryForm.$invalid') Save
+                    button.btn.btn-primary(ng-click='saveIndexedType(key, val)' ng-disabled='indexedTypeForm.$invalid') Save
                     button.btn.btn-primary(ng-click='$hide()') Cancel
