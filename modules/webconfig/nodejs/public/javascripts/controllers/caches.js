@@ -102,19 +102,20 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
                 });
         };
 
-        $scope.removeItem = function(item) {
-            $http.post('/rest/caches/remove', {_id: item._id})
+        $scope.removeItem = function() {
+            var _id = $scope.selectedItem._id;
+
+            $http.post('/rest/caches/remove', {_id: _id})
                 .success(function() {
-                    var index = $scope.caches.indexOf(item);
+                    var i = _.findIndex($scope.caches, function(cache) {
+                        return cache._id == _id;
+                    });
 
-                    if (index !== -1) {
-                        $scope.caches.splice(index, 1);
+                    if (i >= 0) {
+                        $scope.caches.splice(i, 1);
 
-                        if ($scope.selectedItem == item) {
-                            $scope.selectedItem = undefined;
-
-                            $scope.backupItem = undefined;
-                        }
+                        $scope.selectedItem = undefined;
+                        $scope.backupItem = undefined;
                     }
                 })
                 .error(function(errorMessage) {
@@ -123,7 +124,9 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
         };
 
         // Save cache in db.
-        $scope.saveItem = function(item) {
+        $scope.saveItem = function() {
+            var item = $scope.backupItem;
+
             $http.post('/rest/caches/save', item)
                 .success(function() {
                     var i = _.findIndex($scope.caches, function(cache) {

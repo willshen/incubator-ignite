@@ -54,5 +54,5 @@ block content
                         span(bs-collapse-toggle)
                             a(ng-click='expanded = true' ng-hide='expanded') Show advanced settings...
                             a(ng-click='expanded = false' ng-show='expanded') Hide advanced settings...
-            button.btn.btn-primary(ng-click='saveItem(backupItem)' ng-disabled='editForm.$invalid') Save
-            button.btn.btn-primary(ng-click='removeItem(selectedItem)' ng-disabled='editForm.$invalid') Remove
+            button.btn.btn-primary(ng-click='saveItem()' ng-disabled='editForm.$invalid') Save
+            button.btn.btn-primary(ng-click='removeItem()' ng-disabled='editForm.$invalid') Remove

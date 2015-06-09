@@ -70,18 +70,21 @@ mixin form-row
 
     div(ng-switch='field.type')
         div(ng-switch-when='check')
-            input(type='checkbox' ng-model='backupItem[field.model]')
+            input(type='checkbox' ng-if='!group.model' ng-model='backupItem[field.model]')
+            input(type='checkbox' ng-if='group.model' ng-model='backupItem[group.model][field.model]')
             label(ng-click='backupItem[field.model] = !backupItem[field.model]') {{field.label}}
             +tip
         div(ng-switch-when='text')
             +lbl
             .col-sm-4
-                input.form-control(type='text' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
+                input.form-control(type='text' ng-if='!group.model' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
+                input.form-control(type='text' ng-if='group.model' ng-model='backupItem[group.model][field.model]' placeholder='{{field.placeholder}}')
             +tip
         div(ng-switch-when='dropdown')
             +lbl
             .col-sm-4
-                button.form-control(bs-select ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
+                button.form-control(bs-select ng-if='!group.model' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
+                button.form-control(bs-select ng-if='group.model' ng-model='backupItem[group.model][field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
             +tip
         div(ng-switch-when='dropdown-multiple')
             +lbl

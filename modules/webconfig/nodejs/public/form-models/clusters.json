@@ -156,7 +156,7 @@
           {
             "label": "Account id",
             "type": "text",
-            "model": "addrReqAttempts",
+            "model": "accountId",
             "placeholder": "",
             "tip": [
               "Service account ID (typically an e-mail address)."
@@ -187,11 +187,12 @@
   "advanced": [
     {
       "label": "Atomic data structures",
+      "model": "atomicConfiguration",
       "fields": [
         {
           "label": "Backups",
           "type": "text",
-          "model": "atomicConfiguration.backups",
+          "model": "backups",
           "placeholder": "0",
           "tip": [
             "Number of backup nodes"
@@ -200,14 +201,14 @@
         {
           "label": "Cache mode",
           "type": "dropdown",
-          "model": "atomicConfiguration.cacheMode",
+          "model": "cacheMode",
           "placeholder": "PARTITIONED",
           "items": "cacheModes"
         },
         {
           "label": "Sequence reserve",
           "type": "text",
-          "model": "atomicConfiguration.atomicSequenceReserveSize",
+          "model": "atomicSequenceReserveSize",
           "placeholder": "1,000",
           "tip": [
             "Default number of sequence values reserved for IgniteAtomicSequence instances.",
@@ -559,11 +560,12 @@
     },
     {
       "label": "Transactions",
+      "model": "transactionConfiguration",
       "fields": [
         {
           "label": "Cache concurrency",
           "type": "text",
-          "model": "transactionConfiguration.defaultTxConcurrency",
+          "model": "defaultTxConcurrency",
           "placeholder": "PESSIMISTIC",
           "items": "transactionConcurrency",
           "tip": [
@@ -573,7 +575,7 @@
         {
           "label": "Isolation",
           "type": "text",
-          "model": "transactionConfiguration.transactionIsolation",
+          "model": "transactionIsolation",
           "placeholder": "REPEATABLE_READ",
           "items": "transactionIsolation",
           "tip": [
@@ -583,7 +585,7 @@
         {
           "label": "Default timeout",
           "type": "text",
-          "model": "transactionConfiguration.defaultTxTimeout",
+          "model": "defaultTxTimeout",
           "placeholder": "0",
           "tip": [
             "Default transaction timeout."
@@ -592,7 +594,7 @@
         {
           "label": "Pessimistic log cleanup delay",
           "type": "text",
-          "model": "transactionConfiguration.pessimisticTxLogLinger",
+          "model": "pessimisticTxLogLinger",
           "placeholder": "10,000",
           "tip": [
             "Cache transaction concurrency to use when one is not explicitly specified."
@@ -601,7 +603,7 @@
         {
           "label": "Pessimistic log size",
           "type": "text",
-          "model": "transactionConfiguration.pessimisticTxLogSize",
+          "model": "pessimisticTxLogSize",
           "placeholder": "0",
           "tip": [
             "Cache transaction concurrency to use when one is not explicitly specified."
@@ -610,7 +612,7 @@
         {
           "label": "Enable serializable cache transactions",
           "type": "check",
-          "model": "transactionConfiguration.txSerializableEnabled",
+          "model": "txSerializableEnabled",
           "tip": [
             "Flag to enable/disable isolation level for cache transactions.",
             "Serializable level does carry certain overhead and if not used, should be disabled."

@@ -128,7 +128,7 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
         };
 
         $scope.removeItem = function() {
-            var _id = $scope.selectedItem;
+            var _id = $scope.selectedItem._id;
 
             $http.post('/rest/clusters/remove', {_id: _id})
                 .success(function() {
@@ -139,11 +139,8 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                     if (i >= 0) {
                         $scope.clusters.splice(i, 1);
 
-                        if ($scope.selectedItem == item) {
-                            $scope.selectedItem = undefined;
-
-                            $scope.backupItem = undefined;
-                        }
+                        $scope.selectedItem = undefined;
+                        $scope.backupItem = undefined;
                     }
                 })
                 .error(function(errorMessage) {
