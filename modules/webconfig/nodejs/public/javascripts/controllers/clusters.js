@@ -85,19 +85,6 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                 $scope.advanced = data.advanced;
             });
 
-        $scope.ss = function (o, s) {
-            var a = s.split('.');
-
-            for (var i = 0, n = a.length; i < n; ++i) {
-                var k = a[i];
-
-                if (!(k in o))
-                    o[k] = {};
-
-                o = o[k];
-            }
-            return o;
-        };
 
         // Create popup for discovery advanced settings.
         var discoveryModal = $modal({scope: $scope, template: '/discovery', show: false});
@@ -140,13 +127,17 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                 });
         };
 
-        $scope.removeItem = function(item) {
-            $http.post('/rest/clusters/remove', {_id: item._id})
-                .success(function() {
-                    var index = $scope.clusters.indexOf(item);
+        $scope.removeItem = function() {
+            var _id = $scope.selectedItem;
 
-                    if (index !== -1) {
-                        $scope.clusters.splice(index, 1);
+            $http.post('/rest/clusters/remove', {_id: _id})
+                .success(function() {
+                    var i = _.findIndex($scope.clusters, function(cluster) {
+                        return cluster._id == _id;
+                    });
+
+                    if (i >= 0) {
+                        $scope.clusters.splice(i, 1);
 
                         if ($scope.selectedItem == item) {
                             $scope.selectedItem = undefined;
@@ -161,7 +152,9 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
         };
 
         // Save cluster in db.
-        $scope.saveItem = function(item) {
+        $scope.saveItem = function() {
+            var item = $scope.backupItem;
+
             $http.post('/rest/clusters/save', item)
                 .success(function() {
                     var i = _.findIndex($scope.clusters, function(cluster) {

@@ -107,7 +107,7 @@ var ClusterSchema = new Schema({
         backups: Number,
         cacheMode: { type: String, enum: ['LOCAL', 'REPLICATED', 'PARTITIONED'] },
         atomicSequenceReserveSize: Number
-    }
+    },
     caches: [{ type: ObjectId, ref: 'Cache' }],
     cacheSanityCheckEnabled: Boolean,
     clockSyncSamples: Number,
@@ -141,8 +141,8 @@ var ClusterSchema = new Schema({
     managementThreadPoolSize: Number,
     igfsThreadPoolSize: Number,
     transactionConfiguration: {
-        defaultTxConcurrency: { type: String, enum: ['OPTIMISTIC', 'PESSIMISTIC'] }
-        transactionIsolation: { type: String, enum: ['READ_COMMITTED', 'REPEATABLE_READ', 'SERIALIZABLE'] }
+        defaultTxConcurrency: { type: String, enum: ['OPTIMISTIC', 'PESSIMISTIC'] },
+        transactionIsolation: { type: String, enum: ['READ_COMMITTED', 'REPEATABLE_READ', 'SERIALIZABLE'] },
         defaultTxTimeout: Number,
         pessimisticTxLogLinger: Number,
         pessimisticTxLogSize: Number,

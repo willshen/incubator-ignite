@@ -32,9 +32,9 @@ block content
         button.btn.btn-default(ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
         h3(ng-hide='clusters.length == 0') Clusters
         .links
-            table.col-sm-12(st-table='rowCollection' st-safe-src='clusters')
+            table.col-sm-12(st-table='clusters')
                 tbody
-                    tr(ng-repeat='row in rowCollection')
+                    tr(ng-repeat='row in clusters')
                         td.col-sm-6(ng-class='{active: row._id == selectedItem._id}')
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.discovery.kind | displayValue:discoveries:'Discovery not set'}}
         .row.col-sm-12
@@ -54,5 +54,5 @@ block content
                         span(bs-collapse-toggle)
                             a(ng-click='expanded = true' ng-hide='expanded') Show advanced settings...
                             a(ng-click='expanded = false' ng-show='expanded') Hide advanced settings...
-            button.btn.btn-primary(ng-click='saveItem(backupItem)' ng-disabled='editForm.$invalid') Save
-            button.btn.btn-primary(ng-click='removeItem(selectedItem)' ng-disabled='editForm.$invalid') Remove
+            button.btn.btn-primary(ng-click='saveItem()' ng-disabled='editForm.$invalid') Save
+            button.btn.btn-primary(ng-click='removeItem()' ng-disabled='editForm.$invalid') Remove
