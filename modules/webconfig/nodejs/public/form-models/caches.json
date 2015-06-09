@@ -91,15 +91,15 @@
           "details": {
             "LRU": [
               {
-                "label": "BatchSize",
+                "label": "Batch size",
                 "type": "text",
-                "model": "BatchSize",
+                "model": "batchSize",
                 "placeholder": "1"
               },
               {
-                "label": "MaxMemorySize",
+                "label": "Max memory size",
                 "type": "text",
-                "model": "MaxMemorySize",
+                "model": "maxMemorySize",
                 "placeholder": "0",
                 "tip": [
                   "Maximum allowed cache size in bytes."
@@ -108,25 +108,25 @@
             ],
             "RND": [
               {
-                "label": "BatchSize",
+                "label": "Batch size",
                 "type": "text",
-                "model": "BatchSize",
+                "model": "batchSize",
                 "placeholder": "1"
               }
             ],
             "FIFO": [
               {
-                "label": "BatchSize",
+                "label": "Batch size",
                 "type": "text",
-                "model": "BatchSize",
+                "model": "batchSize",
                 "placeholder": "1"
               }
             ],
             "SORTED": [
               {
-                "label": "BatchSize",
+                "label": "Batch size",
                 "type": "text",
-                "model": "BatchSize",
+                "model": "batchSize",
                 "placeholder": "1"
               }
             ]

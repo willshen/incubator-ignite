@@ -44,6 +44,13 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
             {value: 'OFFHEAP_VALUES', label: 'OFFHEAP_VALUES'}
             ];
 
+        $scope.evictionPolicies = [
+            {value: 'LRU', label: 'Least Recently Used'},
+            {value: 'RND', label: 'Random'},
+            {value: 'FIFO', label: 'FIFO'},
+            {value: 'SORTED', label: 'Sorted'}
+        ];
+
         $scope.rebalanceModes = [
             {value: 'SYNC', label: 'Synchronous'},
             {value: 'ASYNC', label: 'Asynchronous'},
