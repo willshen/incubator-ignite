@@ -71,13 +71,88 @@ var ClusterSchema = new Schema({
     name: String,
     discovery: {
         kind: { type: String, enum: ['Vm', 'Multicast', 'S3', 'Cloud', 'GoogleStorage', 'Jdbc', 'SharedFs'] },
-        addresses: [String]
+        Vm: {
+            addresses: [String]
+        },
+        Multicast: {
+            multicastGroup: String,
+            multicastPort: Number,
+            responseWaitTime: Number,
+            addressRequestAttempts: Number,
+            localAddress: String
+        },
+        S3: {
+            bucketName: String
+        },
+        Cloud: {
+            credential: String,
+            credentialPath: String,
+            identity: String,
+            provider: String
+        },
+        GoogleStorage: {
+            projectName: String,
+            bucketName: String,
+            serviceAccountP12FilePath: String,
+            addrReqAttempts:String
+        },
+        Jdbc: {
+            initSchema: Boolean
+        },
+        SharedFs: {
+            path: String
+        }
     },
+    atomicConfiguration: {
+        backups: Number,
+        cacheMode: { type: String, enum: ['LOCAL', 'REPLICATED', 'PARTITIONED'] },
+        atomicSequenceReserveSize: Number
+    }
     caches: [{ type: ObjectId, ref: 'Cache' }],
-    pubPoolSize: Number,
-    sysPoolSize: Number,
-    mgmtPoolSize: Number,
-    p2pPoolSize: Number
+    cacheSanityCheckEnabled: Boolean,
+    clockSyncSamples: Number,
+    clockSyncFrequency: Number,
+    deploymentMode: { type: String, enum: ['PRIVATE', 'ISOLATED', 'SHARED', 'CONTINUOUS'] },
+    discoveryStartupDelay: Number,
+    includeEventTypes: [{ type: String, enum: ['EVTS_CHECKPOINT', 'EVTS_DEPLOYMENT', 'EVTS_ERROR', 'EVTS_DISCOVERY',
+        'EVTS_JOB_EXECUTION', 'EVTS_TASK_EXECUTION', 'EVTS_CACHE', 'EVTS_CACHE_REBALANCE', 'EVTS_CACHE_LIFECYCLE',
+        'EVTS_CACHE_QUERY', 'EVTS_SWAPSPACE', 'EVTS_IGFS'] }],
+    marshalLocalJobs: Boolean,
+    marshCacheKeepAliveTime: Number,
+    marshCachePoolSize: Number,
+    metricsExpireTime: Number,
+    metricsHistorySize: Number,
+    metricsLogFrequency: Number,
+    metricsUpdateFrequency: Number,
+    localHost: String,
+    networkTimeout: Number,
+    networkSendRetryDelay: Number,
+    networkSendRetryCount: Number,
+    segmentCheckFrequency: Number,
+    waitForSegmentOnStart: Boolean,
+    peerClassLoadingEnabled: Boolean,
+    peerClassLoadingLocalClassPathExclude: [String],
+    peerClassLoadingMissedResourcesCacheSize: Number,
+    peerClassLoadingThreadPoolSize: Number,
+    timeServerPortBase: Number,
+    timeServerPortRange: Number,
+    publicThreadPoolSize: Number,
+    systemThreadPoolSize: Number,
+    managementThreadPoolSize: Number,
+    igfsThreadPoolSize: Number,
+    transactionConfiguration: {
+        defaultTxConcurrency: { type: String, enum: ['OPTIMISTIC', 'PESSIMISTIC'] }
+        transactionIsolation: { type: String, enum: ['READ_COMMITTED', 'REPEATABLE_READ', 'SERIALIZABLE'] }
+        defaultTxTimeout: Number,
+        pessimisticTxLogLinger: Number,
+        pessimisticTxLogSize: Number,
+        txSerializableEnabled: Boolean
+    },
+    segmentationPolicy: { type: String, enum: ['RESTART_JVM', 'STOP', 'NOOP'] },
+    allSegmentationResolversPassRequired: Boolean,
+    segmentationResolveAttempts: Number,
+    utilityCacheKeepAliveTime: Number,
+    utilityCachePoolSize: Number
 });
 
 // Define cluster model.

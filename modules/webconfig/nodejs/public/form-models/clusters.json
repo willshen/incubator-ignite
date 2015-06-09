@@ -27,35 +27,50 @@
           {
             "label": "IP address",
             "type": "text",
-            "model": "mcastGrp",
+            "model": "multicastGroup",
             "placeholder": "228.1.2.4",
             "tip": [
-              "Sets IP address of multicast group.<br/>",
-              "If not provided, default value is 228.1.2.4."
+              "IP address of multicast group."
             ]
           },
           {
             "label": "Port number",
             "type": "text",
-            "model": "mcastPort",
-            "placeholder": "47400"
+            "model": "multicastPort",
+            "placeholder": "47400",
+            "tip": [
+              "Port number which multicast messages are sent to."
+            ]
           },
           {
             "label": "Waits for reply ",
             "type": "text",
-            "model": "resWaitTime",
-            "placeholder": "500"
+            "model": "responseWaitTime",
+            "placeholder": "500",
+            "tip": [
+              "Time in milliseconds IP finder waits for reply to multicast address request."
+            ]
           },
           {
             "label": "Attempts count",
             "type": "text",
-            "model": "addrReqAttempts",
-            "placeholder": "2"
+            "model": "addressRequestAttempts",
+            "placeholder": "2",
+            "tip": [
+              "Number of attempts to send multicast address request.",
+              "IP finder re-sends request only in case if no reply for previous request is received."
+            ]
           },
           {
             "label": "Local host address",
             "type": "text",
-            "model": "locAddr"
+            "model": "localAddress",
+            "tip": [
+              "Local host address used by this IP finder.",
+              "If provided address is non-loopback then multicast socket is bound to this interface.",
+              "If local address is not set or is any local address then",
+              "IP finder creates multicast sockets for all found non-loopback addresses"
+            ]
           }
         ],
         "S3": [
@@ -71,25 +86,40 @@
             "label": "Credential",
             "type": "text",
             "model": "credential",
-            "placeholder": ""
+            "placeholder": "",
+            "tip": [
+              "Credential that is used during authentication on the cloud.",
+              "Depending on a cloud platform it can be a password or access key."
+            ]
           },
           {
             "label": "Path to credential",
             "type": "text",
             "model": "credentialPath",
-            "placeholder": ""
+            "placeholder": "",
+            "tip": [
+              "Path to a credential that is used during authentication on the cloud.",
+              "Access key or private key should be stored in a plain or PEM file without a passphrase."
+            ]
           },
           {
             "label": "Identity",
             "type": "text",
             "model": "identity",
-            "placeholder": ""
+            "placeholder": "",
+            "tip": [
+              "Identity that is used as a user name during a connection to the cloud.",
+              "Depending on a cloud platform it can be an email address, user name, etc."
+            ]
           },
           {
             "label": "Provider",
             "type": "text",
             "model": "provider",
-            "placeholder": ""
+            "placeholder": "",
+            "tip": [
+              "Cloud provider to use."
+            ]
           }
         ],
         "GoogleStorage": [
@@ -97,25 +127,40 @@
             "label": "Project name",
             "type": "text",
             "model": "projectName",
-            "placeholder": ""
+            "placeholder": "",
+            "tip": [
+              "Google Cloud Platforms project name.",
+              "Usually this is an auto generated project number (ex. 208709979073) that can be found in 'Overview' section of Google Developer Console."
+            ]
           },
           {
             "label": "Bucket name",
             "type": "text",
             "model": "bucketName",
-            "placeholder": ""
+            "placeholder": "",
+            "tip": [
+              "Google Cloud Storage bucket name.",
+              "If the bucket doesn't exist Ignite will automatically create it.",
+              "However the name must be unique across whole Google Cloud Storage and Service Account Id must be authorized to perform this operation."
+            ]
           },
           {
             "label": "Private key path",
             "type": "text",
             "model": "serviceAccountP12FilePath",
-            "placeholder": ""
+            "placeholder": "",
+            "tip": [
+              "Full path to the private key in PKCS12 format of the Service Account."
+            ]
           },
           {
             "label": "Account id",
             "type": "text",
             "model": "addrReqAttempts",
-            "placeholder": ""
+            "placeholder": "",
+            "tip": [
+              "Service account ID (typically an e-mail address)."
+            ]
           }
         ],
         "Jdbc": [
@@ -146,21 +191,28 @@
         {
           "label": "Backups",
           "type": "text",
-          "model": "atomic.backups",
-          "placeholder": "0"
+          "model": "atomicConfiguration.backups",
+          "placeholder": "0",
+          "tip": [
+            "Number of backup nodes"
+          ]
         },
         {
           "label": "Cache mode",
           "type": "dropdown",
-          "model": "atomic.cacheMode",
+          "model": "atomicConfiguration.cacheMode",
           "placeholder": "PARTITIONED",
           "items": "cacheModes"
         },
         {
           "label": "Sequence reserve",
           "type": "text",
-          "model": "atomic.seqReserveSize",
-          "placeholder": "1,000"
+          "model": "atomicConfiguration.atomicSequenceReserveSize",
+          "placeholder": "1,000",
+          "tip": [
+            "Default number of sequence values reserved for IgniteAtomicSequence instances.",
+            "After a certain number has been reserved, consequent increments of sequence will happen locally, without communication with other nodes, until the next reservation has to be made."
+          ]
         }
       ]
     },
@@ -177,7 +229,74 @@
         {
           "label": "Enable cache sanity check",
           "type": "check",
-          "model": "cacheSanityCheckEnabled"
+          "model": "cacheSanityCheckEnabled",
+          "tip": [
+            "Flag indicating whether cache sanity check is enabled. If enabled, then Ignite",
+            "will perform the following checks and throw an exception if check fails:",
+            "<ul>",
+            "<li>Cache entry is not externally locked with lock(...) or lockAsync(...) methods when entry is enlisted to transaction.</li>",
+            "<li>Each entry in affinity group-lock transaction has the same affinity key as was specified on affinity transaction start.</li>",
+            "<li>Each entry in partition group-lock transaction belongs to the same partition as was specified on partition transaction start.</li>",
+            "</ul>",
+            "<p>",
+            "These checks are not required for cache operation, but help to find subtle bugs.",
+            "Disabling of this checks usually yields a noticeable performance gain."
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Clock synchronization",
+      "fields": [
+        {
+          "label": "Samples size",
+          "type": "text",
+          "model": "clockSyncSamples",
+          "placeholder": "8",
+          "tip": [
+            "Number of samples used to synchronize clocks between different nodes.",
+            "Clock synchronization is used for cache version assignment in CLOCK order mode."
+          ]
+        },
+        {
+          "label": "Frequency",
+          "type": "text",
+          "model": "clockSyncFrequency",
+          "placeholder": "120,000",
+          "tip": [
+            "frequency at which clock is synchronized between nodes, in milliseconds.",
+            "Clock synchronization is used for cache version assignment in CLOCK order mode."
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Deployment",
+      "fields": [
+        {
+          "label": "Samples size",
+          "type": "dropdown",
+          "model": "deploymentMode",
+          "placeholder": "SHARED",
+          "items": "deploymentModes",
+          "tip": [
+            "Number of samples used to synchronize clocks between different nodes.",
+            "Clock synchronization is used for cache version assignment in CLOCK order mode."
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Discovery",
+      "fields": [
+        {
+          "label": "Startup delay",
+          "type": "text",
+          "model": "discoveryStartupDelay",
+          "placeholder": "600,000",
+          "tip": [
+            "Time in milliseconds after which a certain metric value is considered expired."
+          ]
         }
       ]
     },
@@ -187,15 +306,28 @@
         {
           "label": "Include type",
           "type": "dropdown-multiple",
-          "model": "inclEvtTypes",
+          "model": "includeEventTypes",
           "placeholder": "Choose recorded event types",
-          "items": "events"
+          "items": "events",
+          "tip": [
+            "Array of event types, which will be recorded by GridEventStorageManager#record(Event).",
+            "Note, that either the include event types or the exclude event types can be established."
+          ]
         }
       ]
     },
     {
       "label": "Marshaller",
       "fields": [
+        {
+          "label": "Marshal local jobs",
+          "type": "check",
+          "model": "marshalLocalJobs",
+          "placeholder": "false",
+          "tip": [
+            "If this flag is enabled, jobs mapped to local node will be marshalled as if it was remote node."
+          ]
+        },
         {
           "label": "Keep alive time",
           "type": "text",
@@ -216,26 +348,42 @@
         {
           "label": "Elapsed time",
           "type": "text",
-          "model": "metricsExpTime",
-          "placeholder": "0"
+          "model": "metricsExpireTime",
+          "placeholder": "0",
+          "tip": [
+            "Time in milliseconds after which a certain metric value is considered expired."
+          ]
         },
         {
           "label": "History size",
           "type": "text",
-          "model": "metricsHistSize",
-          "placeholder": "10,000"
+          "model": "metricsHistorySize",
+          "placeholder": "10,000",
+          "tip": [
+            "Number of metrics kept in history to compute totals and averages."
+          ]
         },
         {
           "label": "Log frequency",
           "type": "text",
-          "model": "metricsLogFreq",
-          "placeholder": "60,000"
+          "model": "metricsLogFrequency",
+          "placeholder": "60,000",
+          "tip": [
+            "Frequency of metrics log print out."
+          ]
         },
         {
           "label": "Update frequency",
           "type": "text",
-          "model": "metricsUpdateFreq",
-          "placeholder": "60,000"
+          "model": "metricsUpdateFrequency",
+          "placeholder": "60,000",
+          "tip": [
+            "Job metrics update frequency in milliseconds.",
+            "<p>",
+            "If set to -1 job metrics are never updated.",
+            "If set to 0 job metrics are updated on each job start and finish.",
+            "Positive value defines the actual update frequency."
+          ]
         }
       ]
     },
@@ -243,22 +391,62 @@
       "label": "Network",
       "fields": [
         {
+          "label": "Localhost",
+          "type": "text",
+          "model": "localHost",
+          "placeholder": "0.0.0.0",
+          "tip": [
+            "System-wide local address or host for all Ignite components to bind to.",
+            "If provided it will override all default local bind settings within Ignite or any of its SPIs."
+          ]
+        },
+        {
           "label": "Timeout",
           "type": "text",
-          "model": "netTimeout",
-          "placeholder": "5,000"
+          "model": "networkTimeout",
+          "placeholder": "5,000",
+          "tip": [
+             "Maximum timeout in milliseconds for network requests."
+          ]
         },
         {
           "label": "Send retry delay",
           "type": "text",
-          "model": "sndRetryDelay",
-          "placeholder": "1,000"
+          "model": "networkSendRetryDelay",
+          "placeholder": "1,000",
+          "tip": [
+            "Interval in milliseconds between message send retries."
+          ]
         },
         {
           "label": "Send retry count",
           "type": "text",
-          "model": "sndRetryCnt",
-          "placeholder": "3"
+          "model": "networkSendRetryCount",
+          "placeholder": "3",
+          "tip": [
+            "Message send retries count."
+          ]
+        },
+        {
+          "label": "Segment check frequency",
+          "type": "text",
+          "model": "segmentCheckFrequency",
+          "placeholder": "10,000",
+          "tip": [
+            "Network segment check frequency in milliseconds.",
+            "If 0, periodic segment check is disabled and segment is checked only on topology changes (if segmentation resolvers are configured)."
+          ]
+        },
+        {
+          "label": "Wait for segment on start",
+          "type": "check",
+          "model": "waitForSegmentOnStart",
+          "tip": [
+            "Wait for segment on start flag.",
+            "If enabled, node should wait for correct segment on start.",
+            "If node detects that segment is incorrect on startup and enabled, node waits until segment becomes correct.",
+            "If segment is incorrect on startup and disabled, exception is thrown."
+          ]
         }
       ]
     },
@@ -268,25 +456,63 @@
         {
           "label": "Enable peer class loading",
           "type": "check",
-          "model": "p2pEnabled"
+          "model": "peerClassLoadingEnabled",
+          "tip": [
+            "Enables/disables peer class loading."
+          ]
         },
         {
           "label": "Local class path exclude",
           "type": "text",
-          "model": "p2pLocClsPathExcl",
-          "placeholder": "[]"
+          "model": "peerClassLoadingLocalClassPathExclude",
+          "placeholder": "[]",
+          "tip": [
+            "List of packages separated by comma from the system classpath that need to be peer-to-peer loaded from task originating node.",
+            "'*' is supported at the end of the package name which means that all sub-packages and their classes are included like in Java package import clause."
+          ]
         },
         {
           "label": "Missed resources cache size",
           "type": "text",
-          "model": "p2pMissedCacheSize",
-          "placeholder": "100"
+          "model": "peerClassLoadingMissedResourcesCacheSize",
+          "placeholder": "100",
+          "tip": [
+            "If size greater than 0, missed resources will be cached and next resource request ignored.",
+            "If size is 0, then request for the resource will be sent to the remote node every time this resource is requested."
+          ]
         },
         {
           "label": "Pool size",
           "type": "text",
-          "model": "p2pPoolSize",
-          "placeholder": "availableProcessors"
+          "model": "peerClassLoadingThreadPoolSize",
+          "placeholder": "availableProcessors",
+          "tip": [
+            "Thread pool size to use for peer class loading."
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Time server",
+      "fields": [
+        {
+          "label": "Port base",
+          "type": "text",
+          "model": "timeServerPortBase",
+          "placeholder": "31100",
+          "tip": [
+            "Time server provides clock synchronization between nodes.",
+            "Base UPD port number for grid time server. Time server will be started on one of free ports in range."
+          ]
+        },
+        {
+          "label": "Port range",
+          "type": "text",
+          "model": "timeServerPortRange",
+          "placeholder": "100",
+          "tip": [
+            "Time server port range."
+          ]
         }
       ]
     },
@@ -296,20 +522,38 @@
         {
           "label": "Public",
           "type": "text",
-          "model": "pubPoolSize",
-          "placeholder": "max(8, availableProcessors) * 2"
+          "model": "publicThreadPoolSize",
+          "placeholder": "max(8, availableProcessors) * 2",
+          "tip": [
+            "Thread pool that is in charge of processing ComputeJob, GridJobs and user messages sent to node."
+          ]
         },
         {
           "label": "System",
           "type": "text",
-          "model": "sysPoolSize",
-          "placeholder": "max(8, availableProcessors) * 2"
+          "model": "systemThreadPoolSize",
+          "placeholder": "max(8, availableProcessors) * 2",
+          "tip": [
+            "Thread pool that is in charge of processing internal system messages."
+          ]
         },
         {
           "label": "Management",
           "type": "text",
-          "model": "mgmtPoolSize",
-          "placeholder": "4"
+          "model": "managementThreadPoolSize",
+          "placeholder": "4",
+          "tip": [
+            "Thread pool that is in charge of processing internal and Visor ComputeJob, GridJobs."
+          ]
+        },
+        {
+          "label": "Igfs",
+          "type": "text",
+          "model": "igfsThreadPoolSize",
+          "placeholder": "availableProcessors",
+          "tip": [
+            "Thread pool that is in charge of processing outgoing IGFS messages."
+          ]
         }
       ]
     },
@@ -317,27 +561,92 @@
       "label": "Transactions",
       "fields": [
         {
+          "label": "Cache concurrency",
+          "type": "text",
+          "model": "transactionConfiguration.defaultTxConcurrency",
+          "placeholder": "PESSIMISTIC",
+          "items": "transactionConcurrency",
+          "tip": [
+            "Cache transaction concurrency to use when one is not explicitly specified."
+          ]
+        },
+        {
+          "label": "Isolation",
+          "type": "text",
+          "model": "transactionConfiguration.transactionIsolation",
+          "placeholder": "REPEATABLE_READ",
+          "items": "transactionIsolation",
+          "tip": [
+            "Default transaction isolation."
+          ]
+        },
+        {
           "label": "Default timeout",
           "type": "text",
-          "model": "dfltTxTimeout",
-          "placeholder": "0"
+          "model": "transactionConfiguration.defaultTxTimeout",
+          "placeholder": "0",
+          "tip": [
+            "Default transaction timeout."
+          ]
         },
         {
           "label": "Pessimistic log cleanup delay",
           "type": "text",
-          "model": "pessimisticTxLogLinger",
-          "placeholder": "10,000"
+          "model": "transactionConfiguration.pessimisticTxLogLinger",
+          "placeholder": "10,000",
+          "tip": [
+            "Cache transaction concurrency to use when one is not explicitly specified."
+          ]
         },
         {
           "label": "Pessimistic log size",
           "type": "text",
-          "model": "pessimisticTxLogSize",
-          "placeholder": "0"
+          "model": "transactionConfiguration.pessimisticTxLogSize",
+          "placeholder": "0",
+          "tip": [
+            "Cache transaction concurrency to use when one is not explicitly specified."
+          ]
         },
         {
           "label": "Enable serializable cache transactions",
           "type": "check",
-          "model": "txSerEnabled"
+          "model": "transactionConfiguration.txSerializableEnabled",
+          "tip": [
+            "Flag to enable/disable isolation level for cache transactions.",
+            "Serializable level does carry certain overhead and if not used, should be disabled."
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Segmentation",
+      "fields": [
+        {
+          "label": "Policy",
+          "type": "dropdown",
+          "model": "segmentationPolicy",
+          "placeholder": "STOP",
+          "items": "segmentationPolicy"
+        },
+        {
+          "label": "All resolvers pass required flag",
+          "type": "check",
+          "model": "allSegmentationResolversPassRequired",
+          "tip": [
+            "All segmentation resolvers pass required flag.",
+            "<p>",
+            "If enabled all segmentation resolvers should succeed for node to be in correct segment.",
+            "If disabled at least one segmentation resolver should succeed for node to be in correct segment."
+          ]
+        },
+        {
+          "label": "Resolve attempts count",
+          "type": "text",
+          "model": "segmentationResolveAttempts",
+          "placeholder": "2",
+          "tip": [
+            "Each configured resolver will have this attempts number to pass segmentation check prior to check failure."
+          ]
         }
       ]
     },
@@ -348,13 +657,19 @@
           "label": "Keep alive time",
           "type": "text",
           "model": "utilityCacheKeepAliveTime",
-          "placeholder": "10,000"
+          "placeholder": "10,000",
+          "tip": [
+            "Keep alive time of thread pool that is in charge of processing utility cache messages."
+          ]
         },
         {
           "label": "Pool size",
           "type": "text",
           "model": "utilityCachePoolSize",
-          "placeholder": "max(8, availableProcessors) * 2"
+          "placeholder": "max(8, availableProcessors) * 2",
+          "tip": [
+            "Thread pool that is in charge of processing utility cache messages."
+          ]
         }
       ]
     }

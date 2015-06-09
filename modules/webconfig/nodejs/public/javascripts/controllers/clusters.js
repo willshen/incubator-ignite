@@ -53,6 +53,30 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
             {value: 'PARTITIONED', label: 'PARTITIONED'}
         ];
 
+        $scope.deploymentModes = [
+            {value: 'PRIVATE', label: 'PRIVATE'},
+            {value: 'ISOLATED', label: 'ISOLATED'},
+            {value: 'SHARED', label: 'SHARED'},
+            {value: 'CONTINUOUS', label: 'CONTINUOUS'}
+        ];
+
+        $scope.transactionConcurrency = [
+            {value: 'OPTIMISTIC', label: 'OPTIMISTIC'},
+            {value: 'PESSIMISTIC', label: 'PESSIMISTIC'}
+        ];
+
+        $scope.transactionIsolation = [
+            {value: 'READ_COMMITTED', label: 'READ_COMMITTED'},
+            {value: 'REPEATABLE_READ', label: 'REPEATABLE_READ'},
+            {value: 'SERIALIZABLE', label: 'SERIALIZABLE'}
+        ];
+
+        $scope.segmentationPolicy = [
+            {value: 'RESTART_JVM', label: 'RESTART_JVM'},
+            {value: 'STOP', label: 'STOP'},
+            {value: 'NOOP', label: 'NOOP'}
+        ];
+
         $scope.clusters = [];
 
         $http.get('/form-models/clusters.json')
