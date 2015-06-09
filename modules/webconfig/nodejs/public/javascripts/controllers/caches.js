@@ -17,9 +17,9 @@
 
 configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
         $scope.templates = [
-            {value: {mode: 'PARTITIONED', atomicity: 'TRANSACTIONAL'}, label: 'Partitioned'},
-            {value: {mode: 'REPLICATED', atomicity: 'ATOMIC'}, label: 'Replicated'},
-            {value: {mode: 'LOCAL', atomicity: 'ATOMIC'}, label: 'Local'}
+            {value: {mode: 'PARTITIONED', atomicityMode: 'ATOMIC'}, label: 'Partitioned'},
+            {value: {mode: 'REPLICATED', atomicityMode: 'ATOMIC'}, label: 'Replicated'},
+            {value: {mode: 'LOCAL', atomicityMode: 'ATOMIC'}, label: 'Local'}
         ];
 
         $scope.atomicities = [
@@ -38,17 +38,17 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
             {value: 'PRIMARY', label: 'Primary'}
         ];
 
+        $scope.memoryModes = [
+            {value: 'ONHEAP_TIERED', label: 'ONHEAP_TIERED'},
+            {value: 'OFFHEAP_TIERED', label: 'OFFHEAP_TIERED'},
+            {value: 'OFFHEAP_VALUES', label: 'OFFHEAP_VALUES'}
+            ];
+
         $scope.rebalanceModes = [
             {value: 'SYNC', label: 'Synchronous'},
             {value: 'ASYNC', label: 'Asynchronous'},
             {value: 'NONE', label: 'None'}
         ];
-
-        $scope.memoryModes = [
-            {value: 'ONHT', label: 'ONHEAP_TIERED'},
-            {value: 'OFHT', label: 'OFFHEAP_TIERED'},
-            {value: 'OFHV', label: 'OFFHEAP_VALUES'}
-            ];
 
         $scope.general = [];
         $scope.advanced = [];

@@ -31,17 +31,17 @@ var AccountSchema = new Schema({
     username: String
 });
 
-AccountSchema.plugin(passportLocalMongoose, { usernameField: 'email' });
+AccountSchema.plugin(passportLocalMongoose, {usernameField: 'email'});
 
 exports.Account = mongoose.model('Account', AccountSchema);
 
 // Define space model.
-exports.Space =  mongoose.model('Space', new Schema({
+exports.Space = mongoose.model('Space', new Schema({
     name: String,
-    owner: { type: ObjectId, ref: 'Account' },
+    owner: {type: ObjectId, ref: 'Account'},
     usedBy: [{
-        permission: { type: String, enum: ['VIEW', 'FULL']},
-        account: { type: ObjectId, ref: 'Account' }
+        permission: {type: String, enum: ['VIEW', 'FULL']},
+        account: {type: ObjectId, ref: 'Account'}
     }]
 }));
 
@@ -54,23 +54,59 @@ var DiscoveryObj = {
 
 // Define cache model.
 var CacheSchema = new Schema({
-    space: { type: ObjectId, ref: 'Space' },
+    space: {type: ObjectId, ref: 'Space'},
     name: String,
-    mode: { type: String, enum: ['PARTITIONED', 'REPLICATED', 'LOCAL'] },
+    mode: {type: String, enum: ['PARTITIONED', 'REPLICATED', 'LOCAL']},
+    atomicityMode: {type: String, enum: ['ATOMIC', 'TRANSACTIONAL']},
+
     backups: Number,
-    atomicity: { type: String, enum: ['ATOMIC', 'TRANSACTIONAL'] }
+    memoryMode: {type: String, enum: ['ONHEAP_TIERED', 'OFFHEAP_TIERED', 'OFFHEAP_VALUES']},
+    offHeapMaxMemory: Number,
+    swapEnabled: Boolean,
+
+    rebalanceMode: {type: String, enum: ['SYNC', 'ASYNC', 'NONE']},
+    rebalanceThreadPoolSize: Number,
+    rebalanceBatchSize: Number,
+    rebalanceOrder: Number,
+    rebalanceDelay: Number,
+    rebalanceTimeout: Number,
+    rebalanceThrottle: Number,
+
+    readThrough: Boolean,
+    writeThrough: Boolean,
+
+    writeBehindEnabled: Boolean,
+    writeBehindBatchSize: Number,
+    writeBehindFlushSize: Number,
+    writeBehindFlushFrequency: Number,
+    writeBehindFlushThreadCount: Number,
+
+    invalidate: Boolean,
+    defaultLockTimeout: Number,
+    transactionManagerLookupClassName: String,
+
+    sqlEscapeAll: Boolean,
+    sqlOnheapRowCacheSize: Boolean,
+    longQueryWarningTimeout: Number,
+    indexedTypes: [String],
+    sqlFunctionClasses: [String],
+    statisticsEnabled: Boolean,
+    managementEnabled: Boolean,
+    readFromBackup: Boolean,
+    copyOnRead: Boolean,
+    maxConcurrentAsyncOperations: Number
 });
 
-exports.Cache =  mongoose.model('Cache', CacheSchema);
+exports.Cache = mongoose.model('Cache', CacheSchema);
 
 // Define discovery model.
-exports.Discovery =  mongoose.model('Discovery', new Schema(DiscoveryObj));
+exports.Discovery = mongoose.model('Discovery', new Schema(DiscoveryObj));
 
 var ClusterSchema = new Schema({
-    space: { type: ObjectId, ref: 'Space' },
+    space: {type: ObjectId, ref: 'Space'},
     name: String,
     discovery: {
-        kind: { type: String, enum: ['Vm', 'Multicast', 'S3', 'Cloud', 'GoogleStorage', 'Jdbc', 'SharedFs'] },
+        kind: {type: String, enum: ['Vm', 'Multicast', 'S3', 'Cloud', 'GoogleStorage', 'Jdbc', 'SharedFs']},
         Vm: {
             addresses: [String]
         },
@@ -94,7 +130,7 @@ var ClusterSchema = new Schema({
             projectName: String,
             bucketName: String,
             serviceAccountP12FilePath: String,
-            addrReqAttempts:String
+            addrReqAttempts: String
         },
         Jdbc: {
             initSchema: Boolean
@@ -105,18 +141,20 @@ var ClusterSchema = new Schema({
     },
     atomicConfiguration: {
         backups: Number,
-        cacheMode: { type: String, enum: ['LOCAL', 'REPLICATED', 'PARTITIONED'] },
+        cacheMode: {type: String, enum: ['LOCAL', 'REPLICATED', 'PARTITIONED']},
         atomicSequenceReserveSize: Number
     },
-    caches: [{ type: ObjectId, ref: 'Cache' }],
+    caches: [{type: ObjectId, ref: 'Cache'}],
     cacheSanityCheckEnabled: Boolean,
     clockSyncSamples: Number,
     clockSyncFrequency: Number,
-    deploymentMode: { type: String, enum: ['PRIVATE', 'ISOLATED', 'SHARED', 'CONTINUOUS'] },
+    deploymentMode: {type: String, enum: ['PRIVATE', 'ISOLATED', 'SHARED', 'CONTINUOUS']},
     discoveryStartupDelay: Number,
-    includeEventTypes: [{ type: String, enum: ['EVTS_CHECKPOINT', 'EVTS_DEPLOYMENT', 'EVTS_ERROR', 'EVTS_DISCOVERY',
-        'EVTS_JOB_EXECUTION', 'EVTS_TASK_EXECUTION', 'EVTS_CACHE', 'EVTS_CACHE_REBALANCE', 'EVTS_CACHE_LIFECYCLE',
-        'EVTS_CACHE_QUERY', 'EVTS_SWAPSPACE', 'EVTS_IGFS'] }],
+    includeEventTypes: [{
+        type: String, enum: ['EVTS_CHECKPOINT', 'EVTS_DEPLOYMENT', 'EVTS_ERROR', 'EVTS_DISCOVERY',
+            'EVTS_JOB_EXECUTION', 'EVTS_TASK_EXECUTION', 'EVTS_CACHE', 'EVTS_CACHE_REBALANCE', 'EVTS_CACHE_LIFECYCLE',
+            'EVTS_CACHE_QUERY', 'EVTS_SWAPSPACE', 'EVTS_IGFS']
+    }],
     marshalLocalJobs: Boolean,
     marshCacheKeepAliveTime: Number,
     marshCachePoolSize: Number,
@@ -141,14 +179,14 @@ var ClusterSchema = new Schema({
     managementThreadPoolSize: Number,
     igfsThreadPoolSize: Number,
     transactionConfiguration: {
-        defaultTxConcurrency: { type: String, enum: ['OPTIMISTIC', 'PESSIMISTIC'] },
-        transactionIsolation: { type: String, enum: ['READ_COMMITTED', 'REPEATABLE_READ', 'SERIALIZABLE'] },
+        defaultTxConcurrency: {type: String, enum: ['OPTIMISTIC', 'PESSIMISTIC']},
+        transactionIsolation: {type: String, enum: ['READ_COMMITTED', 'REPEATABLE_READ', 'SERIALIZABLE']},
         defaultTxTimeout: Number,
         pessimisticTxLogLinger: Number,
         pessimisticTxLogSize: Number,
         txSerializableEnabled: Boolean
     },
-    segmentationPolicy: { type: String, enum: ['RESTART_JVM', 'STOP', 'NOOP'] },
+    segmentationPolicy: {type: String, enum: ['RESTART_JVM', 'STOP', 'NOOP']},
     allSegmentationResolversPassRequired: Boolean,
     segmentationResolveAttempts: Number,
     utilityCacheKeepAliveTime: Number,
@@ -156,9 +194,9 @@ var ClusterSchema = new Schema({
 });
 
 // Define cluster model.
-exports.Cluster =  mongoose.model('Cluster', ClusterSchema);
+exports.Cluster = mongoose.model('Cluster', ClusterSchema);
 
-exports.upsert = function(model, data, cb){
+exports.upsert = function (model, data, cb) {
     if (data._id) {
         var id = data._id;
 

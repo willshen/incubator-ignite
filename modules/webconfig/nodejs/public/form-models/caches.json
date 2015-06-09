@@ -77,6 +77,60 @@
           "tip": [
             "Flag indicating whether swap storage is enabled or not for this cache."
           ]
+        },
+        {
+          "label": "Eviction policy",
+          "type": "dropdown-details",
+          "group": "evictionPolicy",
+          "model": "kind",
+          "placeholder": "Choose eviction policy",
+          "items": "evictionPolicies",
+          "tip": [
+            "Cache expiration policy."
+          ],
+          "details": {
+            "LRU": [
+              {
+                "label": "BatchSize",
+                "type": "text",
+                "model": "BatchSize",
+                "placeholder": "1"
+              },
+              {
+                "label": "MaxMemorySize",
+                "type": "text",
+                "model": "MaxMemorySize",
+                "placeholder": "0",
+                "tip": [
+                  "Maximum allowed cache size in bytes."
+                ]
+              }
+            ],
+            "RND": [
+              {
+                "label": "BatchSize",
+                "type": "text",
+                "model": "BatchSize",
+                "placeholder": "1"
+              }
+            ],
+            "FIFO": [
+              {
+                "label": "BatchSize",
+                "type": "text",
+                "model": "BatchSize",
+                "placeholder": "1"
+              }
+            ],
+            "SORTED": [
+              {
+                "label": "BatchSize",
+                "type": "text",
+                "model": "BatchSize",
+                "placeholder": "1"
+              }
+            ]
+          }
         }
       ]
     },
@@ -151,6 +205,27 @@
           "placeholder": "0",
           "tip": [
             "Time in milliseconds to wait between rebalance messages to avoid overloading of CPU or network."
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Store",
+      "fields": [
+        {
+          "label": "Read-through",
+          "type": "check",
+          "model": "readThrough",
+          "tip": [
+            "Flag indicating whether read-through caching should be used."
+          ]
+        },
+        {
+          "label": "Write-through",
+          "type": "check",
+          "model": "writeThrough",
+          "tip": [
+            "Flag indicating whether write-through caching should be used."
           ]
         }
       ]
@@ -289,6 +364,22 @@
       "label": "Misc",
       "fields": [
         {
+          "label": "Statistics enabled",
+          "type": "check",
+          "model": "statisticsEnabled",
+          "tip": [
+            "Flag indicating whether statistics gathering is enabled on a cache."
+          ]
+        },
+        {
+          "label": "Management enabled",
+          "type": "check",
+          "model": "managementEnabled",
+          "tip": [
+            "Flag indicating whether management is enabled on this cache."
+          ]
+        },
+        {
           "label": "Read from backup",
           "type": "check",
           "model": "readFromBackup",
@@ -307,9 +398,10 @@
           ]
         },
         {
-          "label": "Max concurrent async operations",
+          "label": "Max concurreny",
           "type": "text",
           "model": "maxConcurrentAsyncOperations",
+          "placeholder": "500",
           "tip": [
             "Maximum number of allowed concurrent asynchronous operations.<br/>",
             "If 0 returned then number of concurrent asynchronous operations is unlimited."
