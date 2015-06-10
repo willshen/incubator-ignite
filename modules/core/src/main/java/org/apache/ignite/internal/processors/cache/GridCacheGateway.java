@@ -17,12 +17,16 @@
 
 package org.apache.ignite.internal.processors.cache;
 
-import org.apache.ignite.*;
-import org.apache.ignite.internal.*;
-import org.apache.ignite.internal.util.*;
-import org.apache.ignite.internal.util.tostring.*;
-import org.apache.ignite.internal.util.typedef.internal.*;
-import org.jetbrains.annotations.*;
+import org.apache.ignite.IgniteCheckedException;
+import org.apache.ignite.IgniteException;
+import org.apache.ignite.internal.IgniteInterruptedCheckedException;
+import org.apache.ignite.internal.util.GridSpinReadWriteLock;
+import org.apache.ignite.internal.util.tostring.GridToStringExclude;
+import org.apache.ignite.internal.util.typedef.internal.CU;
+import org.apache.ignite.internal.util.typedef.internal.U;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Cache gateway.
@@ -35,8 +39,8 @@ public class GridCacheGateway<K, V> {
     /** Stopped flag for dynamic caches. */
     private volatile boolean stopped;
 
-    /** Closed flag for dynamic caches. */
-    private volatile boolean closed;
+    /** Client counter. */
+    private volatile AtomicInteger clients = new AtomicInteger(0);
 
     /** */
     private GridSpinReadWriteLock rwLock = new GridSpinReadWriteLock();
@@ -153,7 +157,7 @@ public class GridCacheGateway<K, V> {
             throw new IllegalStateException("Cache has been stopped: " + ctx.name());
         }
 
-        if (closed) {
+        if (clients.get() <= 0) {
             rwLock.readUnlock();
 
             throw new IllegalStateException("Cache has been closed: " + ctx.name());
@@ -246,14 +250,14 @@ public class GridCacheGateway<K, V> {
      *
      */
     public void open() {
-        closed = false;
+        clients.incrementAndGet();
     }
 
     /**
      *
      */
     public void close() {
-        closed = true;
+        clients.decrementAndGet();
     }
 
     /**
