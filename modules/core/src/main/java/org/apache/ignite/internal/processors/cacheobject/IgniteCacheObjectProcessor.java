@@ -30,8 +30,9 @@ import org.jetbrains.annotations.*;
 public interface IgniteCacheObjectProcessor extends GridProcessor {
     /**
      * @see GridComponent#onKernalStart()
+     * @throws IgniteCheckedException If failed.
      */
-    public void onUtilityCacheStarted();
+    public void onUtilityCacheStarted() throws IgniteCheckedException;
 
     /**
      * @param typeName Type name.

@@ -79,7 +79,7 @@ public class IgniteUtilSelfTestSuite extends TestSuite {
         GridTestUtils.addTestIfNeeded(suite, GridNioSelfTest.class, ignoredTests);
         suite.addTestSuite(GridNioFilterChainSelfTest.class);
         GridTestUtils.addTestIfNeeded(suite, GridNioSslSelfTest.class, ignoredTests);
-        suite.addTestSuite(GridNioDelimitedBufferTest.class);
+        suite.addTestSuite(GridNioDelimitedBufferSelfTest.class);
 
         return suite;
     }

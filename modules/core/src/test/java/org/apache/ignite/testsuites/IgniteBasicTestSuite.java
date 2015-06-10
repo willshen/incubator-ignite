@@ -61,12 +61,14 @@ public class IgniteBasicTestSuite extends TestSuite {
         suite.addTest(IgniteStartUpTestSuite.suite());
         suite.addTest(IgniteExternalizableSelfTestSuite.suite());
         suite.addTest(IgniteP2PSelfTestSuite.suite());
-        suite.addTest(IgniteCacheP2pUnmarshallingErrorTestSuit.suite(ignoredTests));
+        suite.addTest(IgniteCacheP2pUnmarshallingErrorTestSuite.suite());
+        suite.addTest(IgniteStreamSelfTestSuite.suite());
 
-        suite.addTestSuite(GridSelfTest.class);
+        suite.addTest(new TestSuite(GridSelfTest.class));
         GridTestUtils.addTestIfNeeded(suite, GridProjectionSelfTest.class, ignoredTests);
-        suite.addTestSuite(GridMessagingSelfTest.class);
-        suite.addTestSuite(GridMessagingNoPeerClassLoadingSelfTest.class);
+        suite.addTest(new TestSuite(GridMessagingSelfTest.class));
+        suite.addTest(new TestSuite(IgniteMessagingWithClientTest.class));
+        GridTestUtils.addTestIfNeeded(suite, GridMessagingNoPeerClassLoadingSelfTest.class, ignoredTests);
 
         if (U.isLinux() || U.isMacOs())
             suite.addTest(IgniteIpcSharedMemorySelfTestSuite.suite());

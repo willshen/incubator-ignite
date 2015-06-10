@@ -44,7 +44,7 @@ import static org.apache.ignite.testframework.GridTestUtils.*;
 /**
  * Various tests for Messaging public API.
  */
-public class GridMessagingSelfTest extends GridCommonAbstractTest {
+public class GridMessagingSelfTest extends GridCommonAbstractTest implements Serializable {
     /** */
     private static final String MSG_1 = "MSG-1";
 
@@ -73,7 +73,7 @@ public class GridMessagingSelfTest extends GridCommonAbstractTest {
     public static final String EXT_RESOURCE_CLS_NAME = "org.apache.ignite.tests.p2p.TestUserResource";
 
     /** Shared IP finder. */
-    private final TcpDiscoveryIpFinder ipFinder = new TcpDiscoveryVmIpFinder(true);
+    private final transient TcpDiscoveryIpFinder ipFinder = new TcpDiscoveryVmIpFinder(true);
 
     /**
      * A test message topic.
