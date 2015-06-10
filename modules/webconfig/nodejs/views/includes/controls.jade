@@ -30,10 +30,11 @@ mixin details-row
     - var detailMdl = 'backupItem[field.group][backupItem[field.group][field.model]][detail.model]'
 
     div(ng-switch='detail.type')
-        div(ng-switch-when='check')
-            input(type='checkbox' ng-model=detailMdl)
-            label(ng-click='#{detailMdl} = !#{detailMdl}') {{detail.label}}
-            +tip-detail
+        div.checkbox(ng-switch-when='check')
+            label
+                input(type='checkbox' ng-model=detailMdl)
+                |{{detail.label}}
+                +tip-detail
         div(ng-switch-when='text')
             +lbl-details
             .col-sm-4
@@ -69,11 +70,12 @@ mixin form-row
     - var masterMdl = 'backupItem[field.group][field.model]'
 
     div(ng-switch='field.type')
-        div(ng-switch-when='check')
-            input(type='checkbox' ng-if='!group.model' ng-model='backupItem[field.model]')
-            input(type='checkbox' ng-if='group.model' ng-model='backupItem[group.model][field.model]')
-            label(ng-click='backupItem[field.model] = !backupItem[field.model]') {{field.label}}
-            +tip
+        div.checkbox(ng-switch-when='check')
+            label
+                input(type='checkbox' ng-if='!group.model' ng-model='backupItem[field.model]')
+                input(type='checkbox' ng-if='group.model' ng-model='backupItem[group.model][field.model]')
+                | {{field.label}}
+                +tip
         div(ng-switch-when='text')
             +lbl
             .col-sm-4
