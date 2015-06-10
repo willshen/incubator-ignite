@@ -48,11 +48,13 @@ public class InteropIgnition {
      * @return Ignite instance.
      */
     public static synchronized InteropProcessor start(@Nullable String springCfgPath, @Nullable String gridName,
-        int factoryId, long envPtr) {
+                                                      int factoryId, long envPtr) {
         IgniteConfiguration cfg = configuration(springCfgPath);
 
         if (gridName != null)
             cfg.setGridName(gridName);
+        else
+            gridName = cfg.getGridName();
 
         InteropBootstrap bootstrap = bootstrap(factoryId);
 
