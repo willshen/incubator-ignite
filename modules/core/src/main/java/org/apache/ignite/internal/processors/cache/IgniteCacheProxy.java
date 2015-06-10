@@ -1588,9 +1588,9 @@ public class IgniteCacheProxy<K, V> extends AsyncSupportAdapter<IgniteCache<K, V
      */
     private boolean onEnterIfNoClose() {
         if (lock)
-            return gate.enterIfNotClosed();
+            return gate.enterIfNotStopped();
         else
-            return gate.enterIfNotClosedNoLock();
+            return gate.enterIfNotStoppedNoLock();
     }
 
     /**

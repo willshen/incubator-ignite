@@ -1988,6 +1988,12 @@ public class GridCacheProcessor extends GridProcessorAdapter {
         if (cfg.getCacheMode() == LOCAL)
             return dynamicDestroyCache(cacheName);
         else {
+            IgniteCacheProxy<?, ?> proxy = jCacheProxies.get(maskNull(cacheName));
+
+            // Closing gateway first.
+            if (proxy != null)
+                proxy.gate().close();
+
             GridCacheAdapter<?, ?> cache = caches.get(maskNull(cacheName));
 
             if (cache != null && !cache.context().affinityNode()) {
@@ -2667,6 +2673,9 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
         if (cache == null)
            cache = startJCache(cacheName, failIfNotStarted);
+
+        if (cache != null)
+            cache.gate().open();
 
         return (IgniteCacheProxy<K, V>)cache;
     }

@@ -116,6 +116,7 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
         CacheConfiguration cfg = defaultCacheConfiguration();
         cfg.setName(CACHE_NAME_DHT);
         cfg.setCacheMode(CacheMode.PARTITIONED);
+        cfg.setNearConfiguration(null);
         return cfg;
     }
 
@@ -126,6 +127,7 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
         CacheConfiguration cfg = defaultCacheConfiguration();
         cfg.setName(CACHE_NAME_CLIENT);
         cfg.setCacheMode(CacheMode.PARTITIONED);
+        cfg.setNearConfiguration(null);
         return cfg;
     }
 
@@ -147,6 +149,7 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
         CacheConfiguration cfg = defaultCacheConfiguration();
         cfg.setName(CACHE_NAME_LOC);
         cfg.setCacheMode(CacheMode.LOCAL);
+        cfg.setNearConfiguration(null);
         return cfg;
     }
 
@@ -374,7 +377,14 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
 
         dhtCache0.close();
 
-        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL);// Not affected.
+        try {
+            dhtCache0.get(KEY_VAL);// Not affected, but can not be taken.
+            assert false;
+        }
+        catch (IllegalStateException ignored) {
+            // No-op
+        }
+
         assert dhtCache1.get(KEY_VAL).equals(KEY_VAL);// Not affected.
         assert dhtCache2.get(KEY_VAL).equals(KEY_VAL);// Not affected.
 
@@ -382,11 +392,41 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
 
         dhtCache0 = grid(0).cache(CACHE_NAME_DHT);
 
-        dhtCache0.put(KEY_VAL, KEY_VAL + "recreated");
+        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL);// Not affected, can be taken since cache reopened.
+
+        dhtCache2.put(KEY_VAL, KEY_VAL + "recreated");
 
         assert dhtCache0.get(KEY_VAL).equals(KEY_VAL + "recreated");
-        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL + "recreated");
-        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL + "recreated");
+
+        //Check close at last node.
+
+        stopAllGrids(true);
+
+        startGrid(0);
+
+        dhtCache0 = grid(0).getOrCreateCache(getDhtConfig());
+
+        assert dhtCache0.get(KEY_VAL) == null;
+
+        dhtCache0.put(KEY_VAL, KEY_VAL);
+
+        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL);
+
+        // Closing last node.
+        dhtCache0.close();
+
+        try {
+            dhtCache0.get(KEY_VAL);// Can not be taken.
+            assert false;
+        }
+        catch (IllegalStateException ignored) {
+            // No-op
+        }
+
+        // Reopening cache.
+        dhtCache0 = grid(0).cache(CACHE_NAME_DHT);
+
+        assert dhtCache0.get(KEY_VAL).equals(KEY_VAL);// Entry not loosed.
     }
 
     /**

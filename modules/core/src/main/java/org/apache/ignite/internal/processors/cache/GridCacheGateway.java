@@ -35,6 +35,9 @@ public class GridCacheGateway<K, V> {
     /** Stopped flag for dynamic caches. */
     private volatile boolean stopped;
 
+    /** Closed flag for dynamic caches. */
+    private volatile boolean closed;
+
     /** */
     private GridSpinReadWriteLock rwLock = new GridSpinReadWriteLock();
 
@@ -68,7 +71,7 @@ public class GridCacheGateway<K, V> {
      *
      * @return {@code True} if enter successful, {@code false} if the cache or the node was stopped.
      */
-    public boolean enterIfNotClosed() {
+    public boolean enterIfNotStopped() {
         onEnter();
 
         // Must unlock in case of unexpected errors to avoid
@@ -89,7 +92,7 @@ public class GridCacheGateway<K, V> {
      *
      * @return {@code True} if enter successful, {@code false} if the cache or the node was stopped.
      */
-    public boolean enterIfNotClosedNoLock() {
+    public boolean enterIfNotStoppedNoLock() {
         onEnter();
 
         return !stopped;
@@ -148,6 +151,12 @@ public class GridCacheGateway<K, V> {
             rwLock.readUnlock();
 
             throw new IllegalStateException("Cache has been stopped: " + ctx.name());
+        }
+
+        if (closed) {
+            rwLock.readUnlock();
+
+            throw new IllegalStateException("Cache has been closed: " + ctx.name());
         }
 
         // Must unlock in case of unexpected errors to avoid
@@ -231,6 +240,20 @@ public class GridCacheGateway<K, V> {
      */
     public void block() {
         stopped = true;
+    }
+
+    /**
+     *
+     */
+    public void open() {
+        closed = false;
+    }
+
+    /**
+     *
+     */
+    public void close() {
+        closed = true;
     }
 
     /**
