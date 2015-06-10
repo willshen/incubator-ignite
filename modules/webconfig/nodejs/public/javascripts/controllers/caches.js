@@ -17,7 +17,8 @@
 
 configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
         $scope.templates = [
-            {value: {mode: 'PARTITIONED', atomicityMode: 'ATOMIC'}, label: 'Partitioned'},
+            {value: {mode: 'PARTITIONED', atomicityMode: 'ATOMIC',
+                indexedTypes: [{keyClass: 'org.some.KeyClass', valueClass: 'org.some.ValueClass'},{keyClass: 'org.some.KeyClass2', valueClass: 'org.some.ValueClass2'}]}, label: 'Partitioned'},
             {value: {mode: 'REPLICATED', atomicityMode: 'ATOMIC'}, label: 'Replicated'},
             {value: {mode: 'LOCAL', atomicityMode: 'ATOMIC'}, label: 'Local'}
         ];

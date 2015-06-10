@@ -105,7 +105,7 @@ var CacheSchema = new Schema({
     sqlEscapeAll: Boolean,
     sqlOnheapRowCacheSize: Boolean,
     longQueryWarningTimeout: Number,
-    indexedTypes: [String],
+    indexedTypes: [{keyClass: String, valueClass: String}],
     sqlFunctionClasses: [String],
     statisticsEnabled: Boolean,
     managementEnabled: Boolean,
