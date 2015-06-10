@@ -15,40 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.ignite.internal.managers.discovery;
+package org.apache.ignite.spi;
 
-import org.apache.ignite.internal.processors.affinity.*;
 import org.apache.ignite.lang.*;
-import org.jetbrains.annotations.*;
-
-import java.io.*;
 
 /**
- *
+ * Provides possibility to schedule delayed execution,
+ * see {@link IgniteSpiContext#addTimeoutObject(IgniteSpiTimeoutObject)}.
+ * <p>
+ * Note: all timeout objects are executed in single dedicated thread, so implementation
+ * of {@link #onTimeout()} should not use time consuming and blocking method.
  */
-public interface DiscoveryCustomMessage extends Serializable {
+public interface IgniteSpiTimeoutObject {
     /**
-     * @return Unique custom message ID.
+     * @return Unique object ID.
      */
     public IgniteUuid id();
 
     /**
-     * Whether or not minor version of topology should be increased on message receive.
-     *
-     * @return {@code true} if minor topology version should be increased.
-     * @see AffinityTopologyVersion#minorTopVer
+     * @return End time.
      */
-    public boolean incrementMinorTopologyVersion();
+    public long endTime();
 
     /**
-     * Called when custom message has been handled by all nodes.
-     *
-     * @return Ack message or {@code null} if ack is not required.
+     * Timeout callback.
      */
-    @Nullable public DiscoveryCustomMessage ackMessage();
-
-    /**
-     * @return {@code true} if message can be modified during listener notification. Changes will be send to next nodes.
-     */
-    public boolean isMutable();
+    public void onTimeout();
 }
