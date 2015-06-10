@@ -2165,7 +2165,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
                     prepareCacheStop(req);
                 }
-                // Renew deployment id to have no race condition with start after stop request.
+                // Renew deployment id to have no race condition with start after stop.
                 desc.deploymentId(IgniteUuid.randomUuid());
 
                 ctx.discovery().onClientCacheClose(req.cacheName(), req.initiatingNodeId());

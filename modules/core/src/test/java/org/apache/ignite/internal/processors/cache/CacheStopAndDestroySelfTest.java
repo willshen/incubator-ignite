@@ -306,7 +306,7 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
      *
      * @throws Exception If failed.
      */
-    public void testNearLocalDestroy() throws Exception {
+    public void testLocalDoubleDestroy() throws Exception {
         localDestroy();
         localDestroy();
     }
