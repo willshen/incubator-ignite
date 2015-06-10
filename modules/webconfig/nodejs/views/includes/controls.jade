@@ -103,7 +103,7 @@ mixin form-row
         div(ng-switch-when='indexedTypes')
             div
                 label Indexed types: {{backupItem.indexedTypes.length}}
-                button.btn.btn-primary(style='margin-left: 10px' ng-click='editIndexedTypes()') Add indexed type
+                button.btn.btn-primary(style='margin-left: 10px' ng-click='editIndexedTypes(-1)') Add indexed type
                 +tip
             .col-sm-10.links(style='margin-left: 18px')
                 -var idxTypes = 'backupItem.indexedTypes'
@@ -111,6 +111,6 @@ mixin form-row
                     tbody
                         tr(ng-repeat='idxType in #{idxTypes}')
                             td
-                                a {{$index + 1}}. {{idxType.keyClass}}, {{idxType.valueClass}}
+                                a(ng-click='editIndexedTypes($index)') {{$index + 1}}. {{idxType.keyClass}}, {{idxType.valueClass}}
                                 label.fa.fa-remove(style='margin-left: 10px')
 

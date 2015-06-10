@@ -23,11 +23,11 @@
                         .form-group
                             label.col-sm-3.control-label Key Class:
                             .controls.col-sm-9
-                                input.form-control(type='text' required)
+                                input.form-control(type='text' ng-model='currKeyCls' required)
                         .form-group
                             label.col-sm-3.control-label Value Class:
                             .controls.col-sm-9
-                                input.form-control(type='text' required)
+                                input.form-control(type='text' ng-model='currValCls' required)
                 .modal-footer
-                    button.btn.btn-primary(ng-click='saveIndexedType(key, val)' ng-disabled='indexedTypeForm.$invalid') Save
+                    button.btn.btn-primary(ng-click='saveIndexedType()' ng-disabled='indexedTypeForm.$invalid') Save
                     button.btn.btn-primary(ng-click='$hide()') Cancel

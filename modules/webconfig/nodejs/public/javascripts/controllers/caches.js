@@ -15,10 +15,17 @@
  * limitations under the License.
  */
 
-configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
+configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', function ($scope, $modal, $http) {
         $scope.templates = [
-            {value: {mode: 'PARTITIONED', atomicityMode: 'ATOMIC',
-                indexedTypes: [{keyClass: 'org.some.KeyClass', valueClass: 'org.some.ValueClass'},{keyClass: 'org.some.KeyClass2', valueClass: 'org.some.ValueClass2'}]}, label: 'Partitioned'},
+            {
+                value: {
+                    mode: 'PARTITIONED', atomicityMode: 'ATOMIC',
+                    indexedTypes: [{
+                        keyClass: 'org.some.KeyClass',
+                        valueClass: 'org.some.ValueClass'
+                    }, {keyClass: 'org.some.KeyClass2', valueClass: 'org.some.ValueClass2'}]
+                }, label: 'Partitioned'
+            },
             {value: {mode: 'REPLICATED', atomicityMode: 'ATOMIC'}, label: 'Replicated'},
             {value: {mode: 'LOCAL', atomicityMode: 'ATOMIC'}, label: 'Local'}
         ];
@@ -43,7 +50,7 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
             {value: 'ONHEAP_TIERED', label: 'ONHEAP_TIERED'},
             {value: 'OFFHEAP_TIERED', label: 'OFFHEAP_TIERED'},
             {value: 'OFFHEAP_VALUES', label: 'OFFHEAP_VALUES'}
-            ];
+        ];
 
         $scope.evictionPolicies = [
             {value: 'LRU', label: 'Least Recently Used'},
@@ -62,7 +69,7 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
         $scope.advanced = [];
 
         $http.get('/form-models/caches.json')
-            .success(function(data) {
+            .success(function (data) {
                 $scope.general = data.general;
                 $scope.advanced = data.advanced;
             });
@@ -71,51 +78,83 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
         // Create popup for indexedTypes.
         var indexedTypesModal = $modal({scope: $scope, template: '/indexedTypes', show: false});
 
-        $scope.editIndexedTypes = function(cache) {
+        $scope.editIndexedTypes = function (idx) {
+            $scope.indexedTypeIdx = idx;
+
+            console.log('Index: ' + idx);
+
+            if (idx < 0) {
+                $scope.currKeyCls = '';
+                $scope.currValCls = '';
+            }
+            else {
+                var idxType = $scope.backupItem.indexedTypes[idx];
+
+                $scope.currKeyCls = idxType.keyClass;
+                $scope.currValCls = idxType.valueClass;
+            }
+
             indexedTypesModal.$promise.then(indexedTypesModal.show);
+        };
+
+        $scope.saveIndexedType = function () {
+            var idxTypes = $scope.backupItem.indexedTypes;
+
+            var idx = $scope.indexedTypeIdx;
+
+            if (idx < 0)
+                idxTypes.push({keyClass: $scope.currKeyCls, valueClass: $scope.currValCls});
+            else {
+                var idxType = idxTypes[idx];
+
+                idxType.keyClass = $scope.currKeyCls;
+                idxType.valueClass = $scope.currValCls;
+            }
+
+            indexedTypesModal.hide();
         };
 
         $scope.caches = [];
 
         // When landing on the page, get caches and show them.
         $http.get('/rest/caches')
-            .success(function(data) {
+            .success(function (data) {
                 $scope.spaces = data.spaces;
                 $scope.caches = data.caches;
             });
 
-        $scope.selectItem = function(item) {
+        $scope.selectItem = function (item) {
             $scope.selectedItem = item;
 
             $scope.backupItem = angular.copy(item);
         };
 
         // Add new cache.
-        $scope.createItem = function() {
+        $scope.createItem = function () {
             var item = angular.copy($scope.create.template);
 
             item.name = 'Cache ' + ($scope.caches.length + 1);
             item.space = $scope.spaces[0]._id;
 
             $http.post('/rest/caches/save', item)
-                .success(function(_id) {
+                .success(function (_id) {
                     item._id = _id;
 
                     $scope.caches.push(item);
 
                     $scope.selectItem(item);
                 })
-                .error(function(errorMessage) {
+                .error(function (errorMessage) {
                     console.log('Error: ' + errorMessage);
                 });
         };
 
-        $scope.removeItem = function() {
+        $scope.removeItem = function () {
             var _id = $scope.selectedItem._id;
 
             $http.post('/rest/caches/remove', {_id: _id})
-                .success(function() {
-                    var i = _.findIndex($scope.caches, function(cache) {
+                .success(function () {
+                    var i = _.findIndex($scope.caches, function (cache) {
                         return cache._id == _id;
                     });
 
@@ -126,18 +165,18 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
                         $scope.backupItem = undefined;
                     }
                 })
-                .error(function(errorMessage) {
+                .error(function (errorMessage) {
                     console.log('Error: ' + errorMessage);
                 });
         };
 
         // Save cache in db.
-        $scope.saveItem = function() {
+        $scope.saveItem = function () {
             var item = $scope.backupItem;
 
             $http.post('/rest/caches/save', item)
-                .success(function() {
-                    var i = _.findIndex($scope.caches, function(cache) {
+                .success(function () {
+                    var i = _.findIndex($scope.caches, function (cache) {
                         return cache._id == item._id;
                     });
 
@@ -146,7 +185,7 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
 
                     $scope.selectItem(item);
                 })
-                .error(function(errorMessage) {
+                .error(function (errorMessage) {
                     console.log('Error: ' + errorMessage);
                 });
         };
