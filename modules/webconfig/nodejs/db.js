@@ -64,6 +64,23 @@ var CacheSchema = new Schema({
     offHeapMaxMemory: Number,
     swapEnabled: Boolean,
 
+    evictionPolicy: {
+        kind: {type: String, enum: ['LRU', 'RND', 'FIFO', 'Sorted']},
+        LRU: {
+            batchSize: Number,
+            maxMemorySize: Number
+        },
+        RND: {
+            batchSize: Number
+        },
+        FIFO: {
+            batchSize: Number
+        },
+        SORTED: {
+            batchSize: Number
+        }
+    },
+
     rebalanceMode: {type: String, enum: ['SYNC', 'ASYNC', 'NONE']},
     rebalanceThreadPoolSize: Number,
     rebalanceBatchSize: Number,
