@@ -180,7 +180,7 @@ public class GridMessagingSelfTest extends GridCommonAbstractTest implements Ser
     /** {@inheritDoc} */
     @Override protected IgniteConfiguration getConfiguration(String gridName) throws Exception {
         IgniteConfiguration cfg = super.getConfiguration(gridName);
-
+        
         TcpDiscoverySpi discoSpi = new TcpDiscoverySpi();
 
         discoSpi.setIpFinder(ipFinder);

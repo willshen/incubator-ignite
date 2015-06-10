@@ -425,7 +425,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
         if (cc.getAtomicityMode() == ATOMIC)
             assertParameter(cc.getTransactionManagerLookupClassName() == null,
-                            "transaction manager can not be used with ATOMIC cache");
+                "transaction manager can not be used with ATOMIC cache");
     }
 
     /**
