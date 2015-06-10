@@ -375,30 +375,7 @@ public interface IgniteCache<K, V> extends javax.cache.Cache<K, V>, IgniteAsyncS
     @IgniteAsyncSupported
     @Override public V getAndReplace(K key, V val);
 
-    /**
-     * Removes entries for the specified keys.
-     * <p>
-     * The order in which the individual entries are removed is undefined.
-     * <p>
-     * For every entry in the key set, the following are called:
-     * <ul>
-     *   <li>any registered {@link CacheEntryRemovedListener}s</li>
-     *   <li>if the cache is a write-through cache, the {@link CacheWriter}</li>
-     * </ul>
-     * If the key set is empty, the {@link CacheWriter} is not called.
-     * <p>
-     * This operation is not transactional.
-     *
-     * @param keys the keys to remove
-     * @throws NullPointerException  if keys is null or if it contains a null key
-     * @throws IllegalStateException if the cache is {@link #isClosed()}
-     * @throws CacheException        if there is a problem during the remove
-     * @throws ClassCastException    if the implementation is configured to perform
-     *                               runtime-type-checking, and the key or value
-     *                               types are incompatible with those that have been
-     *                               configured for the {@link Cache}
-     * @see CacheWriter#deleteAll
-     */
+    /** {@inheritDoc} */
     @IgniteAsyncSupported
     @Override public void removeAll(Set<? extends K> keys);
 
@@ -414,7 +391,8 @@ public interface IgniteCache<K, V> extends javax.cache.Cache<K, V>, IgniteAsyncS
      * </ul>
      * If the cache is empty, the {@link CacheWriter} is not called.
      * <p>
-     * This operation is not transactional.
+     * This operation is not transactional. It calls broadcast closure that
+     * deletes all primary keys from remote nodes.
      * <p>
      * This is potentially an expensive operation as listeners are invoked.
      * Use {@link #clear()} to avoid this.

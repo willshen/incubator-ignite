@@ -1139,7 +1139,8 @@ public interface IgniteInternalCache<K, V> extends Iterable<Cache.Entry<K, V>> {
      * <p>
      * If write-through is enabled, the values will be removed from {@link CacheStore} via {@link IgniteDataStreamer}.
      * <h2 class="header">Transactions</h2>
-     * This method is not transactional.
+     * This method is transactional and will enlist the entry into ongoing transaction
+     * if there is one.
      *
      * @param keys Keys whose mappings are to be removed from cache.
      * @throws IgniteCheckedException If remove failed.
@@ -1151,7 +1152,8 @@ public interface IgniteInternalCache<K, V> extends Iterable<Cache.Entry<K, V>> {
      * <p>
      * If write-through is enabled, the values will be removed from {@link CacheStore} via {@link IgniteDataStreamer}.
      * <h2 class="header">Transactions</h2>
-     * This method is not transactional.
+     * This method is transactional and will enlist the entry into ongoing transaction
+     * if there is one.
      *
      * @param keys Keys whose mappings are to be removed from cache.
      * @return Future for the remove operation. The future will complete whenever
