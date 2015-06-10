@@ -32,9 +32,9 @@ block content
         button.btn.btn-default(bs-select ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cache template' bs-options='item.value as item.label for item in templates')
         h3(ng-hide='caches.length == 0') Caches
         .links
-            table.col-sm-12(st-table='rowCollection' st-safe-src='caches')
+            table.col-sm-12(st-table='caches')
                 tbody
-                    tr(ng-repeat='row in rowCollection')
+                    tr(ng-repeat='row in caches track by row._id')
                         td.col-sm-6(ng-class='{active: row._id == selectedItem._id}')
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.mode | displayValue:modes:'Cache mode not set'}}, {{row.atomicityMode | displayValue:atomicities:'Cache atomicity not set'}}
         .row.col-sm-12

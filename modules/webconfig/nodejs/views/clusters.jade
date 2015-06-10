@@ -34,7 +34,7 @@ block content
         .links
             table.col-sm-12(st-table='clusters')
                 tbody
-                    tr(ng-repeat='row in clusters')
+                    tr(ng-repeat='row in clusters track by row._id')
                         td.col-sm-6(ng-class='{active: row._id == selectedItem._id}')
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.discovery.kind | displayValue:discoveries:'Discovery not set'}}
         .row.col-sm-12
