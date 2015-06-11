@@ -10,7 +10,7 @@
       "label": "Discovery",
       "type": "dropdown-details",
       "customizable": true,
-      "customized": false,
+      "expanded": false,
       "group": "discovery",
       "model": "kind",
       "placeholder": "Choose discovery",

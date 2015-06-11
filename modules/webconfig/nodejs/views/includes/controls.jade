@@ -89,8 +89,8 @@ mixin form-row
             .col-sm-4
                 button.form-control(bs-select ng-model=masterMdl data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
             +tip('field.tip')
-            a(style='margin-left: 10px' ng-if='field.customizable' ng-init='lbl="Show settings"' ng-click='field.customized = !field.customized; lbl=field.customized ? "Hide settings" : lbl="Show settings"') {{lbl}}
-            div.panel-details(ng-show='field.customized')
+            a(style='margin-left: 10px' ng-if='field.customizable' ng-show=masterMdl ng-init='lbl="Show settings"' ng-click='field.expanded = !field.expanded; lbl = field.expanded ? "Hide settings" : lbl="Show settings"') {{lbl}}
+            div.panel-details(ng-show='field.expanded')
                 .details-row(ng-repeat='detail in field.details[#{masterMdl}]')
                     +details-row
         div(ng-switch-when='table-simple')
