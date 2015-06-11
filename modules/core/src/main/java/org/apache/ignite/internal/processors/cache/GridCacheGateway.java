@@ -17,16 +17,12 @@
 
 package org.apache.ignite.internal.processors.cache;
 
-import org.apache.ignite.IgniteCheckedException;
-import org.apache.ignite.IgniteException;
-import org.apache.ignite.internal.IgniteInterruptedCheckedException;
-import org.apache.ignite.internal.util.GridSpinReadWriteLock;
-import org.apache.ignite.internal.util.tostring.GridToStringExclude;
-import org.apache.ignite.internal.util.typedef.internal.CU;
-import org.apache.ignite.internal.util.typedef.internal.U;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.ignite.*;
+import org.apache.ignite.internal.*;
+import org.apache.ignite.internal.util.*;
+import org.apache.ignite.internal.util.tostring.*;
+import org.apache.ignite.internal.util.typedef.internal.*;
+import org.jetbrains.annotations.*;
 
 /**
  * Cache gateway.
@@ -39,8 +35,8 @@ public class GridCacheGateway<K, V> {
     /** Stopped flag for dynamic caches. */
     private volatile boolean stopped;
 
-    /** Client counter. */
-    private final AtomicInteger clients = new AtomicInteger(0);
+    /** Closed flag for dynamic caches. */
+    private final ThreadLocal<Boolean> closed = new ThreadLocal<>();
 
     /** */
     private GridSpinReadWriteLock rwLock = new GridSpinReadWriteLock();
@@ -157,7 +153,7 @@ public class GridCacheGateway<K, V> {
             throw new IllegalStateException("Cache has been stopped: " + ctx.name());
         }
 
-        if (clients.get() <= 0) {
+        if (closed.get()) {
             rwLock.readUnlock();
 
             throw new IllegalStateException("Cache has been closed: " + ctx.name());
@@ -244,22 +240,20 @@ public class GridCacheGateway<K, V> {
      */
     public void block() {
         stopped = true;
-
-        clients.decrementAndGet();
     }
 
     /**
      *
      */
     public void open() {
-        clients.incrementAndGet();
+        closed.set(false);
     }
 
     /**
      *
      */
     public void close() {
-        clients.decrementAndGet();
+        closed.set(true);
     }
 
     /**

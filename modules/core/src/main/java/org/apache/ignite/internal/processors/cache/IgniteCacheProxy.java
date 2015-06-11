@@ -1354,7 +1354,7 @@ public class IgniteCacheProxy<K, V> extends AsyncSupportAdapter<IgniteCache<K, V
 
     /** {@inheritDoc} */
     @Override public void destroy() {
-        if (!onEnterIfNoClose())
+        if (!onEnterIfNoStop())
             return;
 
         IgniteInternalFuture<?> fut;
@@ -1376,7 +1376,7 @@ public class IgniteCacheProxy<K, V> extends AsyncSupportAdapter<IgniteCache<K, V
 
     /** {@inheritDoc} */
     @Override public void close() {
-        if (!onEnterIfNoClose())
+        if (!onEnterIfNoStop())
             return;
 
         IgniteInternalFuture<?> fut;
@@ -1398,7 +1398,7 @@ public class IgniteCacheProxy<K, V> extends AsyncSupportAdapter<IgniteCache<K, V
 
     /** {@inheritDoc} */
     @Override public boolean isClosed() {
-        if (!onEnterIfNoClose())
+        if (!onEnterIfNoStop())
             return true;
 
         try {
@@ -1586,7 +1586,7 @@ public class IgniteCacheProxy<K, V> extends AsyncSupportAdapter<IgniteCache<K, V
      *
      * @return {@code True} if enter successful.
      */
-    private boolean onEnterIfNoClose() {
+    private boolean onEnterIfNoStop() {
         if (lock)
             return gate.enterIfNotStopped();
         else

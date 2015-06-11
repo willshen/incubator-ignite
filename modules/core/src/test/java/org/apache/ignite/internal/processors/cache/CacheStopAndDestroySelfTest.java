@@ -17,27 +17,29 @@
 
 package org.apache.ignite.internal.processors.cache;
 
-import org.apache.ignite.IgniteCache;
-import org.apache.ignite.cache.CacheMode;
-import org.apache.ignite.cluster.ClusterNode;
-import org.apache.ignite.configuration.CacheConfiguration;
-import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.ignite.configuration.NearCacheConfiguration;
-import org.apache.ignite.internal.IgniteInterruptedCheckedException;
-import org.apache.ignite.internal.managers.communication.GridIoMessage;
-import org.apache.ignite.internal.processors.cache.distributed.dht.GridDhtTxPrepareRequest;
-import org.apache.ignite.internal.util.typedef.internal.U;
-import org.apache.ignite.plugin.extensions.communication.Message;
-import org.apache.ignite.spi.IgniteSpiException;
-import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.TcpDiscoveryIpFinder;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
-import org.apache.ignite.testframework.GridTestUtils;
-import org.apache.ignite.testframework.junits.common.GridCommonAbstractTest;
+import org.apache.ignite.*;
+import org.apache.ignite.cache.*;
+import org.apache.ignite.cluster.*;
+import org.apache.ignite.configuration.*;
+import org.apache.ignite.internal.*;
+import org.apache.ignite.internal.managers.communication.*;
+import org.apache.ignite.internal.processors.cache.distributed.dht.*;
+import org.apache.ignite.internal.util.typedef.internal.*;
+import org.apache.ignite.plugin.extensions.communication.*;
+import org.apache.ignite.spi.*;
+import org.apache.ignite.spi.communication.tcp.*;
+import org.apache.ignite.spi.discovery.tcp.*;
+import org.apache.ignite.spi.discovery.tcp.ipfinder.*;
+import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.*;
+import org.apache.ignite.testframework.*;
+import org.apache.ignite.testframework.junits.common.*;
+import org.jsr107.tck.processor.*;
 
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
+import javax.cache.*;
+import javax.cache.CacheManager;
+import javax.cache.configuration.*;
+import java.util.*;
+import java.util.concurrent.atomic.*;
 
 /**
  * Checks stop and destroy methods behavior.
@@ -794,6 +796,10 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
         }
     }
 
+    /**
+     * @param a AtomicInteger.
+     * @param node Node.
+     */
     public void closeWithTry(AtomicInteger a, int node) {
         while (!stop) {
             try (IgniteCache<String, String> cache = grid(node).getOrCreateCache(getDhtConfig())) {
@@ -806,6 +812,32 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
                 assert cache.get(KEY_VAL).equals(KEY_VAL);
             }
         }
+    }
+
+    /**
+     * Tests start -> destroy -> start -> close using CacheManager.
+     */
+    public void testTckStyleCreateDestroyClose() {
+        CacheManager mgr = Caching.getCachingProvider().getCacheManager();
+
+        String cacheName = "cache";
+
+        mgr.createCache(cacheName, new MutableConfiguration<Integer, String>().setTypes(Integer.class, String.class));
+
+        mgr.destroyCache(cacheName);
+
+        Cache cache = mgr.createCache(cacheName, new MutableConfiguration<Integer, String>().setTypes(Integer.class, String.class));
+
+        cache.close();
+
+        try {
+            cache.invoke(123, new ThrowExceptionEntryProcessor<Integer, String, Void>(UnsupportedOperationException.class));
+            assert false;
+        }
+        catch (IllegalStateException e) {
+            // No-op;
+        }
+
     }
 
     /** {@inheritDoc} */

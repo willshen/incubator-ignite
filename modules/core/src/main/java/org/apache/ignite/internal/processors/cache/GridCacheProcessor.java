@@ -1983,17 +1983,17 @@ public class GridCacheProcessor extends GridProcessorAdapter {
      * @return Future that will be completed when cache is stopped.
      */
     public IgniteInternalFuture<?> dynamicCloseCache(String cacheName) {
+        IgniteCacheProxy<?, ?> proxy = jCacheProxies.get(maskNull(cacheName));
+
+        // Closing gateway first.
+        if (proxy != null)
+            proxy.gate().close();
+
         CacheConfiguration cfg = ctx.cache().cacheConfiguration(cacheName);
 
         if (cfg.getCacheMode() == LOCAL)
             return dynamicDestroyCache(cacheName);
         else {
-            IgniteCacheProxy<?, ?> proxy = jCacheProxies.get(maskNull(cacheName));
-
-            // Closing gateway first.
-            if (proxy != null)
-                proxy.gate().close();
-
             GridCacheAdapter<?, ?> cache = caches.get(maskNull(cacheName));
 
             if (cache != null && !cache.context().affinityNode()) {
