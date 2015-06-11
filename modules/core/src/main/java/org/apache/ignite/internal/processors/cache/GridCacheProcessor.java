@@ -2285,8 +2285,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
             if (!isLocAff && isRmtAff && locCfg.getAtomicityMode() == TRANSACTIONAL) {
                 checkStore = locAttr.storeFactoryClassName() != null;
 
-                if (locAttr.storeFactoryClassName() == null && rmtAttr.storeFactoryClassName() != null &&
-                    isRmtAff && isLocAff)
+                if (locAttr.storeFactoryClassName() == null && rmtAttr.storeFactoryClassName() != null)
                     desc.updatesAllowed(false);
             }
             else
