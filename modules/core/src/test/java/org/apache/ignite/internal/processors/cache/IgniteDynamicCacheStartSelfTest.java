@@ -1098,9 +1098,11 @@ public class IgniteDynamicCacheStartSelfTest extends GridCommonAbstractTest {
                 if (iter % 10 == 0)
                     log.info("Cache start/stop iteration: " + iter);
 
-                try (IgniteCache<Object, Object> cache = ignite1.getOrCreateCache("cache-" + iter)) {
-                    assertNotNull(cache);
-                }
+                IgniteCache<Object, Object> cache = ignite1.getOrCreateCache("cache-" + iter);
+
+                assertNotNull(cache);
+
+                cache.destroy();
 
                 iter++;
             }
