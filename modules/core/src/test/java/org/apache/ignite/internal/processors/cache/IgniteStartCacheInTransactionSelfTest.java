@@ -30,7 +30,7 @@ import java.util.concurrent.locks.*;
 /**
  * Check starting cache in transaction.
  */
-public class StartCacheInTransactionSelfTest extends GridCommonAbstractTest {
+public class IgniteStartCacheInTransactionSelfTest extends GridCommonAbstractTest {
     /** {@inheritDoc} */
     @Override protected IgniteConfiguration getConfiguration(String gridName) throws Exception {
         IgniteConfiguration cfg =  super.getConfiguration(gridName);
@@ -116,6 +116,7 @@ public class StartCacheInTransactionSelfTest extends GridCommonAbstractTest {
         Lock lock = ignite.cache(null).lock(key);
 
         lock.lock();
+
         GridTestUtils.assertThrows(log, new Callable<Object>() {
             @Override public Object call() throws Exception {
                 ignite.createCache("NEW_CACHE");
