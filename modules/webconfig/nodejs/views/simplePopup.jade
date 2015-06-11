@@ -18,8 +18,8 @@
         .modal-content
             .modal-header
                 button.close(type='button', ng-click='$hide()', aria-hidden='true') &times;
-                h4.modal-title(ng-hide='simplePopup.row') Add {{simplePopup.desc.label}}
-                h4.modal-title(ng-hide='!simplePopup.row') Edit {{simplePopup.desc.label}}
+                h4.modal-title(ng-hide='simplePopup.index') Add {{simplePopup.desc.label}}
+                h4.modal-title(ng-hide='!simplePopup.index') Edit {{simplePopup.desc.label}}
             form.form-horizontal(name='popupForm')
                 .modal-body.row
                     .col-sm-10.login.col-sm-offset-1

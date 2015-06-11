@@ -107,11 +107,15 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
             $scope.simplePopup = {
                 desc: desc,
                 rows: rows,
-                index: index,
+                index: idx,
                 row: angular.copy(rows[idx])
             };
 
             $modal({scope: $scope, template: '/simplePopup', show: true});
+        };
+
+        $scope.removeSimpleItem = function(rows, idx) {
+            rows.splice(idx, 1);
         };
 
         // When landing on the page, get clusters and show them.

@@ -59,7 +59,7 @@ mixin details-row
                     tbody
                         tr(ng-repeat='row in #{detailMdl}')
                             td
-                                a(ng-click='editSimpleItem(#{detailMdl}, $index)') {{index + 1}}. {{row}}
+                                a(ng-click='editSimpleItem(detail, #{detailMdl}, $index)') {{$index + 1}}. {{row}}
                                 label.fa.fa-remove(ng-click='removeSimpleItem(#{detailMdl}, $index)')
 
 mixin form-row
