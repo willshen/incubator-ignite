@@ -72,6 +72,9 @@ public class DynamicCacheDescriptor {
     /** Local store flag. */
     private boolean localStore;
 
+    /** Cache store. */
+    private CacheStore store;
+
     /**
      * @param ctx Context.
      * @param cacheCfg Cache configuration.
@@ -83,16 +86,15 @@ public class DynamicCacheDescriptor {
         CacheConfiguration cacheCfg,
         CacheType cacheType,
         boolean template,
-        IgniteUuid deploymentId) {
+        IgniteUuid deploymentId, CacheStore store) {
         this.cacheCfg = cacheCfg;
         this.cacheType = cacheType;
         this.template = template;
         this.deploymentId = deploymentId;
+        this.store = store;
 
-        if (cacheCfg.getCacheStoreFactory() != null) {
-            CacheStore store = (CacheStore)cacheCfg.getCacheStoreFactory().create();
+        if (store != null)
             localStore = U.hasAnnotation(store, CacheLocalStore.class);
-        }
 
         pluginMgr = new CachePluginManager(ctx, cacheCfg);
     }
@@ -268,10 +270,10 @@ public class DynamicCacheDescriptor {
     }
 
     /**
-     * @param localStore Local store flag.
+     * @return Cache store.
      */
-    public void localStore(boolean localStore) {
-        this.localStore = localStore;
+    public CacheStore store() {
+        return store;
     }
 
     /** {@inheritDoc} */

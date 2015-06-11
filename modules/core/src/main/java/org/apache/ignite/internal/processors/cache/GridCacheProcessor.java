@@ -611,8 +611,10 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
             boolean template = cfg.getName() != null && cfg.getName().endsWith("*");
 
+            CacheStore store = cfg.getCacheStoreFactory() != null ? cfg.getCacheStoreFactory().create() : null;
+
             DynamicCacheDescriptor desc = new DynamicCacheDescriptor(ctx, cfg, cacheType, template,
-                IgniteUuid.randomUuid());
+                IgniteUuid.randomUuid(), store);
 
             desc.locallyConfigured(true);
             desc.staticallyConfigured(true);
@@ -644,7 +646,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
             if (cfg.getName() == null) { // Use cache configuration with null name as template.
                 DynamicCacheDescriptor desc0 =
-                    new DynamicCacheDescriptor(ctx, cfg, cacheType, true, IgniteUuid.randomUuid());
+                    new DynamicCacheDescriptor(ctx, cfg, cacheType, true, IgniteUuid.randomUuid(), store);
 
                 desc0.locallyConfigured(true);
                 desc0.staticallyConfigured(true);
@@ -721,8 +723,8 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
                     CachePluginManager pluginMgr = desc.pluginManager();
 
-                    GridCacheContext ctx = createCache(
-                        ccfg, pluginMgr, desc.cacheType(), cacheObjCtx, desc.updatesAllowed());
+                    GridCacheContext ctx = createCache( ccfg, pluginMgr, desc.store(),
+                        desc.cacheType(), cacheObjCtx, desc.updatesAllowed());
 
                     ctx.dynamicDeploymentId(desc.deploymentId());
 
@@ -1064,6 +1066,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
     /**
      * @param cfg Cache configuration to use to create cache.
      * @param pluginMgr Cache plugin manager.
+     * @param store Cache store.
      * @param cacheType Cache type.
      * @param cacheObjCtx Cache object context.
      * @return Cache context.
@@ -1071,6 +1074,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
      */
     private GridCacheContext createCache(CacheConfiguration<?, ?> cfg,
         @Nullable CachePluginManager pluginMgr,
+        CacheStore<?,?> store,
         CacheType cacheType,
         CacheObjectContext cacheObjCtx,
         boolean updatesAllowed)
@@ -1078,7 +1082,10 @@ public class GridCacheProcessor extends GridProcessorAdapter {
     {
         assert cfg != null;
 
-        CacheStore cfgStore = cfg.getCacheStoreFactory() != null ? cfg.getCacheStoreFactory().create() : null;
+        CacheStore cfgStore = store;
+
+        if (cfgStore == null)
+            cfgStore = cfg.getCacheStoreFactory() != null ? cfg.getCacheStoreFactory().create() : null;
 
         validate(ctx.config(), cfg, cacheType, cfgStore);
 
@@ -1465,7 +1472,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
             CacheObjectContext cacheObjCtx = ctx.cacheObjects().contextForCache(ccfg);
 
-            GridCacheContext cacheCtx = createCache(ccfg, null, cacheType, cacheObjCtx, true);
+            GridCacheContext cacheCtx = createCache(ccfg, null, null, cacheType, cacheObjCtx, true);
 
             cacheCtx.startTopologyVersion(topVer);
 
@@ -1680,7 +1687,8 @@ public class GridCacheProcessor extends GridProcessorAdapter {
                             ccfg,
                             req.cacheType(),
                             true,
-                            req.deploymentId());
+                            req.deploymentId(),
+                            null);
 
                         registeredTemplates.put(maskNull(req.cacheName()), desc);
                     }
@@ -1715,7 +1723,8 @@ public class GridCacheProcessor extends GridProcessorAdapter {
                             ccfg,
                             req.cacheType(),
                             false,
-                            req.deploymentId());
+                            req.deploymentId(),
+                            null);
 
                         // Received statically configured cache.
                         if (req.initiatingNodeId() == null)
@@ -1965,8 +1974,6 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
         req.cacheType(cacheType);
 
-        req.localStore(cache(cacheName).context().store().isLocal());
-
         return F.first(initiateCacheChanges(F.asList(req), failIfExists));
     }
 
@@ -2079,7 +2086,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
                 if (desc == null) {
                     DynamicCacheDescriptor templateDesc =
-                        new DynamicCacheDescriptor(ctx, ccfg, req.cacheType(), true, req.deploymentId());
+                        new DynamicCacheDescriptor(ctx, ccfg, req.cacheType(), true, req.deploymentId(), null);
 
                     DynamicCacheDescriptor old = registeredTemplates.put(maskNull(ccfg.getName()), templateDesc);
 
@@ -2133,7 +2140,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
                     assert req.cacheType() != null : req;
 
                     DynamicCacheDescriptor startDesc =
-                        new DynamicCacheDescriptor(ctx, ccfg, req.cacheType(), false, req.deploymentId());
+                        new DynamicCacheDescriptor(ctx, ccfg, req.cacheType(), false, req.deploymentId(), null);
 
                     DynamicCacheDescriptor old = registeredCaches.put(maskNull(ccfg.getName()), startDesc);
 
@@ -2683,8 +2690,6 @@ public class GridCacheProcessor extends GridProcessorAdapter {
         req.startCacheConfiguration(cfg);
 
         req.cacheType(desc.cacheType());
-
-        req.localStore(cache(cacheName).context().store().isLocal());
 
         req.clientStartOnly(true);
 

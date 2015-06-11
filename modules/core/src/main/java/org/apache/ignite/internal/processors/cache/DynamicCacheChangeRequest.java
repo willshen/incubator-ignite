@@ -64,7 +64,7 @@ public class DynamicCacheChangeRequest implements Serializable {
     private boolean template;
 
     /** Local store flag. */
-    private boolean localStore;
+    private boolean locStore;
 
     /**
      * Constructor creates cache stop request.
@@ -227,14 +227,14 @@ public class DynamicCacheChangeRequest implements Serializable {
      * @param localStore Local store flag.
      */
     public void localStore(boolean localStore) {
-        this.localStore = localStore;
+        this.locStore = localStore;
     }
 
     /**
      * @return Local store flag.
      */
     public boolean localStore() {
-        return localStore;
+        return locStore;
     }
 
     /** {@inheritDoc} */
