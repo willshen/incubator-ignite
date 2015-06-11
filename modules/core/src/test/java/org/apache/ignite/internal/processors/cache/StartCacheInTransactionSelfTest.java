@@ -25,6 +25,7 @@ import org.apache.ignite.testframework.junits.common.*;
 import org.apache.ignite.transactions.*;
 
 import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
 
 /**
  * Check starting cache in transaction.
@@ -69,9 +70,7 @@ public class StartCacheInTransactionSelfTest extends GridCommonAbstractTest {
 
             GridTestUtils.assertThrows(log, new Callable<Object>() {
                 @Override public Object call() throws Exception {
-                    IgniteCache<String, String> cache = ignite.createCache("NEW_CACHE");
-
-                    cache.put(key, val);
+                    ignite.createCache("NEW_CACHE");
 
                     return null;
                 }
@@ -104,5 +103,27 @@ public class StartCacheInTransactionSelfTest extends GridCommonAbstractTest {
 
             tx.commit();
         }
+    }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testLockCache() throws Exception {
+        final Ignite ignite = grid(0);
+
+        final String key = "key";
+
+        Lock lock = ignite.cache(null).lock(key);
+
+        lock.lock();
+        GridTestUtils.assertThrows(log, new Callable<Object>() {
+            @Override public Object call() throws Exception {
+                ignite.createCache("NEW_CACHE");
+
+                return null;
+            }
+        }, IgniteException.class, "Cannot start/stop cache within lock.");
+
+        lock.unlock();
     }
 }
