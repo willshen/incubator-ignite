@@ -29,5 +29,5 @@
                             .controls.col-sm-9
                                 input.form-control(type='text' ng-model='currValCls' required)
                 .modal-footer
-                    button.btn.btn-primary(ng-click='saveIndexedType()' ng-disabled='indexedTypeForm.$invalid') Save
+                    button.btn.btn-primary(ng-click='saveIndexedType(currKeyCls, currValCls)' ng-disabled='indexedTypeForm.$invalid') Save
                     button.btn.btn-primary(ng-click='$hide()') Cancel

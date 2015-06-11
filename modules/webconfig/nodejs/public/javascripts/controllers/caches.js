@@ -74,14 +74,8 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
                 $scope.advanced = data.advanced;
             });
 
-
-        // Create popup for indexedTypes.
-        var indexedTypesModal = $modal({scope: $scope, template: '/indexedTypes', show: false});
-
         $scope.editIndexedTypes = function (idx) {
             $scope.indexedTypeIdx = idx;
-
-            console.log('Index: ' + idx);
 
             if (idx < 0) {
                 $scope.currKeyCls = '';
@@ -94,24 +88,28 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
                 $scope.currValCls = idxType.valueClass;
             }
 
-            indexedTypesModal.$promise.then(indexedTypesModal.show);
+            $scope.indexedTypesModal = $modal({scope: $scope, template: '/indexedTypes', show: true});
         };
 
-        $scope.saveIndexedType = function () {
+        $scope.saveIndexedType = function (k, v) {
             var idxTypes = $scope.backupItem.indexedTypes;
 
             var idx = $scope.indexedTypeIdx;
 
             if (idx < 0)
-                idxTypes.push({keyClass: $scope.currKeyCls, valueClass: $scope.currValCls});
+                idxTypes.push({keyClass: k, valueClass: v});
             else {
                 var idxType = idxTypes[idx];
 
-                idxType.keyClass = $scope.currKeyCls;
-                idxType.valueClass = $scope.currValCls;
+                idxType.keyClass = k;
+                idxType.valueClass = v;
             }
 
-            indexedTypesModal.hide();
+            $scope.indexedTypesModal.hide();
+        };
+
+        $scope.removeIndexedType = function (idx) {
+            $scope.backupItem.indexedTypes.splice(idx, 1);
         };
 
         $scope.caches = [];
