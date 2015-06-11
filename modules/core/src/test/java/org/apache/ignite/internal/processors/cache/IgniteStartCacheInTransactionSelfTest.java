@@ -27,6 +27,8 @@ import org.apache.ignite.transactions.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
 
+import static org.apache.ignite.cache.CacheAtomicityMode.*;
+
 /**
  * Check starting cache in transaction.
  */
@@ -37,10 +39,29 @@ public class IgniteStartCacheInTransactionSelfTest extends GridCommonAbstractTes
 
         CacheConfiguration ccfg = new CacheConfiguration();
 
-        ccfg.setAtomicityMode(CacheAtomicityMode.TRANSACTIONAL);
+        ccfg.setAtomicityMode(atomicityMode());
         ccfg.setBackups(1);
 
         cfg.setCacheConfiguration(ccfg);
+
+        return cfg;
+    }
+
+    /**
+     * @return Cache atomicity mode.
+     */
+    public CacheAtomicityMode atomicityMode() {
+        return TRANSACTIONAL;
+    }
+
+    /**
+     * @param cacheName Cache name.
+     * @return Cache configuration.
+     */
+    public CacheConfiguration cacheConfiguration(String cacheName) {
+        CacheConfiguration cfg = new CacheConfiguration();
+
+        cfg.setName(cacheName);
 
         return cfg;
     }
@@ -83,6 +104,106 @@ public class IgniteStartCacheInTransactionSelfTest extends GridCommonAbstractTes
     /**
      * @throws Exception If failed.
      */
+    public void testStartConfigurationCache() throws Exception {
+        final Ignite ignite = grid(0);
+
+        final String key = "key";
+        final String val = "val";
+
+        try (Transaction tx = ignite.transactions().txStart(
+            TransactionConcurrency.PESSIMISTIC, TransactionIsolation.REPEATABLE_READ)){
+            ignite.cache(null).put(key, val);
+
+            GridTestUtils.assertThrows(log, new Callable<Object>() {
+                @Override public Object call() throws Exception {
+                    ignite.createCache(cacheConfiguration("NEW_CACHE"));
+
+                    return null;
+                }
+            }, IgniteException.class, "Cannot start/stop cache within transaction.");
+
+            tx.commit();
+        }
+    }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testStartConfigurationCacheWithNear() throws Exception {
+        final Ignite ignite = grid(0);
+
+        final String key = "key";
+        final String val = "val";
+
+        try (Transaction tx = ignite.transactions().txStart(
+            TransactionConcurrency.PESSIMISTIC, TransactionIsolation.REPEATABLE_READ)){
+            ignite.cache(null).put(key, val);
+
+            GridTestUtils.assertThrows(log, new Callable<Object>() {
+                @Override public Object call() throws Exception {
+                    ignite.createCache(cacheConfiguration("NEW_CACHE"), new NearCacheConfiguration());
+
+                    return null;
+                }
+            }, IgniteException.class, "Cannot start/stop cache within transaction.");
+
+            tx.commit();
+        }
+    }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testGetOrCreateCache() throws Exception {
+        final Ignite ignite = grid(0);
+
+        final String key = "key";
+        final String val = "val";
+
+        try (Transaction tx = ignite.transactions().txStart(
+            TransactionConcurrency.PESSIMISTIC, TransactionIsolation.REPEATABLE_READ)){
+            ignite.cache(null).put(key, val);
+
+            GridTestUtils.assertThrows(log, new Callable<Object>() {
+                @Override public Object call() throws Exception {
+                    ignite.getOrCreateCache("NEW_CACHE");
+
+                    return null;
+                }
+            }, IgniteException.class, "Cannot start/stop cache within transaction.");
+
+            tx.commit();
+        }
+    }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testGetOrCreateCacheConfiguration() throws Exception {
+        final Ignite ignite = grid(0);
+
+        final String key = "key";
+        final String val = "val";
+
+        try (Transaction tx = ignite.transactions().txStart(
+            TransactionConcurrency.PESSIMISTIC, TransactionIsolation.REPEATABLE_READ)){
+            ignite.cache(null).put(key, val);
+
+            GridTestUtils.assertThrows(log, new Callable<Object>() {
+                @Override public Object call() throws Exception {
+                    ignite.getOrCreateCache(cacheConfiguration("NEW_CACHE"));
+
+                    return null;
+                }
+            }, IgniteException.class, "Cannot start/stop cache within transaction.");
+
+            tx.commit();
+        }
+    }
+
+    /**
+     * @throws Exception If failed.
+     */
     public void testStopCache() throws Exception {
         final Ignite ignite = grid(0);
 
@@ -109,6 +230,9 @@ public class IgniteStartCacheInTransactionSelfTest extends GridCommonAbstractTes
      * @throws Exception If failed.
      */
     public void testLockCache() throws Exception {
+        if (atomicityMode() != TRANSACTIONAL)
+            return;
+
         final Ignite ignite = grid(0);
 
         final String key = "key";
