@@ -8,7 +8,7 @@ Before run need install locally:
 
 To run:
 
-1. Run following command in terminal for upload all dependence: "npm install" in app folder.
+1. Run following command in terminal for upload all dependence: "npm install" in 'modules/webconfig/nodejs' folder.
 2. Run MongoDB.
 3. Start application by following command in terminal: "npm start" in app folder.
 
