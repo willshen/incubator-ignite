@@ -127,13 +127,17 @@ public class IgniteClientNodeAffinityTest extends GridCommonAbstractTest {
 
         ccfg.setNodeFilter(new TestNodesFilter());
 
-        try (IgniteCache<Integer, Integer> cache = client.createCache(ccfg)) {
-            checkCache(null, 1);
-        }
+       IgniteCache<Integer, Integer> cache = client.createCache(ccfg);
 
-        try (IgniteCache<Integer, Integer> cache = client.createCache(ccfg, new NearCacheConfiguration())) {
             checkCache(null, 1);
-        }
+
+        cache.destroy();
+
+        cache = client.createCache(ccfg, new NearCacheConfiguration());
+
+            checkCache(null, 1);
+
+        cache.destroy();
     }
 
     /**
