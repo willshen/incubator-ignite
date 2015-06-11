@@ -17,64 +17,64 @@
 
 configuratorModule.controller('clustersController', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
         $scope.templates = [
-            {value: {}, label: 'None'},
-            {value: {discovery: {kind: 'Vm', Vm: {addresses: ['127.0.0.1:47500..47510']}}}, label: 'Local'},
-            {value: {discovery: {kind: 'Multicast', Multicast: {}}}, label: 'Basic'}
+            {value: {}, label: 'none'},
+            {value: {discovery: {kind: 'Vm', Vm: {addresses: ['127.0.0.1:47500..47510']}}}, label: 'local'},
+            {value: {discovery: {kind: 'Multicast', Multicast: {}}}, label: 'basic'}
         ];
 
         $scope.discoveries = [
-            {value: 'Vm', label: 'Static IPs'},
-            {value: 'Multicast', label: 'Multicast'},
+            {value: 'Vm', label: 'static IPs'},
+            {value: 'Multicast', label: 'multicast'},
             {value: 'S3', label: 'AWS S3'},
-            {value: 'Cloud', label: 'Apache jclouds'},
-            {value: 'GoogleStorage', label: 'Google Cloud Storage'},
+            {value: 'Cloud', label: 'apache jclouds'},
+            {value: 'GoogleStorage', label: 'google cloud storage'},
             {value: 'Jdbc', label: 'JDBC'},
-            {value: 'SharedFs', label: 'Shared Filesystem'}
+            {value: 'SharedFs', label: 'shared filesystem'}
         ];
 
         $scope.events = [
-            {value: 'EVTS_CHECKPOINT', label: 'Checkpoint'},
-            {value: 'EVTS_DEPLOYMENT', label: 'Deployment'},
-            {value: 'EVTS_ERROR', label: 'Error'},
-            {value: 'EVTS_DISCOVERY', label: 'Discovery'},
-            {value: 'EVTS_JOB_EXECUTION', label: 'Job execution'},
-            {value: 'EVTS_TASK_EXECUTION', label: 'Task execution'},
-            {value: 'EVTS_CACHE', label: 'Cache'},
-            {value: 'EVTS_CACHE_REBALANCE', label: 'Cache rebalance'},
-            {value: 'EVTS_CACHE_LIFECYCLE', label: 'Cache lifecycle'},
-            {value: 'EVTS_CACHE_QUERY', label: 'Cache query'},
-            {value: 'EVTS_SWAPSPACE', label: 'Swap space'},
-            {value: 'EVTS_IGFS', label: 'Igfs'}
+            {value: 'EVTS_CHECKPOINT', label: 'evts_checkpoint'},
+            {value: 'EVTS_DEPLOYMENT', label: 'evts_deployment'},
+            {value: 'EVTS_ERROR', label: 'evts_error'},
+            {value: 'EVTS_DISCOVERY', label: 'evts_discovery'},
+            {value: 'EVTS_JOB_EXECUTION', label: 'evts_job_execution'},
+            {value: 'EVTS_TASK_EXECUTION', label: 'evts_task_execution'},
+            {value: 'EVTS_CACHE', label: 'evts_cache'},
+            {value: 'EVTS_CACHE_REBALANCE', label: 'evts_cache_rebalance'},
+            {value: 'EVTS_CACHE_LIFECYCLE', label: 'evts_cache_lifecycle'},
+            {value: 'EVTS_CACHE_QUERY', label: 'evts_cache_query'},
+            {value: 'EVTS_SWAPSPACE', label: 'evts_swapspace'},
+            {value: 'EVTS_IGFS', label: 'evts_igfs'}
         ];
 
         $scope.cacheModes = [
-            {value: 'LOCAL', label: 'LOCAL'},
-            {value: 'REPLICATED', label: 'REPLICATED'},
-            {value: 'PARTITIONED', label: 'PARTITIONED'}
+            {value: 'LOCAL', label: 'local'},
+            {value: 'REPLICATED', label: 'replicated'},
+            {value: 'PARTITIONED', label: 'partitioned'}
         ];
 
         $scope.deploymentModes = [
-            {value: 'PRIVATE', label: 'PRIVATE'},
-            {value: 'ISOLATED', label: 'ISOLATED'},
-            {value: 'SHARED', label: 'SHARED'},
-            {value: 'CONTINUOUS', label: 'CONTINUOUS'}
+            {value: 'PRIVATE', label: 'private'},
+            {value: 'ISOLATED', label: 'isolated'},
+            {value: 'SHARED', label: 'shared'},
+            {value: 'CONTINUOUS', label: 'continuous'}
         ];
 
         $scope.transactionConcurrency = [
-            {value: 'OPTIMISTIC', label: 'OPTIMISTIC'},
-            {value: 'PESSIMISTIC', label: 'PESSIMISTIC'}
+            {value: 'OPTIMISTIC', label: 'optimistic'},
+            {value: 'PESSIMISTIC', label: 'pessimistic'}
         ];
 
         $scope.transactionIsolation = [
-            {value: 'READ_COMMITTED', label: 'READ_COMMITTED'},
-            {value: 'REPEATABLE_READ', label: 'REPEATABLE_READ'},
-            {value: 'SERIALIZABLE', label: 'SERIALIZABLE'}
+            {value: 'READ_COMMITTED', label: 'read_committed'},
+            {value: 'REPEATABLE_READ', label: 'repeatable_read'},
+            {value: 'SERIALIZABLE', label: 'serializable'}
         ];
 
         $scope.segmentationPolicy = [
-            {value: 'RESTART_JVM', label: 'RESTART_JVM'},
-            {value: 'STOP', label: 'STOP'},
-            {value: 'NOOP', label: 'NOOP'}
+            {value: 'RESTART_JVM', label: 'restart_jvm'},
+            {value: 'STOP', label: 'stop'},
+            {value: 'NOOP', label: 'noop'}
         ];
 
         $scope.clusters = [];
@@ -134,16 +134,28 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
 
         // Add new cluster.
         $scope.createItem = function() {
-            var item = angular.copy($scope.create.template);
+            $scope.backupItem = angular.copy($scope.create.template);
 
-            item.name = 'Cluster ' + ($scope.clusters.length + 1);
-            item.space = $scope.spaces[0]._id;
+            $scope.backupItem.space = $scope.spaces[0]._id;
+        };
+
+        // Save cluster in db.
+        $scope.saveItem = function() {
+            var item = $scope.backupItem;
 
             $http.post('/rest/clusters/save', item)
                 .success(function(_id) {
-                    item._id = _id;
+                    var i = _.findIndex($scope.clusters, function(cluster) {
+                        return cluster._id == _id;
+                    });
 
-                    $scope.clusters.push(item);
+                    if (i >= 0)
+                        angular.extend($scope.clusters[i], item);
+                    else {
+                        item._id = _id;
+
+                        $scope.clusters.push(item);
+                    }
 
                     $scope.selectItem(item);
                 })
@@ -167,26 +179,6 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                         $scope.selectedItem = undefined;
                         $scope.backupItem = undefined;
                     }
-                })
-                .error(function(errorMessage) {
-                    console.log('Error: ' + errorMessage);
-                });
-        };
-
-        // Save cluster in db.
-        $scope.saveItem = function() {
-            var item = $scope.backupItem;
-
-            $http.post('/rest/clusters/save', item)
-                .success(function() {
-                    var i = _.findIndex($scope.clusters, function(cluster) {
-                        return cluster._id == item._id;
-                    });
-
-                    if (i >= 0)
-                        angular.extend($scope.clusters[i], item);
-
-                    $scope.selectItem(item);
                 })
                 .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);

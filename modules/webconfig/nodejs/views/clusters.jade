@@ -27,16 +27,15 @@ block content
         p Create and configure Ignite clusters.
         hr
     .docs-body(ng-controller='clustersController')
-        button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cluster
-        span from template:&nbsp
-        button.btn.btn-default(ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
-        h3(ng-hide='clusters.length == 0') Clusters
-        .links
+        .links(ng-hide='clusters.length == 0')
             table.col-sm-12(st-table='clusters')
                 tbody
                     tr(ng-repeat='row in clusters track by row._id')
                         td.col-sm-6(ng-class='{active: row._id == selectedItem._id}')
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.discovery.kind | displayValue:discoveries:'Discovery not set'}}
+        button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cluster
+        span(style='margin-left: 15px; margin-right: 5px') Use template:&nbsp
+        button.btn.btn-default(ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
         .row.col-sm-12
             hr
         form.form-horizontal(name='editForm' ng-if='backupItem')

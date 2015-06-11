@@ -3,7 +3,8 @@
     {
       "label": "Name",
       "type": "text",
-      "model": "name"
+      "model": "name",
+      "placeholder": "Input name"
     },
     {
       "label": "Discovery",
@@ -77,12 +78,12 @@
             "model": "addressRequestAttempts",
             "placeholder": "2",
             "tip": [
-              "Number of attempts to send multicast address request.",
+              "Number of attempts to send multicast address request. ",
               "IP finder re-sends request only in case if no reply for previous request is received."
             ]
           },
           {
-            "label": "Local host address",
+            "label": "Local address",
             "type": "text",
             "model": "localAddress",
             "tip": [
@@ -222,7 +223,7 @@
           "label": "Cache mode",
           "type": "dropdown",
           "model": "cacheMode",
-          "placeholder": "PARTITIONED",
+          "placeholder": "partitioned",
           "items": "cacheModes"
         },
         {
@@ -298,7 +299,7 @@
           "label": "Samples size",
           "type": "dropdown",
           "model": "deploymentMode",
-          "placeholder": "SHARED",
+          "placeholder": "shared",
           "items": "deploymentModes",
           "tip": [
             "Number of samples used to synchronize clocks between different nodes.",
@@ -584,9 +585,9 @@
       "fields": [
         {
           "label": "Cache concurrency",
-          "type": "text",
+          "type": "dropdown",
           "model": "defaultTxConcurrency",
-          "placeholder": "PESSIMISTIC",
+          "placeholder": "pessimistic",
           "items": "transactionConcurrency",
           "tip": [
             "Cache transaction concurrency to use when one is not explicitly specified."
@@ -594,9 +595,9 @@
         },
         {
           "label": "Isolation",
-          "type": "text",
+          "type": "dropdown",
           "model": "transactionIsolation",
-          "placeholder": "REPEATABLE_READ",
+          "placeholder": "repeatable_read",
           "items": "transactionIsolation",
           "tip": [
             "Default transaction isolation."
@@ -647,7 +648,7 @@
           "label": "Policy",
           "type": "dropdown",
           "model": "segmentationPolicy",
-          "placeholder": "STOP",
+          "placeholder": "stop",
           "items": "segmentationPolicy"
         },
         {
