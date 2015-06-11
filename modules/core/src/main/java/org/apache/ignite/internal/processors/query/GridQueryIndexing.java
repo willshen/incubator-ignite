@@ -58,9 +58,11 @@ public interface GridQueryIndexing {
      *
      * @param cctx Cache context.
      * @param qry Query.
+     * @param keepCacheObjects If {@code true}, cache objects representation will be preserved.
      * @return Cursor.
      */
-    public QueryCursor<List<?>> queryTwoStep(GridCacheContext<?,?> cctx, GridCacheTwoStepQuery qry);
+    public Iterable<List<?>> queryTwoStep(GridCacheContext<?,?> cctx, GridCacheTwoStepQuery qry,
+        boolean keepCacheObjects);
 
     /**
      * Parses SQL query into two step query and executes it.
@@ -147,6 +149,22 @@ public interface GridQueryIndexing {
      * @throws IgniteCheckedException If failed to drop cache schema.
      */
     public void unregisterCache(CacheConfiguration<?, ?> ccfg) throws IgniteCheckedException;
+
+    /**
+     * Checks if the given class can be mapped to a simple SQL type.
+     *
+     * @param cls Class.
+     * @return {@code true} If can.
+     */
+    public boolean isSqlType(Class<?> cls);
+
+    /**
+     * Checks if the given class is GEOMETRY.
+     *
+     * @param cls Class.
+     * @return {@code true} If this is geometry.
+     */
+    public boolean isGeometryClass(Class<?> cls);
 
     /**
      * Registers type if it was not known before or updates it otherwise.
