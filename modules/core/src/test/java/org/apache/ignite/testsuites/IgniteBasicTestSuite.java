@@ -61,7 +61,7 @@ public class IgniteBasicTestSuite extends TestSuite {
         suite.addTest(IgniteStartUpTestSuite.suite());
         suite.addTest(IgniteExternalizableSelfTestSuite.suite());
         suite.addTest(IgniteP2PSelfTestSuite.suite());
-        suite.addTest(IgniteCacheP2pUnmarshallingErrorTestSuite.suite());
+        suite.addTest(IgniteCacheP2pUnmarshallingErrorTestSuite.suite(ignoredTests));
         suite.addTest(IgniteStreamSelfTestSuite.suite());
 
         suite.addTest(new TestSuite(GridSelfTest.class));
