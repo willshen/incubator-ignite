@@ -126,31 +126,43 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
         };
 
         // Add new cache.
-        $scope.createItem = function () {
-            var item = angular.copy($scope.create.template);
+        $scope.createItem = function() {
+            $scope.backupItem = angular.copy($scope.create.template);
 
-            item.name = 'Cache ' + ($scope.caches.length + 1);
-            item.space = $scope.spaces[0]._id;
+            $scope.backupItem.space = $scope.spaces[0]._id;
+        };
+
+        // Save cache in db.
+        $scope.saveItem = function() {
+            var item = $scope.backupItem;
 
             $http.post('/rest/caches/save', item)
-                .success(function (_id) {
-                    item._id = _id;
+                .success(function(_id) {
+                    var i = _.findIndex($scope.caches, function(cache) {
+                        return cache._id == _id;
+                    });
 
-                    $scope.caches.push(item);
+                    if (i >= 0)
+                        angular.extend($scope.caches[i], item);
+                    else {
+                        item._id = _id;
+
+                        $scope.caches.push(item);
+                    }
 
                     $scope.selectItem(item);
                 })
-                .error(function (errorMessage) {
+                .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);
                 });
         };
 
-        $scope.removeItem = function () {
+        $scope.removeItem = function() {
             var _id = $scope.selectedItem._id;
 
             $http.post('/rest/caches/remove', {_id: _id})
-                .success(function () {
-                    var i = _.findIndex($scope.caches, function (cache) {
+                .success(function() {
+                    var i = _.findIndex($scope.caches, function(cache) {
                         return cache._id == _id;
                     });
 
@@ -161,27 +173,7 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
                         $scope.backupItem = undefined;
                     }
                 })
-                .error(function (errorMessage) {
-                    console.log('Error: ' + errorMessage);
-                });
-        };
-
-        // Save cache in db.
-        $scope.saveItem = function () {
-            var item = $scope.backupItem;
-
-            $http.post('/rest/caches/save', item)
-                .success(function () {
-                    var i = _.findIndex($scope.caches, function (cache) {
-                        return cache._id == item._id;
-                    });
-
-                    if (i >= 0)
-                        angular.extend($scope.caches[i], item);
-
-                    $scope.selectItem(item);
-                })
-                .error(function (errorMessage) {
+                .error(function(errorMessage) {
                     console.log('Error: ' + errorMessage);
                 });
         };

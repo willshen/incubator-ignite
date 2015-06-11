@@ -32,7 +32,7 @@ function selectAll(req, res) {
         if (err)
             return res.status(500).send(err.message);
 
-        var space_ids = spaces.map(function(value, index) {
+        var space_ids = spaces.map(function(value) {
             return value._id;
         });
 
@@ -58,11 +58,11 @@ router.get('/', function(req, res) {
  */
 router.post('/save', function(req, res) {
     if (req.body._id)
-        db.Cache.update({_id: req.body._id}, req.body, {upsert: true}, function(err) {
+        db.Cache.update({_id: req.body._id}, req.body, {upsert: true}, function(err, cache) {
             if (err)
                 return res.status(500).send(err.message);
 
-            res.sendStatus(200);
+            res.send(req.body._id);
         });
     else {
         var cache = new db.Cache(req.body);

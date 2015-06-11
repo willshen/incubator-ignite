@@ -27,19 +27,18 @@ block content
         p Create and configure Ignite caches.
         hr
     .docs-body(ng-controller='cachesController')
-        button.btn.btn-primary(ng-click='createItem()' ng-disabled='!create.template') &nbspAdd cache
-        label from template:&nbsp
-        button.btn.btn-default(bs-select ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cache template' bs-options='item.value as item.label for item in templates')
-        h3(ng-hide='caches.length == 0') Caches
-        .links
+        .links(ng-hide='caches.length == 0')
             table.col-sm-12(st-table='caches')
                 tbody
                     tr(ng-repeat='row in caches track by row._id')
                         td.col-sm-6(ng-class='{active: row._id == selectedItem._id}')
                             a(ng-click='selectItem(row)') {{$index + 1}}. {{row.name}}, {{row.mode | displayValue:modes:'Cache mode not set'}}, {{row.atomicityMode | displayValue:atomicities:'Cache atomicity not set'}}
+        button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cache
+        span(style='margin-left: 15px; margin-right: 5px') Use template:&nbsp
+        button.btn.btn-default(ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cache template' bs-options='item.value as item.label for item in templates' bs-select)
         .row.col-sm-12
             hr
-        form.form-horizontal(name='editForm' ng-if='backupItem')
+        form.form-horizontal(name='cachesForm' ng-if='backupItem')
             h3 General
             .settings-row(ng-repeat='field in general')
                 +form-row
@@ -52,5 +51,5 @@ block content
                 .panel-heading
                     .panel-title
                         a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = true; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
-            button.btn.btn-primary(ng-click='saveItem()' ng-disabled='editForm.$invalid') Save
-            button.btn.btn-primary(ng-click='removeItem()' ng-disabled='editForm.$invalid') Remove
+            button.btn.btn-primary(ng-click='saveItem()' ng-disabled='cachesForm.$invalid') Save
+            button.btn.btn-primary(ng-click='removeItem()' ng-show='backupItem._id') Remove

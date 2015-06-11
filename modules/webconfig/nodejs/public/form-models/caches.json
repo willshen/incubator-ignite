@@ -3,7 +3,9 @@
     {
       "label": "Name",
       "type": "text",
-      "model": "name"
+      "model": "name",
+      "required": true,
+      "placeholder": "Input name"
     },
     {
       "label": "Mode",
