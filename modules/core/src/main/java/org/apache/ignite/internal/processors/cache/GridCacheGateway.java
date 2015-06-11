@@ -153,7 +153,7 @@ public class GridCacheGateway<K, V> {
             throw new IllegalStateException("Cache has been stopped: " + ctx.name());
         }
 
-        if (closed.get() == null || closed.get()) {
+        if (closed.get() != null && closed.get()) {
             rwLock.readUnlock();
 
             throw new IllegalStateException("Cache has been closed: " + ctx.name());
