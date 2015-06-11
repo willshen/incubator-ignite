@@ -1979,8 +1979,8 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
 
     /**
-     * @param cacheName Cache name to stop.
-     * @return Future that will be completed when cache is stopped.
+     * @param cacheName Cache name to close.
+     * @return Future that will be completed when cache is closed.
      */
     public IgniteInternalFuture<?> dynamicCloseCache(String cacheName) {
         IgniteCacheProxy<?, ?> proxy = jCacheProxies.get(maskNull(cacheName));
