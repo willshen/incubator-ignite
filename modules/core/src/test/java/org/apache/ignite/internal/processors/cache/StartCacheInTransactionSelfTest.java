@@ -20,8 +20,11 @@ package org.apache.ignite.internal.processors.cache;
 import org.apache.ignite.*;
 import org.apache.ignite.cache.*;
 import org.apache.ignite.configuration.*;
+import org.apache.ignite.testframework.*;
 import org.apache.ignite.testframework.junits.common.*;
 import org.apache.ignite.transactions.*;
+
+import java.util.concurrent.*;
 
 /**
  * Check starting cache in transaction.
@@ -55,7 +58,7 @@ public class StartCacheInTransactionSelfTest extends GridCommonAbstractTest {
      * @throws Exception If failed.
      */
     public void testStartCache() throws Exception {
-        Ignite ignite = grid(0);
+        final Ignite ignite = grid(0);
 
         final String key = "key";
         final String val = "val";
@@ -64,9 +67,40 @@ public class StartCacheInTransactionSelfTest extends GridCommonAbstractTest {
             TransactionConcurrency.PESSIMISTIC, TransactionIsolation.REPEATABLE_READ)){
             ignite.cache(null).put(key, val);
 
-            IgniteCache<String, String> cache = ignite.createCache("NEW_CACHE");
+            GridTestUtils.assertThrows(log, new Callable<Object>() {
+                @Override public Object call() throws Exception {
+                    IgniteCache<String, String> cache = ignite.createCache("NEW_CACHE");
 
-            cache.put(key, val);
+                    cache.put(key, val);
+
+                    return null;
+                }
+            }, IgniteException.class, "Cannot start/stop cache within transaction.");
+
+            tx.commit();
+        }
+    }
+
+    /**
+     * @throws Exception If failed.
+     */
+    public void testStopCache() throws Exception {
+        final Ignite ignite = grid(0);
+
+        final String key = "key";
+        final String val = "val";
+
+        try (Transaction tx = ignite.transactions().txStart(
+            TransactionConcurrency.PESSIMISTIC, TransactionIsolation.REPEATABLE_READ)){
+            ignite.cache(null).put(key, val);
+
+            GridTestUtils.assertThrows(log, new Callable<Object>() {
+                @Override public Object call() throws Exception {
+                    ignite.destroyCache(null);
+
+                    return null;
+                }
+            }, IgniteException.class, "Cannot start/stop cache within transaction.");
 
             tx.commit();
         }
