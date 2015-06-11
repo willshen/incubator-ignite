@@ -1532,8 +1532,10 @@ public abstract class IgniteUtils {
             return Collections.emptyList();
 
         if (addrs.size() == 1) {
-            if (reachable(addrs.get(1), reachTimeout))
-                return Collections.singletonList(addrs.get(1));
+            InetAddress addr = addrs.get(0);
+
+            if (reachable(addr, reachTimeout))
+                return Collections.singletonList(addr);
 
             return Collections.emptyList();
         }
@@ -7870,6 +7872,9 @@ public abstract class IgniteUtils {
         if (cls != null)
             return cls;
 
+        if (ldr == null)
+            ldr = gridClassLoader;
+
         ConcurrentMap<String, Class> ldrMap = classCache.get(ldr);
 
         if (ldrMap == null) {
@@ -9023,11 +9028,11 @@ public abstract class IgniteUtils {
                 hasShmem = false;
             else {
                 try {
-                    IpcSharedMemoryNativeLoader.load();
+                    IpcSharedMemoryNativeLoader.load(null);
 
                     hasShmem = true;
                 }
-                catch (IgniteCheckedException e) {
+                catch (IgniteCheckedException ignore) {
                     hasShmem = false;
                 }
             }

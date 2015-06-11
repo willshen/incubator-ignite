@@ -579,9 +579,11 @@ public final class GridDhtTxPrepareFuture extends GridCompoundFuture<IgniteInter
             tx.colocated() ? tx.xid() : tx.nearFutureId(),
             nearMiniId == null ? tx.xid() : nearMiniId,
             tx.xidVersion(),
+            tx.writeVersion(),
             tx.invalidPartitions(),
             ret,
-            prepErr);
+            prepErr,
+            null);
 
         if (prepErr == null) {
             addDhtValues(res);
