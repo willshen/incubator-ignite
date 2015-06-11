@@ -3,8 +3,8 @@ Ignite Web Configurator Build Instructions
 
 Before run need install locally:
 
-1. NodeJS(npm)
-2. MongoDB
+1. NodeJS using installer from site https://nodejs.org
+2. MongoDB folow instructions from site http://docs.mongodb.org/manual/installation
 
 To run:
 
