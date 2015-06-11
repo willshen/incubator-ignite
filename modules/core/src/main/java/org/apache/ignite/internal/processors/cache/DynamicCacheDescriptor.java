@@ -17,8 +17,10 @@
 
 package org.apache.ignite.internal.processors.cache;
 
+import org.apache.ignite.cache.store.*;
 import org.apache.ignite.configuration.*;
 import org.apache.ignite.internal.*;
+import org.apache.ignite.internal.processors.cache.store.*;
 import org.apache.ignite.internal.processors.plugin.*;
 import org.apache.ignite.internal.util.tostring.*;
 import org.apache.ignite.internal.util.typedef.internal.*;
@@ -55,6 +57,9 @@ public class DynamicCacheDescriptor {
     /** */
     private volatile Map<UUID, CacheConfiguration> rmtCfgs;
 
+    /** */
+    private volatile Map<UUID, Boolean> rmtLocStore;
+
     /** Template configuration flag. */
     private boolean template;
 
@@ -63,6 +68,9 @@ public class DynamicCacheDescriptor {
 
     /** */
     private boolean updatesAllowed = true;
+
+    /** Local store flag. */
+    private boolean localStore;
 
     /**
      * @param ctx Context.
@@ -80,6 +88,11 @@ public class DynamicCacheDescriptor {
         this.cacheType = cacheType;
         this.template = template;
         this.deploymentId = deploymentId;
+
+        if (cacheCfg.getCacheStoreFactory() != null) {
+            CacheStore store = (CacheStore)cacheCfg.getCacheStoreFactory().create();
+            localStore = U.hasAnnotation(store, CacheLocalStore.class);
+        }
 
         pluginMgr = new CachePluginManager(ctx, cacheCfg);
     }
@@ -205,6 +218,28 @@ public class DynamicCacheDescriptor {
     }
 
     /**
+     * @param nodeId Remote node ID.
+     * @param localStore Remote local store flag.
+     */
+    public void addRemoteLocalStore(UUID nodeId, Boolean localStore) {
+        Map<UUID, Boolean> cfgs = rmtLocStore;
+
+        if (cfgs == null)
+            rmtLocStore = cfgs = new HashMap<>();
+
+        cfgs.put(nodeId, localStore);
+    }
+
+    /**
+     * @param nodeId Remote node ID.
+     */
+    public boolean remoteLocalStore(UUID nodeId) {
+        Map<UUID, Boolean> cfgs = rmtLocStore;
+
+        return cfgs == null ? null : cfgs.get(nodeId);
+    }
+
+    /**
      *
      */
     public void clearRemoteConfigurations() {
@@ -223,6 +258,20 @@ public class DynamicCacheDescriptor {
      */
     public void updatesAllowed(boolean updatesAllowed) {
         this.updatesAllowed = updatesAllowed;
+    }
+
+    /**
+     * @return Local store flag.
+     */
+    public boolean localStore() {
+        return localStore;
+    }
+
+    /**
+     * @param localStore Local store flag.
+     */
+    public void localStore(boolean localStore) {
+        this.localStore = localStore;
     }
 
     /** {@inheritDoc} */

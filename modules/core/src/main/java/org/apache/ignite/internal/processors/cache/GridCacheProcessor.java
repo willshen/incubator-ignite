@@ -691,7 +691,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
                         if (rmtCfg != null) {
                             CacheConfiguration locCfg = desc.cacheConfiguration();
 
-                            checkCache(locCfg, rmtCfg, n, desc);
+                            checkCache(locCfg, rmtCfg, n, desc, desc.remoteLocalStore(n.id()));
 
                             // Check plugin cache configurations.
                             CachePluginManager pluginMgr = desc.pluginManager();
@@ -1634,6 +1634,8 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
                 req.cacheType(desc.cacheType());
 
+                req.localStore(desc.localStore());
+
                 req.deploymentId(desc.deploymentId());
 
                 reqs.add(req);
@@ -1696,6 +1698,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
                             existing.deploymentId(req.deploymentId());
 
                             existing.addRemoteConfiguration(rmtNodeId, req.startCacheConfiguration());
+                            existing.addRemoteLocalStore(rmtNodeId, req.localStore());
 
                             ctx.discovery().setCacheFilter(
                                 req.cacheName(),
@@ -1961,6 +1964,8 @@ public class GridCacheProcessor extends GridProcessorAdapter {
             req.nearCacheConfiguration(nearCfg);
 
         req.cacheType(cacheType);
+
+        req.localStore(cache(cacheName).context().store().isLocal());
 
         return F.first(initiateCacheChanges(F.asList(req), failIfExists));
     }
@@ -2253,10 +2258,11 @@ public class GridCacheProcessor extends GridProcessorAdapter {
      * @param rmtCfg Remote configuration.
      * @param rmtNode Remote node.
      * @param desc Cache descriptor.
+     * @param rmtLocalStore Rempte local store flag.
      * @throws IgniteCheckedException If check failed.
      */
     private void checkCache(CacheConfiguration locCfg, CacheConfiguration rmtCfg, ClusterNode rmtNode,
-        DynamicCacheDescriptor desc) throws IgniteCheckedException {
+        DynamicCacheDescriptor desc, boolean rmtLocalStore) throws IgniteCheckedException {
         ClusterNode locNode = ctx.discovery().localNode();
 
         UUID rmt = rmtNode.id();
@@ -2282,7 +2288,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
             boolean checkStore;
 
-            if (!isLocAff && isRmtAff && locCfg.getAtomicityMode() == TRANSACTIONAL) {
+            if (!isLocAff && isRmtAff && locCfg.getAtomicityMode() == TRANSACTIONAL && !rmtLocalStore) {
                 checkStore = locAttr.storeFactoryClassName() != null;
 
                 if (locAttr.storeFactoryClassName() == null && rmtAttr.storeFactoryClassName() != null)
@@ -2677,6 +2683,8 @@ public class GridCacheProcessor extends GridProcessorAdapter {
         req.startCacheConfiguration(cfg);
 
         req.cacheType(desc.cacheType());
+
+        req.localStore(cache(cacheName).context().store().isLocal());
 
         req.clientStartOnly(true);
 
