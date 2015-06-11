@@ -351,8 +351,9 @@
           ]
         },
         {
-          "label": "SQL functions",
-          "type": "text",
+          "table-label": "SQL functions",
+          "label": "SQL function",
+          "type": "table-simple",
           "model": "sqlFunctionClasses",
           "tip": [
             "Classes with user-defined functions for SQL queries."

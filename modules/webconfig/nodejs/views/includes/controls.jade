@@ -91,12 +91,24 @@ mixin form-row
             +tip('field.tip')
             .details-row(ng-repeat='detail in field.details[#{masterMdl}]')
                 +details-row
+        div(ng-switch-when='table-simple')
+            div
+                label {{field.table-label}}
+                +tip('field.tip')
+            button.btn.btn-primary(style='margin-left: 18px;' ng-click='createSimpleItem(field, #{masterMdl})') Add {{field.label}}
+            .col-sm-10.links.details-row(style='margin-bottom: 0px;' nh-show='#{masterMdl}[field.model].length > 0')
+                table(st-table=masterMdl)
+                    tbody
+                        tr(ng-repeat='row in #{masterMdl}')
+                            td
+                                a(ng-click='editSimpleItem(field, #{masterMdl}, $index)') {{$index + 1}}. {{row}}
+                                label.fa.fa-remove(ng-click='removeSimpleItem(#{masterMdl}, $index)')
         div(ng-switch-when='indexedTypes')
             div
                 label Indexed types: {{backupItem.indexedTypes.length}}
                 +tip('field.tip')
             button.btn.btn-primary(style='margin-left: 18px; margin-top: 10px; margin-bottom: 10px' ng-click='editIndexedTypes(-1)') Add indexed type
-            .col-sm-10.links
+            .col-sm-10.links(nh-show='backupItem.indexedTypes.length > 0')
                 -var idxTypes = 'backupItem.indexedTypes'
                 table(st-table=idxTypes)
                     tbody
