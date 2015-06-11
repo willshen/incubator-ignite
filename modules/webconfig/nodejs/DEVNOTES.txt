@@ -10,6 +10,5 @@ To run:
 
 1. Run following command in terminal for upload all dependence: "npm install" in 'modules/webconfig/nodejs' folder.
 2. Run MongoDB.
-3. Start application by following command in terminal: "npm start" in app folder.
-
-Open in browser: localhost:3000
+3. Start application by following command in terminal: "npm start" in 'modules/webconfig/nodejs' folder.
+4. Open in browser: localhost:3000
