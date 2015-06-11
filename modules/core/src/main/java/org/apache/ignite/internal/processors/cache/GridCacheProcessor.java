@@ -1974,7 +1974,7 @@ public class GridCacheProcessor extends GridProcessorAdapter {
 
         t.stop(true);
 
-        return F.first(initiateCacheChanges(F.asList(t)));
+        return F.first(initiateCacheChanges(F.asList(t), false));
     }
 
 
