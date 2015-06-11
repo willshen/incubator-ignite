@@ -38,7 +38,7 @@ block content
         button.btn.btn-default(ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
         .row.col-sm-12
             hr
-        form.form-horizontal(name='editForm' ng-if='backupItem')
+        form.form-horizontal(name='clustersForm' ng-if='backupItem')
             h3 General
             .settings-row(ng-repeat='field in general')
                 +form-row
@@ -51,5 +51,5 @@ block content
                 .panel-heading
                     .panel-title
                         a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = true; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
-            button.btn.btn-primary(ng-click='saveItem()' ng-disabled='editForm.$invalid') Save
-            button.btn.btn-primary(ng-click='removeItem()' ng-disabled='editForm.$invalid') Remove
+            button.btn.btn-primary(ng-click='saveItem()' ng-disabled='clustersForm.$invalid') Save
+            button.btn.btn-primary(ng-click='removeItem()' ng-show='backupItem._id') Remove

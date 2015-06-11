@@ -68,10 +68,10 @@ mixin form-row
                 | {{field.label}}
                 +tip('field.tip')
         div(ng-switch-when='text')
-            label(class=lblClasses) {{field.label}}:
+            label(class=lblClasses ng-class='{required: field.required}') {{field.label}}:
             .col-sm-4
-                input.form-control(type='text' ng-if='!group.model' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}')
-                input.form-control(type='text' ng-if='group.model' ng-model='backupItem[group.model][field.model]' placeholder='{{field.placeholder}}')
+                input.form-control(type='text' ng-if='!group.model' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}' ng-required='field.required')
+                input.form-control(type='text' ng-if='group.model' ng-model='backupItem[group.model][field.model]' placeholder='{{field.placeholder}}' ng-required='field.required')
             +tip('field.tip')
         div(ng-switch-when='dropdown')
             label(class=lblClasses) {{field.label}}:
