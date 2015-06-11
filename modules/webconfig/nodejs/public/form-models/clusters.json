@@ -18,8 +18,8 @@
       "details": {
         "Vm": [
           {
-            "label": "Addresses",
-            "type": "addresses",
+            "label": "address",
+            "type": "table-simple",
             "model": "addresses"
           }
         ],

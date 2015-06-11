@@ -50,6 +50,13 @@ configuratorModule.filter('displayValue', function () {
     }
 });
 
+// Capitalize first char.
+configuratorModule.filter('capitalize', function() {
+    return function(input, all) {
+        return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
+    }
+});
+
 configuratorModule.controller('activeLink', ['$scope', function($scope) {
     $scope.isActive = function(path) {
         return window.location.pathname.substr(0, path.length) == path;

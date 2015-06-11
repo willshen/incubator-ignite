@@ -85,12 +85,33 @@ configuratorModule.controller('clustersController', ['$scope', '$modal', '$http'
                 $scope.advanced = data.advanced;
             });
 
+        $scope.createSimpleItem = function(desc, rows) {
+            $scope.simplePopup = {
+                rows: rows,
+                desc: desc
+            };
 
-        // Create popup for discovery advanced settings.
-        var discoveryModal = $modal({scope: $scope, template: '/discovery', show: false});
+            $scope.pupup = $modal({scope: $scope, template: '/simplePopup', show: true});
+        };
 
-        $scope.editDiscovery = function(cluster) {
-            discoveryModal.$promise.then(discoveryModal.show);
+        $scope.saveSimpleItem = function(row) {
+            if ($scope.simplePopup.index)
+                angular.extend($scope.simplePopup.rows[$scope.simplePopup.index], row);
+            else
+                $scope.simplePopup.rows.push(row);
+
+            $scope.pupup.hide();
+        };
+
+        $scope.editSimpleItem = function(desc, rows, idx) {
+            $scope.simplePopup = {
+                desc: desc,
+                rows: rows,
+                index: index,
+                row: angular.copy(rows[idx])
+            };
+
+            $modal({scope: $scope, template: '/simplePopup', show: true});
         };
 
         // When landing on the page, get clusters and show them.

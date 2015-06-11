@@ -50,21 +50,17 @@ mixin details-row
             .col-sm-4
                 button.form-control(bs-select ng-model=detailMdl data-multiple='1' data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
             +tip-detail
-        div(ng-switch-when='addresses')
+        div(ng-switch-when='table-simple')
             .details-label
-                button.btn.btn-primary(ng-click='addAddress()') Add address
+                button.btn.btn-primary(ng-click='createSimpleItem(detail, #{detailMdl})') Add {{detail.label}}
                 //+tip
             .col-sm-10.links.details-row(style='margin-bottom: 0px;')
-                table
+                table(st-table=detailMdl)
                     tbody
-                        tr
+                        tr(ng-repeat='row in #{detailMdl}')
                             td
-                                a 1. 127.0.0.1:47500..47510&nbsp;
-                                label.fa.fa-remove
-                        tr
-                            td
-                                a 2. 9.9.9.9:47501&nbsp;
-                                label.fa.fa-remove
+                                a(ng-click='editSimpleItem(#{detailMdl}, $index)') {{index + 1}}. {{row}}
+                                label.fa.fa-remove(ng-click='removeSimpleItem(#{detailMdl}, $index)')
 
 mixin form-row
     - var masterMdl = 'backupItem[field.group][field.model]'
@@ -112,5 +108,5 @@ mixin form-row
                         tr(ng-repeat='idxType in #{idxTypes}')
                             td
                                 a(ng-click='editIndexedTypes($index)') {{$index + 1}}. {{idxType.keyClass}}, {{idxType.valueClass}}
-                                label.fa.fa-remove(style='margin-left: 10px', ng-click='removeIndexedType($index)')
+                                label.fa.fa-remove(ng-click='removeIndexedType($index)')
 

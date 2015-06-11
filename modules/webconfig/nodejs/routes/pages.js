@@ -28,8 +28,8 @@ router.get('/login', function(req, res) {
 });
 
 /* GET page for discovery advanced settings. */
-router.get('/discovery', function(req, res) {
-    res.render('discovery');
+router.get('/simplePopup', function(req, res) {
+    res.render('simplePopup');
 });
 
 /* GET page for indexedTypes popup. */
@@ -53,10 +53,6 @@ router.get('/', function(req, res) {
 /* GET clusters page. */
 router.get('/clusters', function(req, res) {
     res.render('clusters', { user: req.user });
-});
-
-router.get('/discovery', function(req, res) {
-    res.render('discovery');
 });
 
 /* GET advanced options for TcpDiscoveryVmIpFinder page. */
