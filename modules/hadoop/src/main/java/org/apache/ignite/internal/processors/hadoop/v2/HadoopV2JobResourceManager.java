@@ -115,7 +115,8 @@ public class HadoopV2JobResourceManager {
                 stagingDir = new Path(new URI(mrDir));
 
                 if (download) {
-                    FileSystem fs = HadoopUtils.fileSystemForMrUser(stagingDir.toUri(), cfg, true);
+                    // job Cl.
+                    FileSystem fs = HadoopUtils.fileSystemForMrUser(stagingDir.toUri(), cfg, jobId.toString());
 
                     if (!fs.exists(stagingDir))
                         throw new IgniteCheckedException("Failed to find map-reduce submission " +
@@ -210,7 +211,7 @@ public class HadoopV2JobResourceManager {
 
             FileSystem dstFs = FileSystem.getLocal(cfg);
 
-            FileSystem srcFs = HadoopUtils.fileSystemForMrUser(srcPath.toUri(), cfg, true);
+            FileSystem srcFs = HadoopUtils.fileSystemForMrUser(srcPath.toUri(), cfg, jobId.toString());
 
             if (extract) {
                 File archivesPath = new File(jobLocDir.getAbsolutePath(), ".cached-archives");
@@ -292,8 +293,13 @@ public class HadoopV2JobResourceManager {
      */
     public void cleanupStagingDirectory() {
         try {
-            if (stagingDir != null)
-                HadoopUtils.fileSystemForMrUser(stagingDir.toUri(), ctx.getJobConf(), true).delete(stagingDir, true);
+            if (stagingDir != null) {
+                FileSystem fs = HadoopUtils.fileSystemForMrUser(stagingDir.toUri(), ctx.getJobConf(), jobId.toString());
+
+                System.out.println("##### Cl: " + getClass().getClassLoader());
+
+                fs.delete(stagingDir, true);
+            }
         }
         catch (Exception e) {
             log.error("Failed to remove job staging directory [path=" + stagingDir + ", jobId=" + jobId + ']' , e);

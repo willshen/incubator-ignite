@@ -200,6 +200,21 @@ public class HadoopMapReduceTest extends HadoopAbstractWordCountTest {
         }
     }
 
+//    @Override protected void afterTest() throws Exception {
+//        super.afterTest();
+//    }
+
+//    @Override protected void afterTestsStopped() throws Exception {
+//        super.afterTestsStopped();
+//
+//        X.println("GCing..."); // TODO
+//
+//        for (int i=0; i<250; i++) {
+//            System.gc();
+//            Thread.sleep(10);
+//        }
+//    }
+
     /**
      * Simple test job statistics.
      *
@@ -272,7 +287,7 @@ public class HadoopMapReduceTest extends HadoopAbstractWordCountTest {
             @Override public boolean apply() {
                 return igfs.exists(statPath);
             }
-        }, 10000);
+        }, 20_000);
 
         final long apiEvtCnt0 = apiEvtCnt;
 

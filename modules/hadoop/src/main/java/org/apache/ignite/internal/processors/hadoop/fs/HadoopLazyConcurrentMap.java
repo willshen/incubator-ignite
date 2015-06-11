@@ -19,11 +19,13 @@ package org.apache.ignite.internal.processors.hadoop.fs;
 
 import org.apache.ignite.*;
 import org.apache.ignite.internal.util.future.*;
+import org.apache.ignite.internal.util.typedef.*;
 import org.jsr166.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
 import java.util.concurrent.locks.*;
 
 /**
@@ -33,6 +35,8 @@ import java.util.concurrent.locks.*;
  * Despite of the name, does not depend on any Hadoop classes.
  */
 public class HadoopLazyConcurrentMap<K, V extends Closeable> {
+    private static AtomicInteger instances = new AtomicInteger();
+
     /** The map storing the actual values. */
     private final ConcurrentMap<K, ValueWrapper> map = new ConcurrentHashMap8<>();
 
@@ -45,11 +49,15 @@ public class HadoopLazyConcurrentMap<K, V extends Closeable> {
     /** Flag indicating that this map is closed and cleared. */
     private boolean closed;
 
+    final AtomicInteger createdCount = new AtomicInteger();
+
     /**
      * Constructor.
      * @param factory the factory to create new values lazily.
      */
     public HadoopLazyConcurrentMap(ValueFactory<K, V> factory) {
+        int i = instances.incrementAndGet();
+        X.println("### +++ HLCM created: " + i + ", classloader = " + getClass().getClassLoader());
         this.factory = factory;
     }
 
@@ -105,6 +113,9 @@ public class HadoopLazyConcurrentMap<K, V extends Closeable> {
         closeLock.writeLock().lock();
 
         try {
+            if (closed)
+                return;
+
             closed = true;
 
             Exception err = null;
@@ -124,15 +135,26 @@ public class HadoopLazyConcurrentMap<K, V extends Closeable> {
                 if (v != null) {
                     try {
                         v.close();
+
+                        createdCount.decrementAndGet();
                     }
                     catch (Exception err0) {
                         if (err == null)
                             err = err0;
                     }
+
+                    X.println("### closed Fs: key=[" + key + "], fs cnt = " + createdCount.get() +  ", value=[" + v.getClass() + "], dump:");
+                    new Throwable().printStackTrace(System.out);
                 }
             }
 
+            if (map.size() > 0)
+                X.println("###### " + map.size() + " file systems closed.");
+
             map.clear();
+
+            int i = instances.decrementAndGet();
+            X.println("### --- HLCM closed. Fs cnt = " + createdCount.get() + ", instances=" + i + ", classloader = " + getClass().getClassLoader());
 
             if (err != null)
                 throw new IgniteCheckedException(err);
@@ -169,6 +191,9 @@ public class HadoopLazyConcurrentMap<K, V extends Closeable> {
                 if (v0 == null)
                     throw new IgniteException("Failed to create non-null value. [key=" + key + ']');
 
+                int created = createdCount.incrementAndGet();
+                X.println("+ Created fs: " + created + ", fs = " + v0);
+
                 fut.onDone(v0);
             }
             catch (Throwable e) {
@@ -200,5 +225,12 @@ public class HadoopLazyConcurrentMap<K, V extends Closeable> {
          * @throws IgniteException on failure.
          */
         public V createValue(K key);
+    }
+
+    @Override protected void finalize() throws Throwable {
+        super.finalize();
+
+        X.print("### FINALIZE: ");
+        close();
     }
 }

@@ -967,6 +967,8 @@ public class HadoopJobTracker extends HadoopComponent {
      * @throws IgniteCheckedException If failed.
      */
     @Nullable public HadoopJob job(HadoopJobId jobId, @Nullable HadoopJobInfo jobInfo) throws IgniteCheckedException {
+        X.println("### tracker: " + this + ", jobId = " + jobId);
+
         GridFutureAdapter<HadoopJob> fut = jobs.get(jobId);
 
         if (fut != null || (fut = jobs.putIfAbsent(jobId, new GridFutureAdapter<HadoopJob>())) != null)

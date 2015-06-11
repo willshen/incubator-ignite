@@ -25,6 +25,7 @@ import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.mapreduce.protocol.*;
 import org.apache.ignite.*;
+import org.apache.ignite.configuration.*;
 import org.apache.ignite.hadoop.mapreduce.*;
 import org.apache.ignite.igfs.*;
 import org.apache.ignite.internal.processors.hadoop.*;
@@ -76,6 +77,14 @@ public class HadoopClientProtocolSelfTest extends HadoopAbstractSelfTest {
     @Override protected boolean restEnabled() {
         return true;
     }
+
+//    @Override protected IgniteConfiguration getConfiguration(String gridName) throws Exception {
+//        IgniteConfiguration ic = super.getConfiguration(gridName);
+////
+////        ic.setLocalHost("127.0.0.1");
+////
+//        return ic;
+//    }
 
     /** {@inheritDoc} */
     @Override protected void beforeTestsStarted() throws Exception {

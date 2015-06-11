@@ -58,6 +58,8 @@ public class IgniteHadoopFileSystemCounterWriter implements HadoopCounterWriter 
 
         String user = jobInfo.user();
 
+//        jobInfo.
+//
         user = IgfsUtils.fixUserName(user);
 
         String dir = jobInfo.property(COUNTER_WRITER_DIR_PROPERTY);
@@ -72,7 +74,8 @@ public class IgniteHadoopFileSystemCounterWriter implements HadoopCounterWriter 
         try {
             hadoopCfg.set(MRJobConfig.USER_NAME, user);
 
-            FileSystem fs = HadoopUtils.fileSystemForMrUser(jobStatPath.toUri(), hadoopCfg, true);
+            // This uses Hadoop job class loader:
+            final FileSystem fs = HadoopUtils.fileSystemForMrUser(jobStatPath.toUri(), hadoopCfg, jobId.toString());
 
             fs.mkdirs(jobStatPath);
 

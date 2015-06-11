@@ -33,10 +33,12 @@ import org.apache.ignite.internal.util.*;
 import org.apache.ignite.internal.util.typedef.*;
 import org.apache.ignite.internal.util.typedef.internal.*;
 import org.jetbrains.annotations.*;
+import org.jsr166.*;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Hadoop utility methods.
@@ -64,32 +66,57 @@ public class HadoopUtils {
     private static final String OLD_REDUCE_CLASS_ATTR = "mapred.reducer.class";
 
     /** Lazy per-user cache for the file systems. It is cleared and nulled in #close() method. */
-    private static final HadoopLazyConcurrentMap<FsCacheKey, FileSystem> fileSysLazyMap = new HadoopLazyConcurrentMap<>(
-        new HadoopLazyConcurrentMap.ValueFactory<FsCacheKey, FileSystem>() {
-            @Override public FileSystem createValue(FsCacheKey key) {
-                try {
-                    assert key != null;
+    private static final HadoopLazyConcurrentMap<FsCacheKey, FileSystem> fileSysLazyMap;
 
-                    // Explicitly disable FileSystem caching:
-                    URI uri = key.uri();
+    static {
+        fileSysLazyMap = createHadoopLazyConcurrentMap();
 
-                    String scheme = uri.getScheme();
+        X.println("##### fileSysLazyMap created, HadoopUtils classloader = " + HadoopUtils.class.getClassLoader());
+        //X.println("##### fileSysLazyMap created, classloader = " + fileSysLazyMap.getClass().getClassLoader());
+        //X.println("##### " + fileSysLazyMap);
+        //int i = 0;
+       // Ignition.ignite()
+//        Ignition.addListener(new IgnitionListener() {
+//            @Override public void onStateChange(@Nullable String name, IgniteState state) {
+//                if (state == IgniteState.STOPPED) {
+//                    U.closeQuiet(new AutoCloseable() {
+//                        @Override public void close() throws Exception {
+//                            fileSysLazyMap.close();
+//                        }
+//                    });
+//                }
+//            }
+//        });
+    }
 
-                    // Copy the configuration to avoid altering the external object.
-                    Configuration cfg = new Configuration(key.configuration());
+    public static HadoopLazyConcurrentMap<FsCacheKey, FileSystem> createHadoopLazyConcurrentMap() {
+        return new HadoopLazyConcurrentMap<>(
+            new HadoopLazyConcurrentMap.ValueFactory<FsCacheKey, FileSystem>() {
+                @Override public FileSystem createValue(FsCacheKey key) {
+                    try {
+                        assert key != null;
 
-                    String prop = HadoopUtils.disableFsCachePropertyName(scheme);
+                        // Explicitly disable FileSystem caching:
+                        URI uri = key.uri();
 
-                    cfg.setBoolean(prop, true);
+                        String scheme = uri.getScheme();
 
-                    return FileSystem.get(uri, cfg, key.user());
-                }
-                catch (IOException | InterruptedException ioe) {
-                    throw new IgniteException(ioe);
+                        // Copy the configuration to avoid altering the external object.
+                        Configuration cfg = new Configuration(key.configuration());
+
+                        String prop = HadoopUtils.disableFsCachePropertyName(scheme);
+
+                        cfg.setBoolean(prop, true);
+
+                        return FileSystem.get(uri, cfg, key.user());
+                    }
+                    catch (IOException | InterruptedException ioe) {
+                        throw new IgniteException(ioe);
+                    }
                 }
             }
-        }
-    );
+        );
+    }
 
     /**
      * Constructor.
@@ -401,7 +428,8 @@ public class HadoopUtils {
      * @return the file system
      * @throws IOException
      */
-    public static FileSystem fileSystemForMrUser(@Nullable URI uri, Configuration cfg, boolean doCacheFs) throws IOException {
+    public static FileSystem fileSystemForMrUser(@Nullable URI uri, Configuration cfg,
+            @Nullable String jobId) throws IOException {
         final String usr = getMrHadoopUser(cfg);
 
         assert usr != null;
@@ -411,24 +439,26 @@ public class HadoopUtils {
 
         final FileSystem fs;
 
-        if (doCacheFs) {
+//        if (doCacheFs) {
             try {
-                fs = getWithCaching(uri, cfg, usr);
+                fs = getWithCaching(uri, cfg, usr, jobId);
             }
             catch (IgniteException ie) {
                 throw new IOException(ie);
             }
-        }
-        else {
-            try {
-                fs = FileSystem.get(uri, cfg, usr);
-            }
-            catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-
-                throw new IOException(ie);
-            }
-        }
+//        }
+//        else {
+//            assert false;
+//
+//            try {
+//                fs = FileSystem.get(uri, cfg, usr);
+//            }
+//            catch (InterruptedException ie) {
+//                Thread.currentThread().interrupt();
+//
+//                throw new IOException(ie);
+//            }
+//        }
 
         assert fs != null;
         assert !(fs instanceof IgniteHadoopFileSystem) || F.eq(usr, ((IgniteHadoopFileSystem)fs).user());
@@ -543,10 +573,51 @@ public class HadoopUtils {
      * @param usr The user to create file system for.
      * @return The file system: either created, or taken from the cache.
      */
-    private static FileSystem getWithCaching(URI uri, Configuration cfg, String usr) {
-        FsCacheKey key = new FsCacheKey(uri, usr, cfg);
+    private static FileSystem getWithCaching(URI uri, Configuration cfg, String usr, @Nullable String jobId) {
+        final FsCacheKey key = new FsCacheKey(uri, usr, cfg);
 
-        return fileSysLazyMap.getOrCreate(key);
+        if (jobId == null)
+            return fileSysLazyMap.getOrCreate(key);
+        else {
+            HadoopLazyConcurrentMap<FsCacheKey,FileSystem> lm = getLazyMap(jobId);
+
+            return lm.getOrCreate(key);
+        }
+    }
+
+    private static HadoopLazyConcurrentMap<FsCacheKey,FileSystem> getLazyMap(String jobId) {
+        assert jobId != null;
+
+        HadoopLazyConcurrentMap<FsCacheKey,FileSystem> lm0 = m.get(jobId);
+
+        if (lm0 != null)
+            return lm0;
+
+        HadoopLazyConcurrentMap<FsCacheKey,FileSystem> newLM = createHadoopLazyConcurrentMap();
+
+        HadoopLazyConcurrentMap<FsCacheKey,FileSystem> pushedLM = m.putIfAbsent(jobId, newLM);
+
+        if (pushedLM == null)
+            return newLM;
+        else {
+            try {
+                newLM.close();
+            } catch (IgniteCheckedException ice) {
+                throw new IgniteException(ice);
+            }
+
+            return pushedLM;
+        }
+    }
+
+    private static final ConcurrentMap<String, HadoopLazyConcurrentMap<FsCacheKey,FileSystem>> m
+        = new ConcurrentHashMap8<>();
+
+    public static void close(String jobId) throws IgniteCheckedException {
+        HadoopLazyConcurrentMap<FsCacheKey,FileSystem> lm = m.remove(jobId);
+
+        if (lm != null)
+            lm.close();
     }
 
     /**
@@ -580,5 +651,13 @@ public class HadoopUtils {
         }
 
         return uri0;
+    }
+
+    /**
+     * NB: This method is called with reflection.
+     * @throws IgniteCheckedException
+     */
+    public static void close() throws IgniteCheckedException {
+        fileSysLazyMap.close();
     }
 }

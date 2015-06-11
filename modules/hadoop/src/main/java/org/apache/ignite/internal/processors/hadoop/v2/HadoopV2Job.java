@@ -134,7 +134,8 @@ public class HadoopV2Job implements HadoopJob {
             Path jobDir = new Path(jobDirPath);
 
             try {
-                FileSystem fs = fileSystemForMrUser(jobDir.toUri(), jobConf, true);
+                // Job classloader.
+                FileSystem fs = fileSystemForMrUser(jobDir.toUri(), jobConf, jobId.toString());
 
                 JobSplit.TaskSplitMetaInfo[] metaInfos = SplitMetaInfoReader.readSplitMetaInfo(hadoopJobID, fs, jobConf,
                     jobDir);
@@ -243,6 +244,8 @@ public class HadoopV2Job implements HadoopJob {
 
     /** {@inheritDoc} */
     @Override public void initialize(boolean external, UUID locNodeId) throws IgniteCheckedException {
+        assert this.locNodeId == null;
+
         this.locNodeId = locNodeId;
 
         Thread.currentThread().setContextClassLoader(jobConf.getClassLoader());
@@ -258,6 +261,8 @@ public class HadoopV2Job implements HadoopJob {
     /** {@inheritDoc} */
     @SuppressWarnings("ThrowFromFinallyBlock")
     @Override public void dispose(boolean external) throws IgniteCheckedException {
+        X.println("############# dispose: jod = " + jobId + ", this = " + this);
+        X.println(" loc node id = " + locNodeId);
         try {
             if (rsrcMgr != null && !external) {
                 File jobLocDir = jobLocalDir(locNodeId, jobId);
@@ -280,11 +285,24 @@ public class HadoopV2Job implements HadoopJob {
                     break;
 
                 try {
-                    Class<?> daemonCls = cls.getClassLoader().loadClass(HadoopClassLoader.HADOOP_DAEMON_CLASS_NAME);
+                    final ClassLoader ldr = cls.getClassLoader();
+
+                    Class<?> daemonCls = ldr.loadClass(HadoopClassLoader.HADOOP_DAEMON_CLASS_NAME);
 
                     Method m = daemonCls.getMethod("dequeueAndStopAll");
 
                     m.invoke(null);
+
+                    // Also close all the FileSystems cached in
+                    // HadoopLazyConcurrentMap for this task class loader:
+                    closeCachedFileSystems(ldr);
+
+
+//                    assert getClass().getClassLoader() instanceof HadoopClassLoader;
+//                    assert getClass().getClassLoader().toString().contains("hadoop-job");
+
+                    // Close all cached Fs for this Job:
+                    HadoopUtils.close(jobId.toString());
                 }
                 catch (Throwable e) {
                     if (err == null)
@@ -297,8 +315,24 @@ public class HadoopV2Job implements HadoopJob {
 
             assert fullCtxClsQueue.isEmpty();
 
+            for (int q=0; q<10; q++)
+                System.gc();
+
             if (err != null)
                 throw U.cast(err);
+        }
+    }
+
+    private void closeCachedFileSystems(ClassLoader ldr) {
+        try {
+            Class clazz = ldr.loadClass(HadoopUtils.class.getName());
+
+            Method m = clazz.getMethod("close");
+
+            m.invoke(null);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -321,6 +355,9 @@ public class HadoopV2Job implements HadoopJob {
 
     /** {@inheritDoc} */
     @Override public void cleanupStagingDirectory() {
+        X.println("############# cleanup staging: jid = " + jobId + ", this = " + this);
+        X.println(" loc node id = " + locNodeId);
+
         rsrcMgr.cleanupStagingDirectory();
     }
 
