@@ -503,8 +503,8 @@ public abstract class IgniteTxLocalAdapter extends IgniteTxAdapter
                     boolean skipNear = near() && isWriteToStoreFromDht;
 
                     for (IgniteTxEntry e : writeEntries) {
-                        if (e.context().store() != null &&
-                            e.context().store().isLocal() && cctx.gridConfig().isClientMode())
+                        if (e.context().store() != null && e.context().store().isLocal() &&
+                            !e.context().affinityNode())
                             continue;
 
                         if ((skipNear && e.cached().isNear()) || e.skipStore())
@@ -616,22 +616,20 @@ public abstract class IgniteTxLocalAdapter extends IgniteTxAdapter
                             log.debug("Ignoring NOOP entry for batch store commit: " + e);
                     }
 
-                    if (writeStore != null && !(writeStore.isLocal() && cctx.gridConfig().isClientMode())) {
-                        if (putMap != null && !putMap.isEmpty()) {
-                            assert rmvCol == null || rmvCol.isEmpty();
-                            assert writeStore != null;
+                    if (putMap != null && !putMap.isEmpty()) {
+                        assert rmvCol == null || rmvCol.isEmpty();
+                        assert writeStore != null;
 
-                            // Batch put at the end of transaction.
-                            writeStore.putAll(this, putMap);
-                        }
+                        // Batch put at the end of transaction.
+                        writeStore.putAll(this, putMap);
+                    }
 
-                        if (rmvCol != null && !rmvCol.isEmpty()) {
-                            assert putMap == null || putMap.isEmpty();
-                            assert writeStore != null;
+                    if (rmvCol != null && !rmvCol.isEmpty()) {
+                        assert putMap == null || putMap.isEmpty();
+                        assert writeStore != null;
 
-                            // Batch remove at the end of transaction.
-                            writeStore.removeAll(this, rmvCol);
-                        }
+                        // Batch remove at the end of transaction.
+                        writeStore.removeAll(this, rmvCol);
                     }
                 }
 
