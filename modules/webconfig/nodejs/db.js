@@ -111,7 +111,12 @@ var CacheSchema = new Schema({
     managementEnabled: Boolean,
     readFromBackup: Boolean,
     copyOnRead: Boolean,
-    maxConcurrentAsyncOperations: Number
+    maxConcurrentAsyncOperations: Number,
+    nearConfiguration: {
+        nearStartSize: Number,
+        nearEvictionPolicy: {type: String, enum: ['LRU', 'RND', 'FIFO', 'Sorted']},
+        atomicSequenceReserveSize: Number
+    }
 });
 
 exports.Cache = mongoose.model('Cache', CacheSchema);
