@@ -2962,7 +2962,8 @@ public class GridCacheProcessor extends GridProcessorAdapter {
         if (transactions().tx() != null)
             throw new IgniteException("Cannot start/stop cache within transaction.");
 
-        if (ctx.cache().context().mvcc().hasLocks())
+        if (ctx.cache().context().mvcc().
+            lastExplicitLockTopologyVersion(Thread.currentThread().getId()) != null)
             throw new IgniteException("Cannot start/stop cache within lock.");
     }
 

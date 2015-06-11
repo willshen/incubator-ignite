@@ -572,13 +572,6 @@ public class GridCacheMvccManager extends GridCacheSharedManagerAdapter {
     }
 
     /**
-     * @return True if any locks acquired.
-     */
-    public boolean hasLocks() {
-        return !locked.isEmpty() || !nearLocked.isEmpty();
-    }
-
-    /**
      * This method has poor performance, so use with care. It is currently only used by {@code DGC}.
      *
      * @return Remote candidates.
