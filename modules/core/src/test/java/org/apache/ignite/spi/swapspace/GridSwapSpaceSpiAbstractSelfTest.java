@@ -49,6 +49,14 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
     protected SwapSpaceSpi spi;
 
     /**
+     * Says if we should check Spi#count() and #size() methods.
+     * @return If to check count & size.
+     */
+    protected boolean isCheckSize() {
+        return true;
+    }
+
+    /**
      * @return New {@link SwapSpaceSpi} instance.
      */
     protected abstract SwapSpaceSpi spi();
@@ -112,7 +120,8 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.store(DFLT_SPACE_NAME, new SwapKey(key1), val1, context());
 
-        //assertEquals(1, spi.count(DFLT_SPACE_NAME));
+        if (isCheckSize())
+            assertEquals(1, spi.count(DFLT_SPACE_NAME));
 
         assertArrayEquals(spi.read(DFLT_SPACE_NAME, new SwapKey(key1), context()), val1);
 
@@ -120,7 +129,8 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.store(DFLT_SPACE_NAME, new SwapKey(key1), val2, context());
 
-        //assertEquals(1, spi.count(DFLT_SPACE_NAME));
+        if (isCheckSize())
+            assertEquals(1, spi.count(DFLT_SPACE_NAME));
 
         assertArrayEquals(spi.read(DFLT_SPACE_NAME, new SwapKey(key1), context()), val2);
 
@@ -130,7 +140,8 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
             }
         }, context());
 
-        //assertEquals(0, spi.count(DFLT_SPACE_NAME));
+        if (isCheckSize())
+           assertEquals(0, spi.count(DFLT_SPACE_NAME));
     }
 
     /**
@@ -148,9 +159,11 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.clear(space2);
 
-        assertEquals(0, spi.count(space1));
+        if (isCheckSize()) {
+            assertEquals(0, spi.count(space1));
 
-        assertEquals(0, spi.count(space2));
+            assertEquals(0, spi.count(space2));
+        }
 
         long key1 = 1;
 
@@ -158,15 +171,19 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.store(space1, new SwapKey(key1), val1, context());
 
-//        assertEquals(1, spi.count(space1));
-//
-//        assertEquals(0, spi.count(space2));
+        if (isCheckSize()) {
+            assertEquals(1, spi.count(space1));
+
+            assertEquals(0, spi.count(space2));
+        }
 
         spi.store(space2, new SwapKey(key1), val1, context());
 
-//        assertEquals(1, spi.count(space1));
-//
-//        assertEquals(1, spi.count(space2));
+        if (isCheckSize()) {
+            assertEquals(1, spi.count(space1));
+
+            assertEquals(1, spi.count(space2));
+        }
 
         assertArrayEquals(spi.read(space1, new SwapKey(key1), context()), val1);
 
@@ -178,9 +195,11 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.store(space1, new SwapKey(key2), val2, context());
 
-//        assertEquals(2, spi.count(space1));
-//
-//        assertEquals(1, spi.count(space2));
+        if (isCheckSize()) {
+            assertEquals(2, spi.count(space1));
+
+            assertEquals(1, spi.count(space2));
+        }
 
         assertArrayEquals(spi.read(space1, new SwapKey(key2), context()), val2);
 
@@ -190,9 +209,11 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.store(space1, new SwapKey(key1), val12, context());
 
-//        assertEquals(2, spi.count(space1));
-//
-//        assertEquals(1, spi.count(space2));
+        if (isCheckSize()) {
+            assertEquals(2, spi.count(space1));
+
+            assertEquals(1, spi.count(space2));
+        }
 
         assertArrayEquals(spi.read(space1, new SwapKey(key1), context()), val12);
 
@@ -204,9 +225,11 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
             }
         }, context());
 
-//        assertEquals(1, spi.count(space1));
-//
-//        assertEquals(1, spi.count(space2));
+        if (isCheckSize()) {
+            assertEquals(1, spi.count(space1));
+
+            assertEquals(1, spi.count(space2));
+        }
 
         spi.remove(space2, new SwapKey(key1), new IgniteInClosure<byte[]>() {
             @Override public void apply(byte[] old) {
@@ -214,9 +237,11 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
             }
         }, context());
 
-//        assertEquals(1, spi.count(space1));
-//
-//        assertEquals(0, spi.count(space2));
+        if (isCheckSize()) {
+            assertEquals(1, spi.count(space1));
+
+            assertEquals(0, spi.count(space2));
+        }
     }
 
     /**
@@ -237,7 +262,8 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.storeAll(DFLT_SPACE_NAME, batch, context());
 
-//        assertEquals(batchSize, spi.count(DFLT_SPACE_NAME));
+        if (isCheckSize())
+            assertEquals(batchSize, spi.count(DFLT_SPACE_NAME));
 
         Map<SwapKey, byte[]> read = spi.readAll(DFLT_SPACE_NAME, batch.keySet(), context());
 
@@ -254,7 +280,8 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.storeAll(DFLT_SPACE_NAME, batch, context());
 
-        //assertEquals(batchSize, spi.count(DFLT_SPACE_NAME));
+        if (isCheckSize())
+            assertEquals(batchSize, spi.count(DFLT_SPACE_NAME));
 
         read = spi.readAll(DFLT_SPACE_NAME, batch.keySet(), context());
 
@@ -267,7 +294,8 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
 
         spi.removeAll(DFLT_SPACE_NAME, batch.keySet(), null, context());
 
-//        assertEquals(0, spi.count(DFLT_SPACE_NAME));
+        if (isCheckSize())
+            assertEquals(0, spi.count(DFLT_SPACE_NAME));
     }
 
     /**
@@ -505,7 +533,8 @@ public abstract class GridSwapSpaceSpiAbstractSelfTest extends GridCommonAbstrac
             assertEquals(10, i);
         }
 
-        assertEquals(0, spi.count(SPACE1));
+        if (isCheckSize())
+            assertEquals(0, spi.count(SPACE1));
     }
 
     /**
