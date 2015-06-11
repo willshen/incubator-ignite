@@ -17,15 +17,7 @@
 
 configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', function ($scope, $modal, $http) {
         $scope.templates = [
-            {
-                value: {
-                    mode: 'PARTITIONED', atomicityMode: 'ATOMIC',
-                    indexedTypes: [{
-                        keyClass: 'org.some.KeyClass',
-                        valueClass: 'org.some.ValueClass'
-                    }, {keyClass: 'org.some.KeyClass2', valueClass: 'org.some.ValueClass2'}]
-                }, label: 'Partitioned'
-            },
+            {value: {mode: 'PARTITIONED', atomicityMode: 'ATOMIC'}, label: 'Partitioned'},
             {value: {mode: 'REPLICATED', atomicityMode: 'ATOMIC'}, label: 'Replicated'},
             {value: {mode: 'LOCAL', atomicityMode: 'ATOMIC'}, label: 'Local'}
         ];
@@ -96,8 +88,14 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
 
             var idx = $scope.indexedTypeIdx;
 
-            if (idx < 0)
-                idxTypes.push({keyClass: k, valueClass: v});
+            if (idx < 0) {
+                var newItem = {keyClass: k, valueClass: v};
+
+                if (undefined == idxTypes)
+                    $scope.backupItem.indexedTypes = [newItem];
+                else
+                    idxTypes.push(newItem);
+            }
             else {
                 var idxType = idxTypes[idx];
 
@@ -186,6 +184,44 @@ configuratorModule.controller('cachesController', ['$scope', '$modal', '$http', 
                 .error(function (errorMessage) {
                     console.log('Error: ' + errorMessage);
                 });
+        };
+
+        $scope.createSimpleItem = function(desc, rows) {
+            $scope.simplePopup = {
+                rows: rows,
+                desc: desc
+            };
+
+            $scope.pupup = $modal({scope: $scope, template: '/simplePopup', show: true});
+        };
+
+        $scope.saveSimpleItem = function(row) {
+            var popup = $scope.simplePopup;
+            var rows = popup.rows;
+
+            if (popup.index)
+                angular.extend(rows[popup.index], row);
+            else if (undefined == rows)
+                popup.rows = [row];
+            else
+                popup.rows.push(row);
+
+            $scope.pupup.hide();
+        };
+
+        $scope.editSimpleItem = function(desc, rows, idx) {
+            $scope.simplePopup = {
+                desc: desc,
+                rows: rows,
+                index: idx,
+                row: angular.copy(rows[idx])
+            };
+
+            $modal({scope: $scope, template: '/simplePopup', show: true});
+        };
+
+        $scope.removeSimpleItem = function(rows, idx) {
+            rows.splice(idx, 1);
         };
     }]
 );

@@ -24,8 +24,8 @@
                 .modal-body.row
                     .col-sm-10.col-sm-offset-1
                         .details-row
-                            label.col-sm-2 {{simplePopup.desc.label | capitalize}}:
-                            .col-sm-9
+                            label.col-sm-3 {{simplePopup.desc.label | capitalize}}:
+                            .col-sm-8
                                 input.form-control(type='text' ng-model='simplePopup.row' required)
                             i.tip.fa.fa-question-circle(ng-if='simplePopup.desc.tip' bs-tooltip='simplePopup.desc.tip.join("")' type='button')
                 .modal-footer

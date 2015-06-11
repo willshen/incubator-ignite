@@ -351,11 +351,37 @@
           ]
         },
         {
-          "label": "SQL functions",
-          "type": "text",
+          "table-label": "SQL functions",
+          "label": "SQL function",
+          "type": "table-simple",
           "model": "sqlFunctionClasses",
           "tip": [
             "Classes with user-defined functions for SQL queries."
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Near cache",
+      "model": "nearConfiguration",
+      "fields": [
+        {
+          "label": "Start size",
+          "type": "text",
+          "model": "nearStartSize",
+          "placeholder": "375000",
+          "tip": [
+            "Initial cache size for near cache which will be used to pre-create internal hash table after start."
+          ]
+        },
+        {
+          "label": "Eviction policy",
+          "type": "dropdown",
+          "model": "nearEvictionPolicy",
+          "placeholder": "Choose eviction policy",
+          "items": "evictionPolicies",
+          "tip": [
+            "Cache expiration policy."
           ]
         }
       ]
