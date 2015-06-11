@@ -112,6 +112,7 @@ public class GridTcpSpiForwardingSelfTest extends GridCommonAbstractTest {
         commSpi.setLocalAddress("127.0.0.1");
         commSpi.setLocalPort(commLocPort);
         commSpi.setLocalPortRange(1);
+        commSpi.setSharedMemoryPort(-1);
 
         cfg.setCommunicationSpi(commSpi);
 

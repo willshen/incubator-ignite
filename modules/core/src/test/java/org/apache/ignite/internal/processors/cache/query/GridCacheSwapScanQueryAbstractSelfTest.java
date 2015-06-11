@@ -112,43 +112,81 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
      * @throws Exception If failed.
      */
     public void testQuery() throws Exception {
-        checkQuery(((IgniteKernal)grid(0)).internalCache(ATOMIC_CACHE_NAME));
+        checkQuery(((IgniteKernal)grid(0)).internalCache(ATOMIC_CACHE_NAME), false);
 
-        checkQuery(((IgniteKernal)grid(0)).internalCache(TRANSACTIONAL_CACHE_NAME));
+        checkQuery(((IgniteKernal)grid(0)).internalCache(TRANSACTIONAL_CACHE_NAME), false);
+
+        checkQuery(((IgniteKernal)grid(0)).internalCache(ATOMIC_CACHE_NAME), true);
+
+        checkQuery(((IgniteKernal)grid(0)).internalCache(TRANSACTIONAL_CACHE_NAME), true);
     }
 
     /**
      * @param cache Cache.
+     * @param scanPartitions Scan partitions.
      * @throws Exception If failed.
      */
     @SuppressWarnings("unchecked")
-    private void checkQuery(GridCacheAdapter cache) throws Exception {
+    private void checkQuery(GridCacheAdapter cache, boolean scanPartitions) throws Exception {
         final int ENTRY_CNT = 500;
 
-        for (int i = 0; i < ENTRY_CNT; i++)
-            cache.getAndPut(new Key(i), new Person2("p-" + i, i));
+        Map<Integer, Map<Key, Person>> entries = new HashMap<>();
+
+        for (int i = 0; i < ENTRY_CNT; i++) {
+            Key key = new Key(i);
+            Person val = new Person("p-" + i, i);
+
+            int part = cache.context().affinity().partition(key);
+
+            cache.getAndPut(key, val);
+
+            Map<Key, Person> partEntries = entries.get(part);
+
+            if (partEntries == null)
+                entries.put(part, partEntries = new HashMap<>());
+
+            partEntries.put(key, val);
+        }
 
         try {
-            CacheQuery<Map.Entry<Key, Person2>> qry =
-                cache.context().queries().createScanQuery(new QueryFilter(), false);
+            int partitions = scanPartitions ? cache.context().affinity().partitions() : 1;
 
-            Collection<Map.Entry<Key, Person2>> res = qry.execute().get();
+            for (int i = 0; i < partitions; i++) {
+                CacheQuery<Map.Entry<Key, Person>> qry = cache.context().queries().createScanQuery(
+                    new IgniteBiPredicate<Key, Person>() {
+                        @Override public boolean apply(Key key, Person p) {
+                            assertEquals(key.id, (Integer)p.salary);
 
-            assertEquals(ENTRY_CNT / 2, res.size());
+                            return key.id % 2 == 0;
+                        }
+                    }, (scanPartitions ? i : null), false);
 
-            for (Map.Entry<Key, Person2> e : res) {
-                Key k = e.getKey();
-                Person2 p = e.getValue();
+                Collection<Map.Entry<Key, Person>> res = qry.execute().get();
 
-                assertEquals(k.id, (Integer)p.salary);
-                assertEquals(0, k.id % 2);
+                if (!scanPartitions)
+                    assertEquals(ENTRY_CNT / 2, res.size());
+
+                for (Map.Entry<Key, Person> e : res) {
+                    Key k = e.getKey();
+                    Person p = e.getValue();
+
+                    assertEquals(k.id, (Integer)p.salary);
+                    assertEquals(0, k.id % 2);
+
+                    if (scanPartitions) {
+                        Map<Key, Person> partEntries = entries.get(i);
+
+                        assertEquals(p, partEntries.get(k));
+                    }
+                }
+
+                qry = cache.context().queries().createScanQuery(null, (scanPartitions ? i : null), false);
+
+                res = qry.execute().get();
+
+                if (!scanPartitions)
+                    assertEquals(ENTRY_CNT, res.size());
             }
-
-            qry = cache.context().queries().createScanQuery(null, false);
-
-            res = qry.execute().get();
-
-            assertEquals(ENTRY_CNT, res.size());
 
             testMultithreaded(cache, ENTRY_CNT / 2);
         }
@@ -169,11 +207,17 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
         GridTestUtils.runMultiThreaded(new Callable<Void>() {
             @SuppressWarnings("unchecked")
             @Override public Void call() throws Exception {
-                CacheQuery<Map.Entry<Key, Person2>> qry = cache.context().queries().createScanQuery(
-                    new QueryFilter(), false);
+                CacheQuery<Map.Entry<Key, Person>> qry = cache.context().queries().createScanQuery(
+                    new IgniteBiPredicate<Key, Person>() {
+                        @Override public boolean apply(Key key, Person p) {
+                            assertEquals(key.id, (Integer)p.salary);
+
+                            return key.id % 2 == 0;
+                        }
+                    }, null, false);
 
                 for (int i = 0; i < 250; i++) {
-                    Collection<Map.Entry<Key, Person2>> res = qry.execute().get();
+                    Collection<Map.Entry<Key, Person>> res = qry.execute().get();
 
                     assertEquals(expCnt, res.size());
 
@@ -214,7 +258,7 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
 
                         return val % 2 == 0;
                     }
-                }, false);
+                }, null, false);
 
             Collection<Map.Entry<String, Long>> res = qry.execute().get();
 
@@ -229,7 +273,7 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
                 assertEquals(0, val % 2);
             }
 
-            qry = cache.context().queries().createScanQuery(null, false);
+            qry = cache.context().queries().createScanQuery(null, null, false);
 
             res = qry.execute().get();
 
@@ -269,7 +313,7 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
 
                         return key % 2 == 0;
                     }
-                }, false);
+                }, null, false);
 
             Collection<Map.Entry<Integer, byte[]>> res = qry.execute().get();
 
@@ -284,7 +328,7 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
                 assertEquals(0, key % 2);
             }
 
-            qry = cache.context().queries().createScanQuery(null, false);
+            qry = cache.context().queries().createScanQuery(null, null, false);
 
             res = qry.execute().get();
 
@@ -335,7 +379,7 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
      *
      */
     @SuppressWarnings("PublicInnerClass")
-    public static class Person2 {
+    public static class Person {
         /** */
         @SuppressWarnings("PublicField")
         public String name;
@@ -348,21 +392,33 @@ public abstract class GridCacheSwapScanQueryAbstractSelfTest extends GridCommonA
          * @param name Name.
          * @param salary Salary.
          */
-        public Person2(String name, int salary) {
+        public Person(String name, int salary) {
             this.name = name;
             this.salary = salary;
         }
-    }
 
-    /**
-     *
-     */
-    private static class QueryFilter implements IgniteBiPredicate<Key, Person2> {
         /** {@inheritDoc} */
-        @Override public boolean apply(Key key, Person2 p) {
-            assertEquals(key.id, (Integer)p.salary);
+        @Override public boolean equals(Object o) {
+            if (this == o)
+                return true;
 
-            return key.id % 2 == 0;
+            if (o == null || getClass() != o.getClass())
+                return false;
+
+            Person person = (Person)o;
+
+            if (salary != person.salary)
+                return false;
+
+            return !(name != null ? !name.equals(person.name) : person.name != null);
+
+        }
+
+        /** {@inheritDoc} */
+        @Override public int hashCode() {
+            int result = name != null ? name.hashCode() : 0;
+
+            return 31 * result + salary;
         }
     }
 }
