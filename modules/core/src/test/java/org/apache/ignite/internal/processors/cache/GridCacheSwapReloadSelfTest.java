@@ -61,6 +61,15 @@ public class GridCacheSwapReloadSelfTest extends GridCommonAbstractTest {
         return swap;
     }
 
+    /**
+     * Answers if to check #count() & #size() for Spi.
+     * (Some implementations cannot count sizes.)
+     * @return If to check size.
+     */
+    protected boolean isCheckSize() {
+        return true;
+    }
+
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override protected IgniteConfiguration getConfiguration(String gridName) throws Exception {
@@ -147,8 +156,10 @@ public class GridCacheSwapReloadSelfTest extends GridCommonAbstractTest {
         assert swapLatch.await(1, SECONDS);
         Thread.sleep(100);
 
-//        assert swap().count(spaceName()) == 1;
-//        assert swap().size(spaceName()) > 0;
+        if (isCheckSize()) {
+            assert swap().count(spaceName()) == 1;
+            assert swap().size(spaceName()) > 0;
+        }
 
         load(cache, "key", true);
 
@@ -202,8 +213,10 @@ public class GridCacheSwapReloadSelfTest extends GridCommonAbstractTest {
         assert swapLatch.await(1, SECONDS);
         Thread.sleep(100);
 
-//        assert swap().count(spaceName()) == 2;
-//        assert swap().size(spaceName()) > 0 : swap().size(spaceName());
+        if (isCheckSize()) {
+            assert swap().count(spaceName()) == 2;
+            assert swap().size(spaceName()) > 0 : swap().size(spaceName());
+        }
 
         loadAll(cache, ImmutableSet.of("key1", "key2"), true);
 
