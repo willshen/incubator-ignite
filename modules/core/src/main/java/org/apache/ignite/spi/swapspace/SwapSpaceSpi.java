@@ -29,15 +29,15 @@ import java.util.*;
  * by calling {@link org.apache.ignite.Ignite} API swap-related methods. Logically storage is organized into
  * independent 'spaces' in which data is stored.
  * <p>
- * All swap space implementations can be configured to prevent infinite growth and evict oldest entries.
- * <p>
- * The default swap space SPI is {@link org.apache.ignite.spi.swapspace.file.FileSwapSpaceSpi} which stores values on disk in files and keeps keys in
+ * The default swap space SPI is {@link org.apache.ignite.spi.swapspace.file.FileSwapSpaceSpi} which stores
+ * values on disk in files and keeps keys in
  * memory.
  * <p>
  * Ignite provides the following {@code GridSwapSpaceSpi} implementations:
  * <ul>
  * <li>
- *     {@link org.apache.ignite.spi.swapspace.file.FileSwapSpaceSpi} - pure Java implementation with in-memory keys. This SPI is used by default.
+ *     {@link org.apache.ignite.spi.swapspace.file.FileSwapSpaceSpi} - pure Java implementation with in-memory keys.
+ *     This SPI is used by default.
  * </li>
  * <li>
  *     {@link org.apache.ignite.spi.swapspace.noop.NoopSwapSpaceSpi} - no-op SPI mainly for testing.
@@ -195,7 +195,7 @@ public interface SwapSpaceSpi extends IgniteSpi {
      * @return Iterator over space entries or {@code null} if space is unknown.
      * @throws org.apache.ignite.spi.IgniteSpiException If failed.
      */
-    @Nullable <K> IgniteSpiCloseableIterator<K> keyIterator(@Nullable String spaceName, SwapContext ctx)
+    @Nullable public <K> IgniteSpiCloseableIterator<K> keyIterator(@Nullable String spaceName, SwapContext ctx)
         throws IgniteSpiException;
 
     /**

@@ -358,9 +358,21 @@ public abstract class IgniteCachePeekModesAbstractTest extends IgniteCacheAbstra
     }
 
     /**
+     * Answers if to check #count() & #size() for Spi.
+     * (Some implementations cannot count sizes.)
+     * @return If to check size.
+     */
+    protected boolean isCheckSizes() {
+        return true;
+    }
+
+    /**
      * @throws Exception If failed.
      */
     public void testSize() throws Exception {
+        if (!isCheckSizes())
+            return;
+
         checkEmpty();
 
         if (cacheMode() == LOCAL) {
