@@ -40,7 +40,7 @@ public class GridCacheGateway<K, V> {
     private volatile boolean stopped;
 
     /** Client counter. */
-    private volatile AtomicInteger clients;
+    private final AtomicInteger clients = new AtomicInteger(0);
 
     /** */
     private GridSpinReadWriteLock rwLock = new GridSpinReadWriteLock();
@@ -52,8 +52,6 @@ public class GridCacheGateway<K, V> {
         assert ctx != null;
 
         this.ctx = ctx;
-
-        clients = new AtomicInteger(0);
     }
 
     /**
@@ -246,6 +244,8 @@ public class GridCacheGateway<K, V> {
      */
     public void block() {
         stopped = true;
+
+        clients.decrementAndGet();
     }
 
     /**
