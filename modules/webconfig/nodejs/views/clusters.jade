@@ -50,8 +50,6 @@ block content
                             +form-row
                 .panel-heading
                     .panel-title
-                        span(bs-collapse-toggle)
-                            a(ng-click='expanded = true' ng-hide='expanded') Show advanced settings...
-                            a(ng-click='expanded = false' ng-show='expanded') Hide advanced settings...
+                        a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = true; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
             button.btn.btn-primary(ng-click='saveItem()' ng-disabled='editForm.$invalid') Save
             button.btn.btn-primary(ng-click='removeItem()' ng-disabled='editForm.$invalid') Remove

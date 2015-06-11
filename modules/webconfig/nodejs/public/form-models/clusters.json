@@ -9,6 +9,8 @@
     {
       "label": "Discovery",
       "type": "dropdown-details",
+      "customizable": true,
+      "customized": false,
       "group": "discovery",
       "model": "kind",
       "placeholder": "Choose discovery",
@@ -428,7 +430,7 @@
           "model": "networkTimeout",
           "placeholder": "5,000",
           "tip": [
-             "Maximum timeout in milliseconds for network requests."
+            "Maximum timeout in milliseconds for network requests."
           ]
         },
         {
