@@ -33,7 +33,6 @@ import org.apache.ignite.spi.discovery.tcp.ipfinder.*;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.*;
 import org.apache.ignite.testframework.*;
 import org.apache.ignite.testframework.junits.common.*;
-import org.jsr107.tck.processor.*;
 
 import javax.cache.*;
 import javax.cache.CacheManager;
@@ -831,7 +830,8 @@ public class CacheStopAndDestroySelfTest extends GridCommonAbstractTest {
         cache.close();
 
         try {
-            cache.invoke(123, new ThrowExceptionEntryProcessor<Integer, String, Void>(UnsupportedOperationException.class));
+            cache.get("key");
+
             assert false;
         }
         catch (IllegalStateException e) {
