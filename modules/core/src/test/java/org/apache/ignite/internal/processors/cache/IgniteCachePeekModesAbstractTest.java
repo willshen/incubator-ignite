@@ -362,7 +362,7 @@ public abstract class IgniteCachePeekModesAbstractTest extends IgniteCacheAbstra
      * (Some implementations cannot count sizes.)
      * @return If to check size.
      */
-    protected boolean isCheckSizes() {
+    protected boolean isCheckSize() {
         return true;
     }
 
@@ -370,7 +370,7 @@ public abstract class IgniteCachePeekModesAbstractTest extends IgniteCacheAbstra
      * @throws Exception If failed.
      */
     public void testSize() throws Exception {
-        if (!isCheckSizes())
+        if (!isCheckSize())
             return;
 
         checkEmpty();
