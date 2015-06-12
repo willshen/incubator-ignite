@@ -36,25 +36,31 @@ block content
         button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cluster
         span(style='margin-left: 15px; margin-right: 5px') Use template:&nbsp
         button.btn.btn-default(ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
-        .row.col-sm-12
-            hr
+        //.col-sm-12
+        hr
         form.form-horizontal(name='clustersForm' ng-if='backupItem')
-            h3 General
-            .settings-row(ng-repeat='field in general')
-                +form-row
-            .panel(bs-collapse data-start-collapsed='true')
+            div(data-start-collapsed='false' bs-collapse)
+                .panel.panel-default
+                    .panel-heading
+                        h3
+                            a(bs-collapse-toggle) General
+                    .panel-collapse(bs-collapse-target)
+                        .panel-body
+                            .settings-row(ng-repeat='field in general')
+                                +form-row
+            div(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
                     .span(data-allow-multiple='true' aria-multiselectable='true' role='tablist' bs-collapse)
-                        div(ng-repeat='group in advanced')
+                        .panel.panel-default(ng-repeat='group in advanced')
                             .panel-heading
                                 h3
                                     a(bs-collapse-toggle) {{group.label}}
                             .panel-collapse(bs-collapse-target)
-                                .settings-row(ng-repeat='field in group.fields')
-                                    +form-row
-                .panel-heading
-                    .panel-title
-                        h3
-                            a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = true; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
+                                .panel-body
+                                    .settings-row(ng-repeat='field in group.fields')
+                                        +form-row
+                .panel-title
+                    h3
+                        a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = true; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
             button.btn.btn-primary(ng-click='saveItem()' ng-disabled='clustersForm.$invalid') Save
             button.btn.btn-primary(ng-click='removeItem()' ng-show='backupItem._id') Remove

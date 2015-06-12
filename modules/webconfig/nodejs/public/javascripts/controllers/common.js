@@ -21,7 +21,8 @@ configuratorModule.config(function($tooltipProvider) {
     angular.extend($tooltipProvider.defaults, {
         placement: 'right',
         html: 'true',
-        trigger: 'click hover'
+        trigger: 'click hover',
+        delay: { hide: 600 }
     });
 });
 
