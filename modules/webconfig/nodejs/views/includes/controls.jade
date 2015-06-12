@@ -15,10 +15,14 @@
     limitations under the License.
 
 mixin tip(lines)
-    i.tip.fa.fa-question-circle(ng-if=lines bs-tooltip='#{lines}.join("")' type='button')
+    i.tip.fa.fa-question-circle(ng-if=lines data-container='body' bs-tooltip='#{lines}.join("")' type='button')
+    i.tip.fa.fa-question-circle.blank(ng-if='!#{lines}')
+
+mixin tipCheck(lines)
+    i.tipCheck.fa.fa-question-circle(ng-if=lines data-container='body' bs-tooltip='#{lines}.join("")' type='button')
 
 mixin details-row
-    - var lblDetailClasses = ['col-sm-2', 'details-label']
+    - var lblDetailClasses = ['col-sm-4', 'details-label']
 
     - var detailMdl = 'backupItem[field.group][backupItem[field.group][field.model]][detail.model]'
 
@@ -27,20 +31,22 @@ mixin details-row
             label
                 input(type='checkbox' ng-model=detailMdl)
                 |{{detail.label}}
-                +tip('detail.tip')
+                +tipCheck('detail.tip')
         div(ng-switch-when='text')
             label(class=lblDetailClasses) {{detail.label}}:
-            .col-sm-4
-                input.form-control(type='text' ng-model=detailMdl placeholder='{{detail.placeholder}}')
-            +tip('detail.tip')
+            .col-sm-8
+                +tip('detail.tip')
+                .input-tip
+                    input.form-control(type='text' style='' ng-model=detailMdl placeholder='{{detail.placeholder}}')
         div(ng-switch-when='dropdown')
             label(class=lblDetailClasses) {{detail.label}}:
-            .col-sm-4
-                button.form-control(bs-select ng-model=detailMdl data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
-            +tip('detail.tip')
+            .col-sm-8
+                +tip('detail.tip')
+                .input-tip
+                    button.form-control(bs-select ng-model=detailMdl data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
         div(ng-switch-when='dropdown-multiple')
             label(class=lblDetailClasses) {{detail.label}}:
-            .col-sm-4
+            .col-sm-8
                 button.form-control(bs-select ng-model=detailMdl data-multiple='1' data-template='/select' data-placeholder='{{detail.placeholder}}' bs-options='item.value as item.label for item in {{detail.items}}')
             +tip('detail.tip')
         div(ng-switch-when='table-simple')
@@ -66,36 +72,40 @@ mixin form-row
                 input(type='checkbox' ng-if='!group.model' ng-model='backupItem[field.model]')
                 input(type='checkbox' ng-if='group.model' ng-model='backupItem[group.model][field.model]')
                 | {{field.label}}
-                +tip('field.tip')
+                +tipCheck('field.tip')
         div(ng-switch-when='text')
             label(class=lblClasses ng-class='{required: field.required}') {{field.label}}:
             .col-sm-4
-                input.form-control(type='text' ng-if='!group.model' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}' ng-required='field.required')
-                input.form-control(type='text' ng-if='group.model' ng-model='backupItem[group.model][field.model]' placeholder='{{field.placeholder}}' ng-required='field.required')
-            +tip('field.tip')
+                +tip('field.tip')
+                .input-tip
+                    input.form-control(type='text' ng-if='!group.model' ng-model='backupItem[field.model]' placeholder='{{field.placeholder}}' ng-required='field.required')
+                    input.form-control(type='text' ng-if='group.model' ng-model='backupItem[group.model][field.model]' placeholder='{{field.placeholder}}' ng-required='field.required')
         div(ng-switch-when='dropdown')
             label(class=lblClasses) {{field.label}}:
             .col-sm-4
-                button.form-control(bs-select ng-if='!group.model' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
-                button.form-control(bs-select ng-if='group.model' ng-model='backupItem[group.model][field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
-            +tip('field.tip')
+                +tip('field.tip')
+                .input-tip
+                    button.form-control(bs-select ng-if='!group.model' ng-model='backupItem[field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
+                    button.form-control(bs-select ng-if='group.model' ng-model='backupItem[group.model][field.model]' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
         div(ng-switch-when='dropdown-multiple')
             label(class=lblClasses) {{field.label}}:
             .col-sm-4
-                button.form-control(bs-select ng-model='backupItem[field.model]' data-multiple='1' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
-            +tip('field.tip')
+                +tip('field.tip')
+                .input-tip
+                    button.form-control(bs-select ng-model='backupItem[field.model]' data-multiple='1' data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
         div(ng-switch-when='dropdown-details')
             label(class=lblClasses) {{field.label}}:
             .col-sm-4
-                button.form-control(bs-select ng-model=masterMdl data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
-            +tip('field.tip')
+                +tip('field.tip')
+                .input-tip
+                    button.form-control(bs-select ng-model=masterMdl data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
             a(style='margin-left: 10px' ng-if='field.customizable' ng-show=masterMdl ng-init='lbl="Show settings"' ng-click='field.expanded = !field.expanded; lbl = field.expanded ? "Hide settings" : lbl="Show settings"') {{lbl}}
-            div.panel-details(ng-show='field.expanded')
+            .col-sm-6.panel-details(ng-show='field.expanded')
                 .details-row(ng-repeat='detail in field.details[#{masterMdl}]')
                     +details-row
         div(ng-switch-when='table-simple')
             div
-                label {{field.table-label}}
+                label {{field.tableLabel}}
                 +tip('field.tip')
             button.btn.btn-primary(style='margin-left: 18px;' ng-click='createSimpleItem(field, #{masterMdl})') Add {{field.label}}
             .col-sm-10.links.details-row(style='margin-bottom: 0px;' nh-show='#{masterMdl}[field.model].length > 0')

@@ -353,7 +353,7 @@
           ]
         },
         {
-          "table-label": "SQL functions",
+          "tableLabel": "SQL functions",
           "label": "SQL function",
           "type": "table-simple",
           "model": "sqlFunctionClasses",

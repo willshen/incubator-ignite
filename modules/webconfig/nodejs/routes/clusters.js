@@ -67,7 +67,7 @@ router.get('/', function(req, res) {
  */
 router.post('/save', function(req, res) {
     if (req.body._id)
-        db.Cluster.update({_id: req.body._id}, req.body, {upsert: true}, function(err, cluster) {
+        db.Cluster.update({_id: req.body._id}, req.body, {upsert: true}, function(err) {
             if (err)
                 return res.status(500).send(err.message);
 

@@ -27,7 +27,7 @@
                             label.col-sm-3 {{simplePopup.desc.label | capitalize}}:
                             .col-sm-8
                                 input.form-control(type='text' ng-model='simplePopup.row' required)
-                            i.tip.fa.fa-question-circle(ng-if='simplePopup.desc.tip' bs-tooltip='simplePopup.desc.tip.join("")' type='button')
+                            i.tip.fa.fa-question-circle(ng-if='simplePopup.desc.tip' data-container='body' bs-tooltip='simplePopup.desc.tip.join("")' type='button')
                 .modal-footer
                     button.btn.btn-primary(ng-click='saveSimpleItem(simplePopup.row)' ng-disabled='popupForm.$invalid') Save
                     button.btn.btn-primary(ng-click='$hide()') Cancel

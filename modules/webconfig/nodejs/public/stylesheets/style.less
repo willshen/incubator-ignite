@@ -16,6 +16,7 @@
  */
 
 @logo-path: "https://www.filepicker.io/api/file/QagunjDGRFul2JgNCAli";
+@input-height: 28px;
 
 .main-header .logo {
   height: auto;
@@ -744,6 +745,12 @@ a:hover, .link:hover .title {
   float: none;
 }
 
+.vcenter2 {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .border-right-remove {
 
 }
@@ -947,7 +954,7 @@ table tr:hover{ cursor:pointer; }
   display: inline-block;
   text-align: left;
   padding: 3px 6px;
-  height: 28px;
+  height: @input-height;
 
   button {
     text-align: left;
@@ -1005,10 +1012,8 @@ button .caret {
 .panel-details {
   margin-top: 20px;
   margin-bottom: 20px;
-  border-style: dotted;
-  border-color: lightgrey;
   border-radius: 4px;
-  border-width: thin;
+  border: thin dotted lightgrey;
 }
 
 .tooltip.right .tooltip-arrow {
@@ -1026,9 +1031,20 @@ label {
   margin-bottom: 0;
 }
 
+.input-tip {
+  display: block;
+  overflow: hidden;
+  padding-right:4px;
+}
+
 .tip {
-  &:extend(.fa, .fa-question-circle);
-  margin-left: 5px;
+  float: right;
+  line-height: @input-height;
+  margin-right: 4px;
+}
+
+.tipCheck {
+  margin-left: 4px;
 }
 
 .table-nowrap {
@@ -1047,4 +1063,8 @@ label {
 
 .required {
   font-weight: bold;
+}
+
+.blank {
+  visibility:hidden;
 }
