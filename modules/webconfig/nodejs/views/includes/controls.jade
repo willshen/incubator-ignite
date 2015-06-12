@@ -52,7 +52,6 @@ mixin details-row
         div(ng-switch-when='table-simple')
             .details-label
                 button.btn.btn-primary(ng-click='createSimpleItem(detail, #{detailMdl})') Add {{detail.label}}
-                //+tip
             .col-sm-10.links.details-row(style='margin-bottom: 0px;')
                 table(st-table=detailMdl)
                     tbody
@@ -100,7 +99,7 @@ mixin form-row
                 .input-tip
                     button.form-control(bs-select ng-model=masterMdl data-template='/select' data-placeholder='{{field.placeholder}}' bs-options='item.value as item.label for item in {{field.items}}')
             a.customize(ng-if='field.customizable' ng-show=masterMdl ng-init='lbl="Show settings"' ng-click='field.expanded = !field.expanded; lbl = field.expanded ? "Hide settings" : lbl="Show settings"') {{lbl}}
-            .col-sm-6.panel-details(ng-show='field.expanded')
+            .col-sm-6.panel-details(ng-show='field.expanded && #{masterMdl}')
                 .details-row(ng-repeat='detail in field.details[#{masterMdl}]')
                     +details-row
         div(ng-switch-when='table-simple')

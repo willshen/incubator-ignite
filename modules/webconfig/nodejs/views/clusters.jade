@@ -36,7 +36,6 @@ block content
         button(ng-click='createItem()' class=['btn', 'btn-primary'] ng-disabled='!create.template') &nbspAdd cluster
         span(style='margin-left: 15px; margin-right: 5px') Use template:&nbsp
         button.btn.btn-default(ng-init='create.template = templates[0].value' ng-model='create.template' data-template='/select' data-placeholder='Choose cluster template' bs-options='item.value as item.label for item in templates' bs-select)
-        //.col-sm-12
         hr
         form.form-horizontal(name='clustersForm' ng-if='backupItem')
             div(data-start-collapsed='false' bs-collapse)
