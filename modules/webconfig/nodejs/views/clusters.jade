@@ -44,12 +44,17 @@ block content
                 +form-row
             .panel(bs-collapse data-start-collapsed='true')
                 .panel-collapse(bs-collapse-target)
-                    div(ng-repeat='group in advanced')
-                        h3 {{group.label}}
-                        .settings-row(ng-repeat='field in group.fields')
-                            +form-row
+                    .span(data-allow-multiple='true' aria-multiselectable='true' role='tablist' bs-collapse)
+                        div(ng-repeat='group in advanced')
+                            .panel-heading
+                                h3
+                                    a(bs-collapse-toggle) {{group.label}}
+                            .panel-collapse(bs-collapse-target)
+                                .settings-row(ng-repeat='field in group.fields')
+                                    +form-row
                 .panel-heading
                     .panel-title
-                        a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = true; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
+                        h3
+                            a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = true; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
             button.btn.btn-primary(ng-click='saveItem()' ng-disabled='clustersForm.$invalid') Save
             button.btn.btn-primary(ng-click='removeItem()' ng-show='backupItem._id') Remove
