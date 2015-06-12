@@ -50,6 +50,6 @@ block content
                             +form-row
                 .panel-heading
                     .panel-title
-                        a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = true; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
+                        a(bs-collapse-toggle ng-init='expanded=false; lbl="Show advanced settings..."' ng-click='expanded = !expanded; lbl=expanded ? "Hide advanced settings... " : "Show advanced settings..."') {{lbl}}
             button.btn.btn-primary(ng-click='saveItem()' ng-disabled='cachesForm.$invalid') Save
             button.btn.btn-primary(ng-click='removeItem()' ng-show='backupItem._id') Remove

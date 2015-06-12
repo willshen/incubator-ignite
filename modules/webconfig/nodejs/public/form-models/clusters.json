@@ -206,11 +206,21 @@
           }
         ]
       }
+    },
+    {
+      "label": "Caches",
+      "type": "dropdown-multiple",
+      "model": "caches",
+      "placeholder": "Choose caches",
+      "items": "caches",
+      "tip": [
+        "Select caches to start in cluster"
+      ]
     }
   ],
   "advanced": [
     {
-      "label": "Atomic data structures",
+      "label": "Atomic configuration",
       "model": "atomicConfiguration",
       "fields": [
         {
@@ -248,55 +258,63 @@
       ]
     },
     {
-      "label": "Cache configuration",
+      "label": "Communication",
       "fields": [
         {
-          "label": "Caches",
-          "type": "dropdown-multiple",
-          "model": "caches",
-          "placeholder": "Choose caches",
-          "items": "caches"
+          "label": "Timeout",
+          "type": "text",
+          "model": "networkTimeout",
+          "placeholder": "5,000",
+          "tip": [
+            "Maximum timeout in milliseconds for network requests."
+          ]
         },
         {
-          "label": "Enable cache sanity check",
+          "label": "Send retry delay",
+          "type": "text",
+          "model": "networkSendRetryDelay",
+          "placeholder": "1,000",
+          "tip": [
+            "Interval in milliseconds between message send retries."
+          ]
+        },
+        {
+          "label": "Send retry count",
+          "type": "text",
+          "model": "networkSendRetryCount",
+          "placeholder": "3",
+          "tip": [
+            "Message send retries count."
+          ]
+        },
+        {
+          "label": "Segment check frequency",
+          "type": "text",
+          "model": "segmentCheckFrequency",
+          "placeholder": "10,000",
+          "tip": [
+            "Network segment check frequency in milliseconds.",
+            "If 0, periodic segment check is disabled and segment is checked only on topology changes (if segmentation resolvers are configured)."
+          ]
+        },
+        {
+          "label": "Wait for segment on start",
           "type": "check",
-          "model": "cacheSanityCheckEnabled",
+          "model": "waitForSegmentOnStart",
           "tip": [
-            "Flag indicating whether cache sanity check is enabled. If enabled, then Ignite",
-            "will perform the following checks and throw an exception if check fails:",
-            "<ul>",
-            "<li>Cache entry is not externally locked with lock(...) or lockAsync(...) methods when entry is enlisted to transaction.</li>",
-            "<li>Each entry in affinity group-lock transaction has the same affinity key as was specified on affinity transaction start.</li>",
-            "<li>Each entry in partition group-lock transaction belongs to the same partition as was specified on partition transaction start.</li>",
-            "</ul>",
-            "<p>",
-            "These checks are not required for cache operation, but help to find subtle bugs.",
-            "Disabling of this checks usually yields a noticeable performance gain."
-          ]
-        }
-      ]
-    },
-    {
-      "label": "Clock synchronization",
-      "fields": [
-        {
-          "label": "Samples size",
-          "type": "text",
-          "model": "clockSyncSamples",
-          "placeholder": "8",
-          "tip": [
-            "Number of samples used to synchronize clocks between different nodes.",
-            "Clock synchronization is used for cache version assignment in CLOCK order mode."
+            "Wait for segment on start flag.",
+            "If enabled, node should wait for correct segment on start.",
+            "If node detects that segment is incorrect on startup and enabled, node waits until segment becomes correct.",
+            "If segment is incorrect on startup and disabled, exception is thrown."
           ]
         },
         {
-          "label": "Frequency",
+          "label": "Discovery startup delay",
           "type": "text",
-          "model": "clockSyncFrequency",
-          "placeholder": "120,000",
+          "model": "discoveryStartupDelay",
+          "placeholder": "600,000",
           "tip": [
-            "frequency at which clock is synchronized between nodes, in milliseconds.",
-            "Clock synchronization is used for cache version assignment in CLOCK order mode."
+            "This value is used to expire messages from waiting list whenever node discovery discrepancies happen."
           ]
         }
       ]
@@ -305,28 +323,13 @@
       "label": "Deployment",
       "fields": [
         {
-          "label": "Samples size",
+          "label": "Mode",
           "type": "dropdown",
           "model": "deploymentMode",
           "placeholder": "shared",
           "items": "deploymentModes",
           "tip": [
-            "Number of samples used to synchronize clocks between different nodes.",
-            "Clock synchronization is used for cache version assignment in CLOCK order mode."
-          ]
-        }
-      ]
-    },
-    {
-      "label": "Discovery",
-      "fields": [
-        {
-          "label": "Startup delay",
-          "type": "text",
-          "model": "discoveryStartupDelay",
-          "placeholder": "600,000",
-          "tip": [
-            "Time in milliseconds after which a certain metric value is considered expired."
+            "Task classes and resources sharing mode."
           ]
         }
       ]
@@ -419,69 +422,6 @@
       ]
     },
     {
-      "label": "Network",
-      "fields": [
-        {
-          "label": "Localhost",
-          "type": "text",
-          "model": "localHost",
-          "placeholder": "0.0.0.0",
-          "tip": [
-            "System-wide local address or host for all Ignite components to bind to.",
-            "If provided it will override all default local bind settings within Ignite or any of its SPIs."
-          ]
-        },
-        {
-          "label": "Timeout",
-          "type": "text",
-          "model": "networkTimeout",
-          "placeholder": "5,000",
-          "tip": [
-            "Maximum timeout in milliseconds for network requests."
-          ]
-        },
-        {
-          "label": "Send retry delay",
-          "type": "text",
-          "model": "networkSendRetryDelay",
-          "placeholder": "1,000",
-          "tip": [
-            "Interval in milliseconds between message send retries."
-          ]
-        },
-        {
-          "label": "Send retry count",
-          "type": "text",
-          "model": "networkSendRetryCount",
-          "placeholder": "3",
-          "tip": [
-            "Message send retries count."
-          ]
-        },
-        {
-          "label": "Segment check frequency",
-          "type": "text",
-          "model": "segmentCheckFrequency",
-          "placeholder": "10,000",
-          "tip": [
-            "Network segment check frequency in milliseconds.",
-            "If 0, periodic segment check is disabled and segment is checked only on topology changes (if segmentation resolvers are configured)."
-          ]
-        },
-        {
-          "label": "Wait for segment on start",
-          "type": "check",
-          "model": "waitForSegmentOnStart",
-          "tip": [
-            "Wait for segment on start flag.",
-            "If enabled, node should wait for correct segment on start.",
-            "If node detects that segment is incorrect on startup and enabled, node waits until segment becomes correct.",
-            "If segment is incorrect on startup and disabled, exception is thrown."
-          ]
-        }
-      ]
-    },
-    {
       "label": "Peer Class Loading",
       "fields": [
         {
@@ -524,8 +464,28 @@
       ]
     },
     {
-      "label": "Time server",
+      "label": "Time configuration",
       "fields": [
+        {
+          "label": "Samples size",
+          "type": "text",
+          "model": "clockSyncSamples",
+          "placeholder": "8",
+          "tip": [
+            "Number of samples used to synchronize clocks between different nodes.",
+            "Clock synchronization is used for cache version assignment in CLOCK order mode."
+          ]
+        },
+        {
+          "label": "Frequency",
+          "type": "text",
+          "model": "clockSyncFrequency",
+          "placeholder": "120,000",
+          "tip": [
+            "frequency at which clock is synchronized between nodes, in milliseconds.",
+            "Clock synchronization is used for cache version assignment in CLOCK order mode."
+          ]
+        },
         {
           "label": "Port base",
           "type": "text",
@@ -661,6 +621,15 @@
           "items": "segmentationPolicy"
         },
         {
+          "label": "Resolve attempts count",
+          "type": "text",
+          "model": "segmentationResolveAttempts",
+          "placeholder": "2",
+          "tip": [
+            "Each configured resolver will have this attempts number to pass segmentation check prior to check failure."
+          ]
+        },
+        {
           "label": "All resolvers pass required flag",
           "type": "check",
           "model": "allSegmentationResolversPassRequired",
@@ -669,15 +638,6 @@
             "<p>",
             "If enabled all segmentation resolvers should succeed for node to be in correct segment.",
             "If disabled at least one segmentation resolver should succeed for node to be in correct segment."
-          ]
-        },
-        {
-          "label": "Resolve attempts count",
-          "type": "text",
-          "model": "segmentationResolveAttempts",
-          "placeholder": "2",
-          "tip": [
-            "Each configured resolver will have this attempts number to pass segmentation check prior to check failure."
           ]
         }
       ]
